@@ -6,6 +6,31 @@ This file records the major updates to the Japanese Handbook.
 
 ---
 
+## v0.4.0 — 2026-07-28
+
+### Changed
+- 重构 Verbs：由逐个动词条目改为系统讲解动词分类和活用
+- Vocabulary 改为按词性分组的表格结构
+- Vocabulary 使用分类编号：W-N、W-V、W-I、W-NA、W-ADV、W-CON
+- 原 V-001 至 V-004 词条迁移到 Vocabulary 动词表
+
+### Added
+- V-001 动词分类
+- V-002 ます形
+- V-003 て形（规则、用途、例句和常见错误）
+- V-004 常用100动词て形速查表
+
+### ID Migration
+- V-001 進む → W-V001 進む
+- V-002 送る → W-V002 送る
+- V-003 入れる → W-V003 入れる
+- V-004 答える → W-V004 答える
+
+### Fixed
+- 同步更新 Verbs、Vocabulary 和 Index 的编号与交叉引用
+
+---
+
 ## v0.3.0 — 2026-07-27
 
 ### Changed
