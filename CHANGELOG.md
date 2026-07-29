@@ -6,6 +6,28 @@ This file records the major updates to the Japanese Handbook.
 
 ---
 
+## v0.4.1 — 2026-07-29
+
+### Added
+- 新增根目录 `RELEASE_WORKFLOW.md`，规定正式更新包的强制发布流程和 Release Gate
+- 新增 E-006 一年中、E-007 もう一回、E-008 ～からもらったものです
+- 新增词汇：大人、半日、男、男性、気持ち、気持ち悪い、ひどい、静か、わくわく
+- 新增 M-004「一年中この映画を見たいです」和 M-005「大人の人」
+- 新增 R-002 条件表达比较
+
+### Changed
+- 删除独立 Listening 章节；听力与阅读材料仅作为知识来源
+- Reviews 从 `08-Reviews.md` 调整为 `07-Reviews.md`
+- 明确 Reviews 只用于比较、复习和综合练习，不重复维护知识定义
+- 更新 README、PROJECT_SPEC、SUMMARY 和 Index，使结构保持一致
+
+### Validation
+- 基线版本：v0.4.0
+- 已检查 README、PROJECT_SPEC、SUMMARY、CHANGELOG 及所有受影响章节
+- 已检查章节路径、编号连续性和索引一致性
+
+---
+
 ## v0.4.0 — 2026-07-28
 
 ### Changed
