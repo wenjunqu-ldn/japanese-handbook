@@ -40,6 +40,7 @@ Instead of following a textbook or JLPT syllabus, the handbook is continuously b
 README.md                项目介绍 / Project overview
 
 PROJECT_SPEC.md          项目规范（AI维护指南）
+RELEASE_WORKFLOW.md      强制发布流程
 SUMMARY.md               手册目录
 CHANGELOG.md             更新日志
 
@@ -51,8 +52,7 @@ handbook/
 ├── 04-Expressions.md
 ├── 05-Vocabulary.md
 ├── 06-Mistakes.md
-├── 07-Listening.md
-├── 08-Reviews.md
+├── 07-Reviews.md
 └── 99-Index.md
 ```
 
@@ -68,8 +68,7 @@ handbook/
 - Expressions（固定表达）
 - Vocabulary（词汇）
 - Common Mistakes（易错点）
-- Listening Tips（听力技巧）
-- Reviews（复习）
+- Reviews（比较、复习与综合练习）
 - Index（索引）
 
 ---
@@ -98,7 +97,6 @@ All PDFs, Word documents, websites and other formats should be generated directl
 - E-001 Expression
 - W-001 Vocabulary
 - M-001 Common Mistake
-- L-001 Listening
 - R-001 Review
 
 编号一经使用，不再修改。
@@ -144,6 +142,7 @@ After each study session:
 任何 AI 在修改内容前，应首先阅读：
 
 - PROJECT_SPEC.md
+- RELEASE_WORKFLOW.md
 - SUMMARY.md
 
 并遵循项目规范进行更新。
@@ -153,6 +152,7 @@ This project is designed to be maintained by AI assistants.
 Before making any changes, an AI should read:
 
 - PROJECT_SPEC.md
+- RELEASE_WORKFLOW.md
 - SUMMARY.md
 
 and follow the project specification.

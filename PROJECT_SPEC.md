@@ -67,6 +67,8 @@ README.md
 
 PROJECT_SPEC.md
 
+RELEASE_WORKFLOW.md
+
 SUMMARY.md
 
 CHANGELOG.md
@@ -85,9 +87,7 @@ handbook/
 
 06-Mistakes.md
 
-07-Listening.md
-
-08-Reviews.md
+07-Reviews.md
 
 99-Index.md
 ```
@@ -106,7 +106,6 @@ handbook/
 | Expression | E | E-001 |
 | Vocabulary | W | W-001 |
 | Common Mistake | M | M-001 |
-| Listening | L | L-001 |
 | Review | R | R-001 |
 
 编号规则：
@@ -255,7 +254,22 @@ Vocabulary 记录词义、搭配和词义区别；系统活用规则统一放在
 
 ---
 
-# 10. 交叉引用 | Cross References
+# 10. Reviews 章节规范
+
+Reviews 用于比较、复习、阶段总结和综合练习。
+
+Reviews：
+
+- 不引入新的知识定义；
+- 应引用 Grammar、Verbs、Particles、Expressions、Vocabulary 或 Common Mistakes 中的已有条目；
+- 可提供对比表、自测题、改错题和综合练习；
+- 不重复维护其他章节的完整解释。
+
+听力和阅读材料是知识来源，不再作为独立章节。相关知识应按内容归入现有分类。
+
+---
+
+# 11. 交叉引用 | Cross References
 
 不同章节之间应建立引用。
 
@@ -275,7 +289,9 @@ P-007
 
 ---
 
-# 11. 更新规则 | Update Rules
+# 12. 更新规则 | Update Rules
+
+正式更新包必须先按照仓库根目录的 `RELEASE_WORKFLOW.md` 执行。该文件是发布流程的唯一权威来源；未完成仓库检查和验证时，只能生成 Draft，不能标记为 Release。
 
 每次学习完成后：
 
@@ -287,15 +303,16 @@ P-007
 
 ---
 
-# 12. AI Editing Rules
+# 13. AI Editing Rules
 
 任何 AI 修改仓库前，应：
 
 1. 阅读 README。
 2. 阅读 PROJECT_SPEC。
-3. 阅读 SUMMARY。
-4. 阅读目标章节。
-5. 在原有基础上修改，不覆盖已有内容。
+3. 阅读 RELEASE_WORKFLOW。
+4. 阅读 SUMMARY。
+5. 阅读目标章节。
+6. 在原有基础上修改，不覆盖已有内容。
 
 AI 不应：
 
@@ -305,7 +322,7 @@ AI 不应：
 
 ---
 
-# 13. Versioning
+# 14. Versioning
 
 采用语义化版本：
 
@@ -331,7 +348,7 @@ First complete handbook
 
 ---
 
-# 14. Future Plans
+# 15. Future Plans
 
 未来计划包括：
 
@@ -344,7 +361,7 @@ First complete handbook
 
 ---
 
-# 15. Philosophy
+# 16. Philosophy
 
 这不是一本教材。
 

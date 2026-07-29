@@ -6,6 +6,5 @@
 4. [固定表达 | Expressions](handbook/04-Expressions.md)
 5. [词汇 | Vocabulary](handbook/05-Vocabulary.md)
 6. [易错点 | Common Mistakes](handbook/06-Mistakes.md)
-7. [听力技巧 | Listening](handbook/07-Listening.md)
-8. [复习 | Reviews](handbook/08-Reviews.md)
-9. [索引 | Index](handbook/99-Index.md)
+7. [复习 | Reviews](handbook/07-Reviews.md)
+8. [索引 | Index](handbook/99-Index.md)
