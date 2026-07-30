@@ -1,6 +1,6 @@
 # 项目规范 | Project Specification
 
-> Version: 1.0
+> Version: 1.1
 >
 > Last Updated: July 2026
 
@@ -68,6 +68,10 @@ README.md
 PROJECT_SPEC.md
 
 RELEASE_WORKFLOW.md
+
+AI_CONTENT_EXTRACTION_GUIDE.md
+
+KNOWLEDGE_CLASSIFICATION.md
 
 SUMMARY.md
 
@@ -303,16 +307,24 @@ P-007
 
 ---
 
-# 13. AI Editing Rules
+# 13. AI Knowledge Extraction and Editing Rules
 
-任何 AI 修改仓库前，应：
+聊天记录只是知识来源，不是可直接复制进手册的内容。
+
+任何 AI 从聊天维护 Handbook 时，必须：
 
 1. 阅读 README。
 2. 阅读 PROJECT_SPEC。
 3. 阅读 RELEASE_WORKFLOW。
-4. 阅读 SUMMARY。
-5. 阅读目标章节。
-6. 在原有基础上修改，不覆盖已有内容。
+4. 阅读 AI_CONTENT_EXTRACTION_GUIDE。
+5. 阅读 KNOWLEDGE_CLASSIFICATION。
+6. 阅读 SUMMARY 和目标章节。
+7. 按提取指南拆分、筛选、搜索、去重和改写候选知识。
+8. 按分类指南确定每个知识点的主要归属。
+9. 在原有基础上增量修改，不覆盖无关内容。
+
+具体聊天提取流程以 `AI_CONTENT_EXTRACTION_GUIDE.md` 为准。
+章节归属的快速判定以 `KNOWLEDGE_CLASSIFICATION.md` 为准。
 
 AI 不应：
 

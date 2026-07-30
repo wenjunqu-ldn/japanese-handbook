@@ -6,6 +6,25 @@ This file records the major updates to the Japanese Handbook.
 
 ---
 
+## v0.4.2 — 2026-07-30
+
+### Added
+- 新增 `AI_CONTENT_EXTRACTION_GUIDE.md`，规定 AI 如何从日语学习聊天中拆分、筛选、搜索、去重和改写知识点
+- 新增 `KNOWLEDGE_CLASSIFICATION.md`，提供各章节的快速分类决策树
+
+### Changed
+- 更新 README 的仓库结构和 AI 必读文件清单
+- 更新 PROJECT_SPEC，将聊天知识提取和分类规则指向两个独立规范文件
+- 更新 RELEASE_WORKFLOW，将知识提取、分类和去重纳入正式发布流程
+
+### Validation
+- 基线版本：v0.4.1
+- 全部新增和修改文件使用严格 UTF-8 编码
+- 未修改 Handbook 章节、知识编号或 Index
+- 已检查新增文档与 PROJECT_SPEC 的职责边界
+
+---
+
 ## v0.4.1 — 2026-07-29
 
 ### Added

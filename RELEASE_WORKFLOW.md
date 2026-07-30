@@ -14,18 +14,19 @@ A release package must not be created before the repository inspection step is c
 
 1. Inspect the current GitHub repository.
 2. Confirm the default branch and current handbook version.
-3. Read `README.md`, `PROJECT_SPEC.md`, `SUMMARY.md`, `CHANGELOG.md`, and every file that may be changed.
+3. Read `README.md`, `PROJECT_SPEC.md`, `AI_CONTENT_EXTRACTION_GUIDE.md`, `KNOWLEDGE_CLASSIFICATION.md`, `SUMMARY.md`, `CHANGELOG.md`, and every file that may be changed.
 4. Review the relevant Japanese-learning conversations supplied in the project context.
-5. Compare the conversations with the repository and identify:
+5. Extract and classify candidate knowledge according to the two AI maintenance guides.
+6. Compare the candidates with the repository and identify:
    - already covered knowledge;
    - missing knowledge;
    - duplicate or conflicting material;
    - structural changes required.
-6. Generate incremental changes only.
-7. Update `CHANGELOG.md`.
-8. Update `SUMMARY.md` and `handbook/99-Index.md` whenever structure or IDs change.
-9. Validate IDs, cross-references, file paths, examples, and translations.
-10. Generate the release package, manifest, coverage report, scan report, and validation report.
+7. Generate incremental changes only.
+8. Update `CHANGELOG.md`.
+9. Update `SUMMARY.md` and `handbook/99-Index.md` whenever structure or IDs change.
+10. Validate IDs, cross-references, file paths, examples, and translations.
+11. Generate the release package, manifest, coverage report, scan report, and validation report.
 
 ## 3. Release gate
 

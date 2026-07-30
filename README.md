@@ -39,9 +39,11 @@ Instead of following a textbook or JLPT syllabus, the handbook is continuously b
 ```text
 README.md                项目介绍 / Project overview
 
-PROJECT_SPEC.md          项目规范（AI维护指南）
-RELEASE_WORKFLOW.md      强制发布流程
-SUMMARY.md               手册目录
+PROJECT_SPEC.md                  项目规范
+RELEASE_WORKFLOW.md              强制发布流程
+AI_CONTENT_EXTRACTION_GUIDE.md  AI聊天知识提取流程
+KNOWLEDGE_CLASSIFICATION.md     知识分类快速指南
+SUMMARY.md                       手册目录
 CHANGELOG.md             更新日志
 
 handbook/
@@ -141,8 +143,11 @@ After each study session:
 
 任何 AI 在修改内容前，应首先阅读：
 
+- README.md
 - PROJECT_SPEC.md
 - RELEASE_WORKFLOW.md
+- AI_CONTENT_EXTRACTION_GUIDE.md
+- KNOWLEDGE_CLASSIFICATION.md
 - SUMMARY.md
 
 并遵循项目规范进行更新。
@@ -151,8 +156,11 @@ This project is designed to be maintained by AI assistants.
 
 Before making any changes, an AI should read:
 
+- README.md
 - PROJECT_SPEC.md
 - RELEASE_WORKFLOW.md
+- AI_CONTENT_EXTRACTION_GUIDE.md
+- KNOWLEDGE_CLASSIFICATION.md
 - SUMMARY.md
 
 and follow the project specification.
