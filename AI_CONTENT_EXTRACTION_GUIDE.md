@@ -46,6 +46,7 @@ Do not automatically preserve:
 - repeated explanations of the same point;
 - one-off typing mistakes with no review value;
 - material unrelated to Japanese learning.
+- common English-derived loanwords, unless they have a specifically Japanese meaning, formation, contrast, or usage worth explaining.
 
 ## 4. Split before classifying
 
