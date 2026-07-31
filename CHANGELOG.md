@@ -6,6 +6,24 @@ This file records the major updates to the Japanese Handbook.
 
 ---
 
+## v0.5.2 — 2026-07-31
+
+### Added
+- 新增 V-005 `た形`
+- 新增 V-006 `ない形`
+- 新增 V-007 `可能形`
+- 新增 V-008 `意向形`
+
+### Changed
+- 更新 Verbs Index，加入 V-005 至 V-008
+
+### Validation
+- 基线版本：v0.5.1
+- 已检查新增内容与 V-001 至 V-004 不重复
+- 已检查变化规则、特殊变化、例句、编号、交叉引用和 UTF-8 编码
+
+---
+
 ## v0.5.1 — 2026-07-31
 
 ### Added
