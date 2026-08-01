@@ -6,6 +6,26 @@ This file records the major updates to the Japanese Handbook.
 
 ---
 
+## v0.5.3 — 2026-08-01
+
+### Added
+- 新增 P-005 `を`
+- 新增 P-006 `に`
+- 新增 P-007 `で`
+- 新增 P-008 `の`
+- 新增 P-009 `も`
+- 新增 P-010 `から／まで`
+
+### Changed
+- 更新 Particles Index，加入 P-005 至 P-010
+
+### Validation
+- 基线版本：v0.5.2
+- 已检查新增内容与 P-001 至 P-004 不重复
+- 已检查例句、编号、交叉引用和 UTF-8 编码
+
+---
+
 ## v0.5.2 — 2026-07-31
 
 ### Added
