@@ -95,3 +95,8 @@ No placeholder files are permitted.
 - Listening and reading materials are sources of knowledge, not permanent handbook sections.
 - Reviews contain comparison, recap, and integrated practice; they do not introduce new definitions.
 - Vocabulary remains grouped by part of speech.
+- Every published knowledge ID must have a stable ID-only anchor.
+- Index and cross-references must link to stable ID anchors rather than title-generated anchors.
+- Review answers must contain complete Japanese sentences, appropriate furigana, Chinese translations, and short explanations.
+- Common Mistakes entries must contain complete wrong and corrected Japanese sentences.
+- Validation must detect duplicate anchors, missing Index targets, and broken internal file paths.

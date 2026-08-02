@@ -171,3 +171,6 @@ This is analysis material and should not be committed unless explicitly required
 - [ ] Accepted content was rewritten in Handbook style.
 - [ ] Index, cross-references, and Changelog were updated where required.
 - [ ] Release validation was completed under `RELEASE_WORKFLOW.md`.
+- [ ] Every new knowledge ID has a stable ID-only anchor.
+- [ ] Index and cross-references use clickable permanent-ID links.
+- [ ] Published IDs were not changed merely to improve ordering.
