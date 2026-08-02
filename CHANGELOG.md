@@ -6,6 +6,29 @@ This file records the major updates to the Japanese Handbook.
 
 ---
 
+## v0.6.0 — 2026-08-02
+
+### Added
+- 为所有 G、V、P、E、W、M、R 条目建立仅由永久编号组成的固定锚点
+- 将 `handbook/99-Index.md` 全部知识条目改为可点击链接
+- 在 PROJECT_SPEC 中确立“已发布编号是永久 ID”的长期规范
+- 在发布验证中加入重复锚点、缺失目标和内部路径检查
+
+### Changed
+- 将现有 Related、Reviews 和 Common Mistakes 中可识别的编号引用改为可点击链接
+- 更新 PROJECT_SPEC、RELEASE_WORKFLOW、AI_CONTENT_EXTRACTION_GUIDE 和 KNOWLEDGE_CLASSIFICATION
+- 明确 Reviews 必须提供完整日语答案、假名、中文翻译和解析
+- 明确 Common Mistakes 必须提供完整错误句和完整正确句
+
+### Validation
+- 基线版本：v0.5.4
+- 未新增、删除或重新编号任何知识点
+- 已验证 Index 中全部编号均有唯一锚点
+- 已验证固定锚点不依赖知识点标题
+- 已检查 UTF-8、重复锚点、缺失链接目标和内部文件路径
+
+---
+
 ## v0.5.4 — 2026-08-02
 
 ### Added

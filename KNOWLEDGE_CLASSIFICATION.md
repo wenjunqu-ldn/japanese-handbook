@@ -117,3 +117,13 @@ Reviews must not contain the only complete definition of a new concept. Create o
 - New definitions introduced only in Reviews.
 - Listening or reading material preserved as a permanent source-based chapter.
 - The same explanation copied into several chapters.
+
+## 11. Permanent references
+
+After classification and ID assignment:
+
+- treat every published ID as permanent;
+- add the stable ID-only anchor required by `PROJECT_SPEC.md`;
+- link Index, Related, Reviews, and Common Mistakes references to that anchor;
+- never renumber an entry merely to place related topics together.
+
