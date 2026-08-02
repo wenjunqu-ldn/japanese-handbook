@@ -6,6 +6,27 @@ This file records the major updates to the Japanese Handbook.
 
 ---
 
+## v0.5.4 — 2026-08-02
+
+### Added
+- 新增10个高价值名词、10个动词、4个い形容词、3个な形容词和5个副词
+- 新增自动词／他动词重点组：入る／入れる、付く／付ける、始まる／始める
+- 新增 M-006 至 M-009
+- 新增 R-003 自动词与他动词、R-004 高频易混词
+
+### Changed
+- 重写 M-001 至 M-005，加入完整错误句、正确句、翻译和原因
+- 重写 R-001 和 R-002 的答案，确保包含完整日语句子、假名、翻译和解析
+- 更新 Vocabulary、Common Mistakes、Reviews 和 Index
+
+### Validation
+- 基线版本：v0.5.3
+- 已对照历史 conversations.json、近期日语学习对话和当前仓库去重
+- 未收录普通英语外来词
+- 已检查编号连续性、表格结构、例句完整性、UTF-8 编码和 Index 一致性
+
+---
+
 ## v0.5.3 — 2026-08-01
 
 ### Added
