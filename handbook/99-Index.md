@@ -65,6 +65,12 @@
 - [E-006 一年中](04-Expressions.md#E-006)
 - [E-007 もう一回](04-Expressions.md#E-007)
 - [E-008 ～からもらったものです](04-Expressions.md#E-008)
+- [E-009 でも／しかし／けれど（けど）](04-Expressions.md#E-009)
+- [E-010 から／ので／だから／そのため](04-Expressions.md#E-010)
+- [E-011 そして／それから／それに／さらに](04-Expressions.md#E-011)
+- [E-012 例えば／など／とか](04-Expressions.md#E-012)
+- [E-013 それなら／だったら](04-Expressions.md#E-013)
+- [E-014 国名＋名词／国名の名词](04-Expressions.md#E-014)
 
 ## Vocabulary
 
@@ -149,3 +155,4 @@
 - [R-002 条件表达比较](07-Reviews.md#R-002)
 - [R-003 自动词与他动词](07-Reviews.md#R-003)
 - [R-004 高频易混词](07-Reviews.md#R-004)
+- [R-005 连接表达比较](07-Reviews.md#R-005)
