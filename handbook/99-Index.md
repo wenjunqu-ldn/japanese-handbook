@@ -33,6 +33,8 @@
 - [G-030 ～ので](01-Grammar.md#G-030)
 - [G-031 ～たい](01-Grammar.md#G-031)
 - [G-032 ～んです／～のです](01-Grammar.md#G-032)
+- [G-033 数量词＋ずつ](01-Grammar.md#G-033)
+- [G-034 定语从句中的「が／の」](01-Grammar.md#G-034)
 
 ## Verbs
 - [V-001 动词分类](02-Verbs.md#V-001)
@@ -55,6 +57,7 @@
 - [P-008 の](03-Particles.md#P-008)
 - [P-009 も](03-Particles.md#P-009)
 - [P-010 から／まで](03-Particles.md#P-010)
+- [P-011 へ＋の → への](03-Particles.md#P-011)
 
 ## Expressions
 - [E-001 ～ましょうか](04-Expressions.md#E-001)
@@ -71,6 +74,7 @@
 - [E-012 例えば／など／とか](04-Expressions.md#E-012)
 - [E-013 それなら／だったら](04-Expressions.md#E-013)
 - [E-014 国名＋名词／国名の名词](04-Expressions.md#E-014)
+- [E-015 ところで](04-Expressions.md#E-015)
 
 ## Vocabulary
 
@@ -116,6 +120,9 @@
 - [W-V012 転がる](05-Vocabulary.md#W-V012)
 - [W-V013 転ぶ](05-Vocabulary.md#W-V013)
 - [W-V014 気をつける](05-Vocabulary.md#W-V014)
+- [W-V015 振り返る](05-Vocabulary.md#W-V015)
+- [W-V016 付いてくる](05-Vocabulary.md#W-V016)
+- [W-V017 ごまかす](05-Vocabulary.md#W-V017)
 
 ### い形容词
 - [W-I001 気持ち悪い](05-Vocabulary.md#W-I001)
@@ -124,6 +131,7 @@
 - [W-I004 詳しい](05-Vocabulary.md#W-I004)
 - [W-I005 少ない](05-Vocabulary.md#W-I005)
 - [W-I006 小さい](05-Vocabulary.md#W-I006)
+- [W-I007 多い](05-Vocabulary.md#W-I007)
 
 ### な形容词
 - [W-NA001 静か](05-Vocabulary.md#W-NA001)
@@ -138,6 +146,9 @@
 - [W-ADV004 だんだん](05-Vocabulary.md#W-ADV004)
 - [W-ADV005 こんなに](05-Vocabulary.md#W-ADV005)
 - [W-ADV006 そんなに](05-Vocabulary.md#W-ADV006)
+- [W-ADV007 びっくり](05-Vocabulary.md#W-ADV007)
+- [W-ADV008 確かに](05-Vocabulary.md#W-ADV008)
+- [W-ADV009 ずっと](05-Vocabulary.md#W-ADV009)
 
 ## Common Mistakes
 - [M-001 好きてきました](06-Mistakes.md#M-001)
@@ -156,3 +167,4 @@
 - [R-003 自动词与他动词](07-Reviews.md#R-003)
 - [R-004 高频易混词](07-Reviews.md#R-004)
 - [R-005 连接表达比较](07-Reviews.md#R-005)
+- [R-006 多い／多くない／少ない／少なくない](07-Reviews.md#R-006)
