@@ -108,18 +108,24 @@ handbook/
 | Verb | V | V-001 |
 | Particle | P | P-001 |
 | Expression | E | E-001 |
-| Vocabulary | W | W-001 |
+| Vocabulary — 名词 | W-N | W-N001 |
+| Vocabulary — 动词 | W-V | W-V001 |
+| Vocabulary — い形容词 | W-I | W-I001 |
+| Vocabulary — な形容词 | W-NA | W-NA001 |
+| Vocabulary — 副词 | W-ADV | W-ADV001 |
+| Vocabulary — 接续词 | W-CON | W-CON001 |
 | Common Mistake | M | M-001 |
 | Review | R | R-001 |
 
 编号规则：
 
-1. 每个章节从 001 开始连续编号，不预留空号。
-2. 已发布编号是永久 ID，不得为了重新排序而修改或重新分配。
-3. 每个知识点必须建立只由编号组成的固定 HTML 锚点，例如 `<a id="G-023"></a>`。
-4. Index、Related、Reviews 和 Common Mistakes 中的引用必须链接到固定编号锚点，不依赖标题自动生成的锚点。
-5. 标题、解释、例句和显示顺序可以修改，但永久 ID 必须保持稳定。
-6. 只有在不可避免的结构迁移中才允许重编号；必须保留旧锚点、提供完整映射、更新全部引用并在 CHANGELOG 中记录。
+1. Grammar、Verb、Particle、Expression、Common Mistake、Review 各自使用连续编号。
+2. Vocabulary 按词性子前缀分别独立连续编号：`W-N`、`W-V`、`W-I`、`W-NA`、`W-ADV`、`W-CON`。
+3. 已发布编号是永久 ID，不得为了重新排序而修改或重新分配。
+4. 每个知识点必须建立只由编号组成的固定 HTML 锚点，例如 `<a id="G-023"></a>`。
+5. Index、Related、Reviews 和 Common Mistakes 中的引用必须链接到固定编号锚点，不依赖标题自动生成的锚点。
+6. 标题、解释、例句和显示顺序可以修改，但永久 ID 必须保持稳定。
+7. 默认禁止重编号。只有发生不可避免的结构迁移时才允许重编号；必须保留旧锚点、提供完整映射、更新全部引用，并在 CHANGELOG 中记录。
 
 ---
 

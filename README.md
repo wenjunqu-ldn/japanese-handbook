@@ -97,7 +97,12 @@ All PDFs, Word documents, websites and other formats should be generated directl
 - V-001 Verb
 - P-001 Particle
 - E-001 Expression
-- W-001 Vocabulary
+- W-N001 Vocabulary — 名词
+- W-V001 Vocabulary — 动词
+- W-I001 Vocabulary — い形容词
+- W-NA001 Vocabulary — な形容词
+- W-ADV001 Vocabulary — 副词
+- W-CON001 Vocabulary — 接续词
 - M-001 Common Mistake
 - R-001 Review
 
