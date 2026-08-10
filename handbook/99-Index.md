@@ -35,6 +35,9 @@
 - [G-032 ～んです／～のです](01-Grammar.md#G-032)
 - [G-033 数量词＋ずつ](01-Grammar.md#G-033)
 - [G-034 定语从句中的「が／の」](01-Grammar.md#G-034)
+- [G-035 ～しか～ない](01-Grammar.md#G-035)
+- [G-036 ～ことに気づく](01-Grammar.md#G-036)
+- [G-037 い形容词的て形](01-Grammar.md#G-037)
 
 ## Verbs
 - [V-001 动词分类](02-Verbs.md#V-001)
@@ -104,6 +107,12 @@
 - [W-N023 庭](05-Vocabulary.md#W-N023)
 - [W-N024 荷物](05-Vocabulary.md#W-N024)
 - [W-N025 入り口](05-Vocabulary.md#W-N025)
+- [W-N026 日付](05-Vocabulary.md#W-N026)
+- [W-N027 入場料](05-Vocabulary.md#W-N027)
+- [W-N028 お城](05-Vocabulary.md#W-N028)
+- [W-N029 朝市](05-Vocabulary.md#W-N029)
+- [W-N030 二人分](05-Vocabulary.md#W-N030)
+- [W-N031 勘違い](05-Vocabulary.md#W-N031)
 
 ### 动词
 - [W-V001 進む](05-Vocabulary.md#W-V001)
@@ -123,6 +132,11 @@
 - [W-V015 振り返る](05-Vocabulary.md#W-V015)
 - [W-V016 付いてくる](05-Vocabulary.md#W-V016)
 - [W-V017 ごまかす](05-Vocabulary.md#W-V017)
+- [W-V018 払う](05-Vocabulary.md#W-V018)
+- [W-V019 違う](05-Vocabulary.md#W-V019)
+- [W-V020 気づく](05-Vocabulary.md#W-V020)
+- [W-V021 がっかりする](05-Vocabulary.md#W-V021)
+- [W-V022 遠回りする](05-Vocabulary.md#W-V022)
 
 ### い形容词
 - [W-I001 気持ち悪い](05-Vocabulary.md#W-I001)
@@ -149,6 +163,8 @@
 - [W-ADV007 びっくり](05-Vocabulary.md#W-ADV007)
 - [W-ADV008 確かに](05-Vocabulary.md#W-ADV008)
 - [W-ADV009 ずっと](05-Vocabulary.md#W-ADV009)
+- [W-ADV010 全然](05-Vocabulary.md#W-ADV010)
+- [W-ADV011 ただ](05-Vocabulary.md#W-ADV011)
 
 ## Common Mistakes
 - [M-001 好きてきました](06-Mistakes.md#M-001)
@@ -160,6 +176,8 @@
 - [M-007 入る vs 入れる](06-Mistakes.md#M-007)
 - [M-008 かぶる vs かける](06-Mistakes.md#M-008)
 - [M-009 少ない vs 小さい](06-Mistakes.md#M-009)
+- [M-010 動詞＋のが好き](06-Mistakes.md#M-010)
+- [M-011 遠回りする的活用](06-Mistakes.md#M-011)
 
 ## Reviews
 - [R-001 变化、决定与经历](07-Reviews.md#R-001)
@@ -168,3 +186,4 @@
 - [R-004 高频易混词](07-Reviews.md#R-004)
 - [R-005 连接表达比较](07-Reviews.md#R-005)
 - [R-006 多い／多くない／少ない／少なくない](07-Reviews.md#R-006)
+- [R-007 限定、发现与状态描述](07-Reviews.md#R-007)
