@@ -1,3 +1,18 @@
+## v0.6.4 — 2026-08-10
+
+### Corrective
+- 修正 PROJECT_SPEC.md 中过时的 Vocabulary `W-001` 编号说明
+- 明确 Vocabulary 按词性使用 `W-N`、`W-V`、`W-I`、`W-NA`、`W-ADV`、`W-CON` 独立连续编号
+- 修正 README.md 中对应的旧编号示例
+- 澄清永久 ID 规则：默认禁止重编号；只有不可避免的结构迁移才允许，并要求保留旧锚点、完整映射、全部引用更新及 CHANGELOG 记录
+
+### Validation
+- 基线版本：v0.6.3
+- 不修改任何已有知识点 ID
+- 不修改 handbook/* 内容
+- PROJECT_SPEC 与实际 Vocabulary 编号体系一致
+- README 与 PROJECT_SPEC 编号示例一致
+
 ## v0.6.3 — 2026-08-10
 
 ### Added
