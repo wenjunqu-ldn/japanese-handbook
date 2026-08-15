@@ -175,6 +175,14 @@ input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px
 .verdict { font-weight: 600; }
 .verdict.ok { color: var(--correct-border); }
 .verdict.no { color: var(--wrong-border); }
+.verdict.near { color: var(--review); }
+
+.wrong-sentence {
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--wrong-border);
+  text-underline-offset: 0.3em;
+}
 
 .override {
   margin-top: 0.5rem;
