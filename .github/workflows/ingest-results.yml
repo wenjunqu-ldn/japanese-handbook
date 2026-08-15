@@ -37,7 +37,7 @@ jobs:
         run: |
           set -o pipefail
           printf '%s' "$ISSUE_BODY" \
-            | python3 scripts/ingest_mistakes.py --reporter "$REPORTER" \
+            | python3 exercise-generator/ingest_mistakes.py --reporter "$REPORTER" \
             | tee summary.txt
 
       - name: Commit and push

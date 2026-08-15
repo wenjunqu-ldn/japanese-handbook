@@ -58,7 +58,7 @@ handbook/
 ├── 08-Duolingo.md
 └── 99-Index.md
 
-scripts/                 每日练习生成脚本
+exercise-generator/      每日练习生成脚本
 docs/                    每日练习网页应用
 ```
 

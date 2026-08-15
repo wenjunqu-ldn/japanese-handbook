@@ -3,7 +3,7 @@
 ### Added
 - 新增 `handbook/08-Duolingo.md`：Duolingo Sections 1–4 补充词汇 `DUO-001` – `DUO-107`，按 Section 分组，独立于核心 `W-*` 编号体系
 - 新增每日练习应用（`docs/`）：静态网页，支持选择题、填空题和中译日三种题型
-- 新增练习生成脚本（`scripts/`）：
+- 新增练习生成脚本（`exercise-generator/`）：
   - `itembank.py` 解析 handbook Markdown 为结构化题库
   - `generate_exercises.py` 每天生成 5 道练习
   - `ingest_mistakes.py` 记录答题结果

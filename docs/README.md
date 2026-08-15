@@ -7,23 +7,26 @@
 ## 1. 工作方式 | How it works
 
 ```text
-handbook/*.md                      ← 题库来源（语法、助词、固定表达、词汇、Duolingo 词汇）
-        │
-        │  scripts/itembank.py          解析 Markdown → 结构化题库
-        ▼
-scripts/generate_exercises.py      每天挑 5 个知识点并生成题目
-        │
-        ▼
+handbook/*.md
+    │   题库来源：语法、助词、固定表达、词汇、Duolingo 词汇
+    │
+    │   exercise-generator/itembank.py
+    │       解析 Markdown → 结构化题库
+    ▼
+exercise-generator/generate_exercises.py
+    │   每天挑 5 个知识点并生成题目
+    ▼
 docs/data/exercises/YYYY-MM-DD.json
-        │
-        ▼
-docs/index.html （网页应用）        答题 → 判分 → 生成结果 JSON
-        │
-        │  提交 GitHub Issue（标签 exercise-result）
-        ▼
-scripts/ingest_mistakes.py         记录错题 → docs/data/mistakes.jsonl
-        │
-        └─────────────► 影响明天的出题权重（错题优先复习）
+    │
+    ▼
+docs/index.html （网页应用）
+    │   答题 → 判分 → 生成结果 JSON
+    │   提交 GitHub Issue（标签 exercise-result）
+    ▼
+exercise-generator/ingest_mistakes.py
+    │   记录错题 → docs/data/mistakes.jsonl
+    │
+    └──────► 影响明天的出题权重（错题优先复习）
 ```
 
 ---
@@ -96,16 +99,16 @@ python3 -m http.server 8000
 
 ```bash
 # 生成今天的练习
-python3 scripts/generate_exercises.py
+python3 exercise-generator/generate_exercises.py
 
 # 生成指定日期，并覆盖已有文件
-python3 scripts/generate_exercises.py --date 2026-08-20 --force
+python3 exercise-generator/generate_exercises.py --date 2026-08-20 --force
 
 # 查看解析出的题库（调试用）
-python3 scripts/itembank.py > /tmp/bank.json
+python3 exercise-generator/itembank.py > /tmp/bank.json
 
 # 手动录入一次答题结果
-python3 scripts/ingest_mistakes.py --body-file result.txt
+python3 exercise-generator/ingest_mistakes.py --body-file result.txt
 ```
 
 ---

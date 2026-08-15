@@ -266,7 +266,7 @@ async function init() {
     index = await getJSON(`${DATA}/index.json`);
   } catch (err) {
     el.status.textContent =
-      "还没有生成任何练习。请先运行 scripts/generate_exercises.py，或等待每日的 GitHub Actions 任务。";
+      "还没有生成任何练习。请先运行 exercise-generator/generate_exercises.py，或等待每日的 GitHub Actions 任务。";
     return;
   }
 

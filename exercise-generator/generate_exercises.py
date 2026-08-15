@@ -10,7 +10,7 @@ Outputs:
   docs/data/history.jsonl               one line per generated day (items served)
 
 Usage:
-  python3 scripts/generate_exercises.py [--date YYYY-MM-DD] [--count 5] [--force]
+  python3 exercise-generator/generate_exercises.py [--date YYYY-MM-DD] [--count 5] [--force]
 """
 from __future__ import annotations
 

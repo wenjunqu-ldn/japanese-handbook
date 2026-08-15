@@ -12,8 +12,8 @@ and appends one line per *missed* item to docs/data/mistakes.jsonl. The generato
 then weights those items up so they come back in future exercises.
 
 Usage:
-  python3 scripts/ingest_mistakes.py --body-file issue.txt
-  echo "$ISSUE_BODY" | python3 scripts/ingest_mistakes.py
+  python3 exercise-generator/ingest_mistakes.py --body-file issue.txt
+  echo "$ISSUE_BODY" | python3 exercise-generator/ingest_mistakes.py
 """
 from __future__ import annotations
 

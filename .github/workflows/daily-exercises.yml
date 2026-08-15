@@ -42,7 +42,7 @@ jobs:
             FORCE="--force"
           fi
           echo "Generating exercises for $DATE"
-          python3 scripts/generate_exercises.py --date "$DATE" $FORCE
+          python3 exercise-generator/generate_exercises.py --date "$DATE" $FORCE
 
       - name: Commit and push
         run: |
