@@ -92,12 +92,27 @@ python3 -m http.server 8000
 
 | 工作流 | 触发条件 | 作用 |
 |--------|----------|------|
-| `.github/workflows/exercise-daily.yml` | 每天 21:00 UTC（日本时间早上 6 点），也可手动触发 | 生成当天练习并提交到仓库 |
+| `.github/workflows/exercise-daily.yml` | 每天英国时间早上 8 点，也可手动触发 | 生成当天练习并提交到仓库 |
 | `.github/workflows/exercise-ingest-results.yml` | 带 `exercise-result` 标签的 Issue | 记录答题结果、更新错题统计、关闭 Issue |
 
 首次使用前，请在仓库里创建 `exercise-result` 标签（网页应用生成的 Issue 链接会自动带上该标签，但标签本身需要存在）。
 
 结果 Issue 只接受**仓库所有者**提交，避免他人污染学习记录。
+
+### 关于每日生成的时间 | About the daily schedule
+
+GitHub Actions 的 cron 按 UTC 计算，且**不跟随夏令时**，所以单个 cron 表达式无法全年固定在英国时间早上 8 点。
+
+因此工作流配置了两个 cron，并在第一步判断伦敦当地时间，只保留正好是 8 点的那次：
+
+| Cron (UTC) | 夏令时 BST | 冬令时 GMT | 结果 |
+|-----------|-----------|-----------|------|
+| `0 7 * * *` | 08:00 ✅ | 07:00 ✗ | 夏季执行 |
+| `0 8 * * *` | 09:00 ✗ | 08:00 ✅ | 冬季执行 |
+
+每天实际只会有一次真正执行；另一次会在第一步跳过，日志中会写明原因。手动触发（workflow_dispatch）不受此限制，任何时间都会执行。
+
+练习日期同样使用英国时区（`TZ=Europe/London`）。
 
 ---
 

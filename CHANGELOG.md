@@ -16,6 +16,7 @@
 - `SUMMARY.md` 增加 Duolingo 章节与练习应用入口
 - `handbook/99-Index.md` 增加 Duolingo 词汇索引（按 Section 分组）
 - 工作流文件统一使用 `exercise-` 前缀，明确归属于练习应用
+- 每日生成时间改为英国时间早上 8 点，练习日期改用 `TZ=Europe/London`；因 GitHub cron 按 UTC 且不跟随夏令时，改为配置 `0 7` 与 `0 8` 两个 cron，并在首步判断伦敦当地时间，只保留正好 8 点的那一次
 
 ### Boundary rules
 - 练习应用只读 `handbook/`，任何脚本都不写回手册内容（已核对：全部写入目标都在 `docs/data/` 下）
