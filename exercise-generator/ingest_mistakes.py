@@ -48,6 +48,23 @@ def extract_payload(body: str) -> dict:
     return json.loads(candidate)
 
 
+MAX_SENTENCE = 300
+CONTROL_CHARS_RE = re.compile(r"[\x00-\x1f\x7f]")
+
+
+def sanitize_sentence(value) -> str:
+    """Make a learner-supplied sentence safe to store and to echo back.
+
+    Control characters and backticks are removed so a single line of JSONL stays
+    one line and the workflow's markdown comment cannot be broken out of.
+    """
+    if not isinstance(value, str):
+        return ""
+    text = CONTROL_CHARS_RE.sub(" ", value)
+    text = text.replace("`", "").replace("​", "")
+    return text.strip()[:MAX_SENTENCE]
+
+
 def normalize_results(payload: dict) -> tuple[str, list[dict]]:
     day = str(payload.get("date") or datetime.now(timezone.utc).date().isoformat())
     if not re.match(r"^\d{4}-\d{2}-\d{2}$", day):
@@ -64,13 +81,21 @@ def normalize_results(payload: dict) -> tuple[str, list[dict]]:
         item_id = str(entry.get("item_id", "")).strip()
         if not item_id or not VALID_ID_RE.match(item_id):
             continue
-        cleaned.append(
-            {
-                "item_id": item_id,
-                "type": str(entry.get("type", ""))[:32],
-                "correct": bool(entry.get("correct")),
-            }
-        )
+        row = {
+            "item_id": item_id,
+            "type": str(entry.get("type", ""))[:32],
+            "correct": bool(entry.get("correct")),
+        }
+        # The learner's own wrong sentence, so it can be handed back later as a
+        # correction question. It is free text from an issue body, so it is
+        # length-capped and stripped of anything that could disturb the JSONL
+        # record or the markdown comment the workflow posts back.
+        given = sanitize_sentence(entry.get("given"))
+        if given:
+            row["given"] = given
+            row["expected"] = sanitize_sentence(entry.get("expected"))
+            row["near"] = bool(entry.get("near"))
+        cleaned.append(row)
 
     if not cleaned:
         raise ValueError("No valid result entries found in the payload.")
@@ -104,19 +129,18 @@ def main() -> int:
     MISTAKES_PATH.parent.mkdir(parents=True, exist_ok=True)
     with MISTAKES_PATH.open("a", encoding="utf-8") as fh:
         for entry in missed:
-            fh.write(
-                json.dumps(
-                    {
-                        "date": day,
-                        "item_id": entry["item_id"],
-                        "type": entry["type"],
-                        "reporter": args.reporter,
-                        "recorded_at": recorded_at,
-                    },
-                    ensure_ascii=False,
-                )
-                + "\n"
-            )
+            record = {
+                "date": day,
+                "item_id": entry["item_id"],
+                "type": entry["type"],
+                "reporter": args.reporter,
+                "recorded_at": recorded_at,
+            }
+            if entry.get("given"):
+                record["given"] = entry["given"]
+                record["expected"] = entry.get("expected", "")
+                record["near"] = entry.get("near", False)
+            fh.write(json.dumps(record, ensure_ascii=False) + "\n")
 
     # Full record (right and wrong) — the generator uses corrects to retire an item
     # from the review queue once it has been answered correctly enough times.

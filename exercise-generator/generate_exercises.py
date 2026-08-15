@@ -468,6 +468,62 @@ def make_correction(item: dict, rng: random.Random) -> dict | None:
     }
 
 
+def personal_errors(mistakes: list[dict]) -> dict[str, dict]:
+    """The learner's own wrong sentences, newest first, keyed by item.
+
+    Guide §5 priority 1 and §8.3: an error you actually made is the most
+    valuable thing to re-test. Near misses are excluded — the grader flags those
+    when an answer was close to the reference, and a close answer is often
+    perfectly good Japanese. Replaying one as "this is wrong, fix it" would
+    teach a mistake rather than correct one.
+    """
+    latest: dict[str, dict] = {}
+    for row in sorted(mistakes, key=lambda r: r.get("date", "")):
+        given = (row.get("given") or "").strip()
+        expected = (row.get("expected") or "").strip()
+        if not given or not expected or row.get("near"):
+            continue
+        if strip_furigana(given) == strip_furigana(expected):
+            continue
+        latest[row["item_id"]] = {
+            "given": given,
+            "expected": expected,
+            "date": row.get("date", ""),
+        }
+    return latest
+
+
+def make_personal_correction(item: dict, personal: dict[str, dict]) -> dict | None:
+    """Hand back a sentence the learner actually wrote, to be corrected."""
+    record = personal.get(item["id"])
+    if not record:
+        return None
+
+    reference = record["expected"]
+    # Only the sentence actually being corrected counts. The item's other example
+    # sentences use the same grammar point but mean something else entirely, so
+    # accepting them would mark an unrelated answer correct.
+    accepted = {strip_furigana(reference), reference}
+
+    return {
+        "type": "correction",
+        "item_id": item["id"],
+        "prompt": f"这是你在 {record['date']} 写过的答案，请改成正确的说法：",
+        "wrong_sentence": strip_furigana(record["given"]),
+        "sentence_zh": (item["examples"][0]["zh"] if item.get("examples") else item.get("meaning_zh", "")),
+        "answer": reference,
+        "answer_plain": strip_furigana(reference),
+        "accepted": sorted(a for a in accepted if a),
+        "explanation": (
+            f"{item['id']}　你写的：{record['given']}\n"
+            f"参考答案：{reference}\n"
+            f"{_label(item)}：{item['meaning_zh']}"
+        ),
+        "source": item["source"],
+        "personal": True,
+    }
+
+
 def make_naturalness(item: dict, rng: random.Random) -> dict | None:
     """Two-option 'which is more natural' MCQ from a △ entry (guide §12)."""
     if item["category"] != "mistake" or item.get("severity") != "unnatural":
@@ -651,6 +707,7 @@ def build_exercise(
     rng: random.Random,
     confusion: dict[str, set[str]],
     avoid: set[str],
+    personal: dict[str, dict],
 ) -> dict | None:
     """Build one exercise, trying the requested formats in order.
 
@@ -660,6 +717,7 @@ def build_exercise(
     every time is what makes a day turn into five multiple-choice questions.
     """
     builders = {
+        "personal_correction": lambda: make_personal_correction(item, personal),
         "correction": lambda: make_correction(item, rng),
         "naturalness": lambda: make_naturalness(item, rng),
         "conjugation": lambda: make_conjugation(item, bank, rng, confusion),
@@ -679,6 +737,7 @@ def build_exercise(
 
 # Which builders each format key ultimately renders as, for balancing purposes.
 FORMAT_DISPLAY = {
+    "personal_correction": "correction",
     "correction": "correction",
     "naturalness": "mcq",
     "conjugation": "conjugation",
@@ -689,13 +748,18 @@ FORMAT_DISPLAY = {
 }
 
 
-def candidate_formats(item: dict) -> list[str]:
+def candidate_formats(item: dict, personal: dict[str, dict]) -> list[str]:
     """Formats this item could plausibly support, best first."""
     if item["category"] == "mistake":
         return ["correction" if item.get("severity") == "error" else "naturalness"]
     if item["category"] == "verb_form":
         return ["conjugation", "mcq_reading"]
-    return ["fill_blank", "translation", "mcq_meaning", "mcq_reading"]
+    formats = ["fill_blank", "translation", "mcq_meaning", "mcq_reading"]
+    # Re-testing a sentence the learner actually got wrong beats any generated
+    # question for that item, so it goes first when one exists (guide §5.1).
+    if item["id"] in personal:
+        return ["personal_correction"] + formats
+    return formats
 
 
 def order_by_balance(options: list[str], used: dict[str, int], rng: random.Random) -> list[str]:
@@ -786,6 +850,7 @@ def main() -> int:
     attempts = load_jsonl(ATTEMPTS_PATH)
 
     mastery = build_mastery(attempts, mistakes)
+    personal = personal_errors(mistakes)
 
     # Sentences already used as questions recently, so repeats get a new angle.
     recent_probes: set[str] = set()
@@ -816,8 +881,14 @@ def main() -> int:
     exercises = []
     used_formats: dict[str, int] = {}
     for item in selected:
-        wanted = order_by_balance(candidate_formats(item), used_formats, rng)
-        ex = build_exercise(item, bank, wanted, rng, confusion, recent_probes)
+        options = candidate_formats(item, personal)
+        # A personal correction is a deliberate priority, not something to be
+        # shuffled away for the sake of format balance.
+        if options and options[0] == "personal_correction":
+            wanted = options
+        else:
+            wanted = order_by_balance(options, used_formats, rng)
+        ex = build_exercise(item, bank, wanted, rng, confusion, recent_probes, personal)
         if ex is None:
             continue
         ex["n"] = len(exercises) + 1

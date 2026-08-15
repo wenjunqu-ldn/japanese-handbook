@@ -213,7 +213,20 @@ function updateScore() {
 function buildPayload() {
   return {
     date: currentDay.date,
-    results: graded.map((g) => ({ item_id: g.item_id, type: g.type, correct: g.correct })),
+    results: graded.map((g) => {
+      const row = { item_id: g.item_id, type: g.type, correct: g.correct };
+      // Report what was actually written on a missed free-text answer, so the
+      // generator can hand the sentence back later as a correction question.
+      // Multiple-choice picks are omitted: the wrong option is already known.
+      if (!g.correct && g.type !== "mcq" && g.given && g.given.trim()) {
+        row.given = g.given.trim().slice(0, 300);
+        row.expected = g.expected || "";
+        // A near miss may well have been acceptable Japanese, so it is flagged
+        // and never replayed as though it were definitely an error.
+        row.near = Boolean(g.near);
+      }
+      return row;
+    }),
   };
 }
 
@@ -239,7 +252,15 @@ function grade() {
     const given = readAnswer(ex);
     const correct = isCorrect(ex, given);
     showFeedback(ex, given, correct);
-    return { n: ex.n, item_id: ex.item_id, type: ex.type, correct, given };
+    return {
+      n: ex.n,
+      item_id: ex.item_id,
+      type: ex.type,
+      correct,
+      given,
+      expected: ex.answer_plain || ex.answer || "",
+      near: !correct && isNearMiss(ex, given),
+    };
   });
 
   el.submit.hidden = true;
