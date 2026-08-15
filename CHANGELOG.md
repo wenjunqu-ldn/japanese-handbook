@@ -1,3 +1,40 @@
+## v0.7.0 — 2026-08-15
+
+### Added
+- 新增 `handbook/08-Duolingo.md`：Duolingo Sections 1–4 补充词汇 `DUO-001` – `DUO-107`，按 Section 分组，独立于核心 `W-*` 编号体系
+- 新增每日练习应用（`docs/`）：静态网页，支持选择题、填空题和中译日三种题型
+- 新增练习生成脚本（`exercise-generator/`）：
+  - `itembank.py` 解析 handbook Markdown 为结构化题库
+  - `generate_exercises.py` 每天生成 5 道练习
+  - `ingest_mistakes.py` 记录答题结果
+- 新增错题复习机制：错题写入 `docs/data/mistakes.jsonl`，生成器每天预留 2 个名额优先复习；答对次数追平答错次数后自动退出复习队列
+- 新增自动化工作流：`exercise-daily.yml` 每天生成练习，`exercise-ingest-results.yml` 记录答题结果
+
+### Changed
+- `PROJECT_SPEC.md` 第 3 节改为「仓库结构」，明确区分 **A. 手册内容** 与 **B. 练习应用** 两部分及其边界规则
+- `README.md` 按 A／B 两部分重写仓库结构，并增加每日练习说明
+- `SUMMARY.md` 增加 Duolingo 章节与练习应用入口
+- `handbook/99-Index.md` 增加 Duolingo 词汇索引（按 Section 分组）
+- 工作流文件统一使用 `exercise-` 前缀，明确归属于练习应用
+- 每日生成时间改为英国时间早上 8 点，练习日期改用 `TZ=Europe/London`；因 GitHub cron 按 UTC 且不跟随夏令时，改为配置 `0 7` 与 `0 8` 两个 cron，并在首步判断伦敦当地时间，只保留正好 8 点的那一次
+
+### Boundary rules
+- 练习应用只读 `handbook/`，任何脚本都不写回手册内容（已核对：全部写入目标都在 `docs/data/` 下）
+- `docs/data/` 是派生数据，可随时重新生成，不属于知识资产
+- 只修改练习应用时不需要走 `RELEASE_WORKFLOW.md` 流程
+
+### Notes
+- Duolingo 未公开逐课时词表，且课程内容需登录查看，`08-Duolingo.md` 中的词汇按各 Section 已确认的主题范围整理，并已与 `05-Vocabulary.md` 去重；可直接编辑该表格替换为实际学习进度中的词汇
+- 题库只收录带例句的条目：填空题与翻译题都依赖例句
+
+### Validation
+- 基线版本：v0.6.4
+- 不修改任何已有知识点 ID
+- 不修改 `handbook/01` – `handbook/07` 的内容
+- 题库解析结果：244 个可出题条目（语法 37、助词 11、固定表达 14、词汇 182）
+- 已在浏览器中验证网页应用的加载、判分、错题上报与日期切换
+- 已验证错题回流闭环：答错 → 次日进入复习 → 答对后退出复习队列
+
 ## v0.6.4 — 2026-08-10
 
 ### Corrective

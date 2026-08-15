@@ -1,0 +1,93 @@
+# Part of the daily exercise app (see docs/README.md), not handbook maintenance.
+# Reads handbook/ and writes docs/data/ — it never modifies handbook content.
+name: Daily exercises
+
+on:
+  schedule:
+    # Target: 08:00 UK time, every day.
+    #
+    # GitHub evaluates cron in UTC and does not follow daylight saving, so no
+    # single expression stays at 08:00 UK all year. Both of these fire, and the
+    # first step drops whichever one is not 08:00 in London right now:
+    #   07:00 UTC = 08:00 BST (late March – late October)
+    #   08:00 UTC = 08:00 GMT (late October – late March)
+    - cron: "0 7 * * *"
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Date to generate (YYYY-MM-DD, default: today in the UK)"
+        required: false
+      force:
+        description: "Regenerate even if the file already exists"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-exercises
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Keep only the run that lands on 08:00 UK time
+        id: gate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          # Manual runs always proceed; only the two scheduled fires are filtered.
+          if [ "$EVENT_NAME" != "schedule" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          HOUR="$(TZ=Europe/London date +%H)"
+          if [ "$HOUR" = "08" ]; then
+            echo "UK local time is ${HOUR}:00 — proceeding."
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "UK local time is ${HOUR}:00, not 08:00 — this is the off-season"
+            echo "half of the BST/GMT schedule pair. Skipping."
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.gate.outputs.run == 'true'
+
+      - uses: actions/setup-python@v5
+        if: steps.gate.outputs.run == 'true'
+        with:
+          python-version: "3.11"
+
+      - name: Generate today's exercises
+        if: steps.gate.outputs.run == 'true'
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+          INPUT_FORCE: ${{ inputs.force }}
+        run: |
+          DATE="$INPUT_DATE"
+          if [ -z "$DATE" ]; then
+            DATE="$(TZ=Europe/London date +%F)"
+          fi
+          FORCE=""
+          if [ "$INPUT_FORCE" = "true" ]; then
+            FORCE="--force"
+          fi
+          echo "Generating exercises for $DATE"
+          python3 exercise-generator/generate_exercises.py --date "$DATE" $FORCE
+
+      - name: Commit and push
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- docs/data; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git add docs/data
+          git commit -m "Add daily exercises for $(TZ=Europe/London date +%F)"
+          git push

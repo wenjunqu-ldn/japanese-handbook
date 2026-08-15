@@ -36,15 +36,20 @@ Instead of following a textbook or JLPT syllabus, the handbook is continuously b
 
 ## 📂 项目结构 | Repository Structure
 
-```text
-README.md                项目介绍 / Project overview
+仓库分为两部分：**A. 手册内容**（核心知识库）和 **B. 练习应用**（从手册派生练习的工具）。
 
+The repository has two parts: **A. the handbook** (the knowledge base) and **B. the exercise app** (a tool that derives practice from it).
+
+### A. 手册内容 | Handbook
+
+```text
+README.md                        项目介绍 / Project overview
 PROJECT_SPEC.md                  项目规范
 RELEASE_WORKFLOW.md              强制发布流程
-AI_CONTENT_EXTRACTION_GUIDE.md  AI聊天知识提取流程
-KNOWLEDGE_CLASSIFICATION.md     知识分类快速指南
+AI_CONTENT_EXTRACTION_GUIDE.md   AI 聊天知识提取流程
+KNOWLEDGE_CLASSIFICATION.md      知识分类快速指南
 SUMMARY.md                       手册目录
-CHANGELOG.md             更新日志
+CHANGELOG.md                     更新日志
 
 handbook/
 │
@@ -55,8 +60,22 @@ handbook/
 ├── 05-Vocabulary.md
 ├── 06-Mistakes.md
 ├── 07-Reviews.md
+├── 08-Duolingo.md
 └── 99-Index.md
 ```
+
+### B. 练习应用 | Exercise app
+
+```text
+exercise-generator/              练习生成脚本（只读 handbook/）
+docs/                            练习网页应用与生成的练习数据
+.github/workflows/exercise-*.yml GitHub Actions 自动化
+```
+
+`.github/workflows/` 是 GitHub Actions 规定的固定路径，其中的文件全部属于练习应用。
+
+只维护手册内容时，B 部分可以完全忽略——练习应用会自动读取手册的最新内容。
+边界规则详见 [PROJECT_SPEC.md](PROJECT_SPEC.md) 第 3 节「仓库结构」。
 
 ---
 
@@ -71,7 +90,18 @@ handbook/
 - Vocabulary（词汇）
 - Common Mistakes（易错点）
 - Reviews（比较、复习与综合练习）
+- Duolingo Vocabulary（Duolingo Sections 1–4 词汇）
 - Index（索引）
+
+---
+
+## 🎯 每日练习 | Daily Exercises
+
+本仓库附带一个每日练习应用：每天自动生成 5 道小练习（选择题、填空题、中译日各占一部分），题目全部取自上面的手册内容。
+
+做错的题会回流到仓库，生成器每天预留名额优先复习没掌握的知识点；连续答对后该知识点自动退出复习队列。
+
+详见 [docs/README.md](docs/README.md)。
 
 ---
 

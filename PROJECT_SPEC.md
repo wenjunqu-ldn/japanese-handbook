@@ -60,41 +60,58 @@ Markdown 是整个项目唯一的源文件（Single Source of Truth）。
 
 ---
 
-# 3. 手册结构 | Handbook Structure
+# 3. 仓库结构 | Repository Structure
+
+仓库分为两部分，职责互不重叠：
+
+- **A. 手册内容（Handbook）**——本规范约束的部分，是项目的核心与唯一知识来源。
+- **B. 练习应用（Exercise app）**——从手册内容派生出练习的工具，不产生新知识。
+
+## 3.1 手册内容 | Handbook — 本规范适用范围
 
 ```text
-README.md
-
-PROJECT_SPEC.md
-
-RELEASE_WORKFLOW.md
-
-AI_CONTENT_EXTRACTION_GUIDE.md
-
-KNOWLEDGE_CLASSIFICATION.md
-
-SUMMARY.md
-
-CHANGELOG.md
+README.md                        项目介绍
+PROJECT_SPEC.md                  项目规范（本文件）
+RELEASE_WORKFLOW.md              强制发布流程
+AI_CONTENT_EXTRACTION_GUIDE.md   AI 聊天知识提取流程
+KNOWLEDGE_CLASSIFICATION.md      知识分类快速指南
+SUMMARY.md                       手册目录
+CHANGELOG.md                     更新日志
 
 handbook/
-
-01-Grammar.md
-
-02-Verbs.md
-
-03-Particles.md
-
-04-Expressions.md
-
-05-Vocabulary.md
-
-06-Mistakes.md
-
-07-Reviews.md
-
-99-Index.md
+  01-Grammar.md
+  02-Verbs.md
+  03-Particles.md
+  04-Expressions.md
+  05-Vocabulary.md
+  06-Mistakes.md
+  07-Reviews.md
+  08-Duolingo.md
+  99-Index.md
 ```
+
+## 3.2 练习应用 | Exercise app — 不属于手册知识
+
+```text
+exercise-generator/              练习生成脚本（读取 handbook/，不修改）
+docs/                            练习网页应用与生成的练习数据
+.github/workflows/exercise-*.yml 每日生成与结果记录的自动化
+```
+
+## 3.3 两部分的关系 | Relationship
+
+```text
+handbook/*.md  ──读取──►  exercise-generator/  ──生成──►  docs/data/
+（唯一知识来源）           （只读，不写回手册）            （派生数据）
+```
+
+规则：
+
+1. 练习应用**只读**手册内容，任何脚本都不得修改 `handbook/` 下的文件。
+2. 练习数据（`docs/data/`）是派生产物，可以随时重新生成，不属于知识资产。
+3. 新知识只能进入 `handbook/`；练习应用不是记录知识的地方。
+4. 维护手册内容时无需了解练习应用；练习应用会自动读取手册的最新内容。
+5. 只修改练习应用时，不需要走 `RELEASE_WORKFLOW.md` 的发布流程。
 
 ---
 
