@@ -96,6 +96,7 @@ handbook/
 exercise-generator/              练习生成脚本（读取 handbook/，不修改）
 docs/                            练习网页应用与生成的练习数据
 .github/workflows/exercise-*.yml 每日生成与结果记录的自动化
+NEXT_STEPS.md                    练习应用的待办清单（非知识内容）
 ```
 
 ## 3.3 两部分的关系 | Relationship
