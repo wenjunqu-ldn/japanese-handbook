@@ -1,6 +1,12 @@
 const REPO = "wenjunqu-ldn/japanese-handbook";
 const DATA = "data";
-const TYPE_LABEL = { mcq: "选择题", fill_blank: "填空题", translation: "翻译题" };
+const TYPE_LABEL = {
+  mcq: "选择题",
+  fill_blank: "填空题",
+  translation: "翻译题",
+  correction: "改错题",
+  conjugation: "变形题",
+};
 
 const el = {
   status: document.getElementById("status"),
@@ -75,6 +81,19 @@ function renderExercise(ex, isReview) {
       <p class="sentence-zh">${escapeHtml(ex.sentence_zh || "")}</p>
       <input type="text" name="q${ex.n}" autocomplete="off" autocapitalize="off"
              spellcheck="false" placeholder="填入空格处的词">`;
+  } else if (ex.type === "conjugation") {
+    body = `
+      <p class="prompt">${escapeHtml(ex.prompt)}</p>
+      <p class="sentence-zh">${escapeHtml(ex.verb_class || "")}　${escapeHtml(ex.meaning_zh || "")}</p>
+      <input type="text" name="q${ex.n}" autocomplete="off" autocapitalize="off"
+             spellcheck="false" placeholder="写出${escapeHtml(ex.form_label || "")}">`;
+  } else if (ex.type === "correction") {
+    body = `
+      <p class="prompt">${escapeHtml(ex.prompt)}</p>
+      <p class="sentence wrong-sentence">❌ ${escapeHtml(ex.wrong_sentence)}</p>
+      <p class="sentence-zh">想表达：${escapeHtml(ex.sentence_zh || "")}</p>
+      <input type="text" name="q${ex.n}" autocomplete="off" autocapitalize="off"
+             spellcheck="false" placeholder="写出正确的句子">`;
   } else {
     body = `
       <p class="prompt">${escapeHtml(ex.prompt)}</p>
@@ -123,11 +142,27 @@ function readAnswer(ex) {
 function isCorrect(ex, given) {
   if (!given.trim()) return false;
   if (ex.type === "mcq") return given === ex.answer;
-  if (ex.type === "fill_blank") {
-    const accepted = (ex.accepted || [ex.answer]).map(normalize);
-    return accepted.includes(normalize(given));
+  const accepted = (ex.accepted || [ex.answer_plain || ex.answer]).map(normalize);
+  return accepted.includes(normalize(given));
+}
+
+// Rough closeness, used only to soften the wording on free-text answers: a
+// near miss is flagged as "check this yourself" rather than flatly wrong,
+// since one Chinese sentence has many valid Japanese renderings.
+function isNearMiss(ex, given) {
+  if (ex.type === "mcq" || !given.trim()) return false;
+  const target = normalize(ex.answer_plain || ex.answer);
+  const mine = normalize(given);
+  if (!target || !mine) return false;
+  const shorter = mine.length < target.length ? mine : target;
+  const longer = mine.length < target.length ? target : mine;
+  let shared = 0;
+  const pool = longer.split("");
+  for (const ch of shorter) {
+    const i = pool.indexOf(ch);
+    if (i !== -1) { shared++; pool.splice(i, 1); }
   }
-  return normalize(given) === normalize(ex.answer_plain || ex.answer);
+  return shared / longer.length >= 0.6;
 }
 
 function showFeedback(ex, given, correct) {
@@ -147,8 +182,10 @@ function showFeedback(ex, given, correct) {
   const fb = document.createElement("div");
   fb.className = "feedback";
   const yourAnswer = given.trim() ? escapeHtml(given) : "（未作答）";
+  const near = !correct && isNearMiss(ex, given);
+  const verdict = correct ? "✓ 正确" : near ? "△ 与参考答案不同，请自行判断" : "✗ 不正确";
   fb.innerHTML =
-    `<span class="verdict ${correct ? "ok" : "no"}">${correct ? "✓ 正确" : "✗ 不正确"}</span>\n` +
+    `<span class="verdict ${correct ? "ok" : near ? "near" : "no"}">${verdict}</span>\n` +
     (correct ? "" : `你的答案：${yourAnswer}\n`) +
     escapeHtml(ex.explanation);
 
