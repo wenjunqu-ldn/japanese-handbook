@@ -2,6 +2,12 @@
 
 一个每天自动生成 5 道日语小练习的应用。题目全部来自本仓库的手册内容，做错的题会回流到仓库，用来调整后续练习的出题重点。
 
+> **本文档只覆盖练习应用**（`exercise-generator/`、`docs/`、`.github/workflows/exercise-*.yml`）。
+>
+> 手册内容的维护规范见 [PROJECT_SPEC.md](../PROJECT_SPEC.md)，发布流程见 [RELEASE_WORKFLOW.md](../RELEASE_WORKFLOW.md)。
+>
+> 练习应用**只读**手册内容，不会修改 `handbook/` 下的任何文件。
+
 ---
 
 ## 1. 工作方式 | How it works
@@ -86,8 +92,8 @@ python3 -m http.server 8000
 
 | 工作流 | 触发条件 | 作用 |
 |--------|----------|------|
-| `.github/workflows/daily-exercises.yml` | 每天 21:00 UTC（日本时间早上 6 点），也可手动触发 | 生成当天练习并提交到仓库 |
-| `.github/workflows/ingest-results.yml` | 带 `exercise-result` 标签的 Issue | 记录答题结果、更新错题统计、关闭 Issue |
+| `.github/workflows/exercise-daily.yml` | 每天 21:00 UTC（日本时间早上 6 点），也可手动触发 | 生成当天练习并提交到仓库 |
+| `.github/workflows/exercise-ingest-results.yml` | 带 `exercise-result` 标签的 Issue | 记录答题结果、更新错题统计、关闭 Issue |
 
 首次使用前，请在仓库里创建 `exercise-result` 标签（网页应用生成的 Issue 链接会自动带上该标签，但标签本身需要存在）。
 

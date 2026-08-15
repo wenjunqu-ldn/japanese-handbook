@@ -1,3 +1,5 @@
+# Part of the daily exercise app (see docs/README.md), not handbook maintenance.
+# Records practice results into docs/data/ — it never modifies handbook content.
 name: Ingest exercise results
 
 on:

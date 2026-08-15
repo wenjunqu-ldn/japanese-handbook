@@ -8,12 +8,19 @@
   - `generate_exercises.py` 每天生成 5 道练习
   - `ingest_mistakes.py` 记录答题结果
 - 新增错题复习机制：错题写入 `docs/data/mistakes.jsonl`，生成器每天预留 2 个名额优先复习；答对次数追平答错次数后自动退出复习队列
-- 新增自动化工作流：`daily-exercises.yml` 每天生成练习，`ingest-results.yml` 记录答题结果
+- 新增自动化工作流：`exercise-daily.yml` 每天生成练习，`exercise-ingest-results.yml` 记录答题结果
 
 ### Changed
-- `README.md` 增加每日练习说明与新的目录结构
+- `PROJECT_SPEC.md` 第 3 节改为「仓库结构」，明确区分 **A. 手册内容** 与 **B. 练习应用** 两部分及其边界规则
+- `README.md` 按 A／B 两部分重写仓库结构，并增加每日练习说明
 - `SUMMARY.md` 增加 Duolingo 章节与练习应用入口
 - `handbook/99-Index.md` 增加 Duolingo 词汇索引（按 Section 分组）
+- 工作流文件统一使用 `exercise-` 前缀，明确归属于练习应用
+
+### Boundary rules
+- 练习应用只读 `handbook/`，任何脚本都不写回手册内容（已核对：全部写入目标都在 `docs/data/` 下）
+- `docs/data/` 是派生数据，可随时重新生成，不属于知识资产
+- 只修改练习应用时不需要走 `RELEASE_WORKFLOW.md` 流程
 
 ### Notes
 - Duolingo 未公开逐课时词表，且课程内容需登录查看，`08-Duolingo.md` 中的词汇按各 Section 已确认的主题范围整理，并已与 `05-Vocabulary.md` 去重；可直接编辑该表格替换为实际学习进度中的词汇

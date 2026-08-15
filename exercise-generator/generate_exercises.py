@@ -362,7 +362,10 @@ def main() -> int:
         print("Item bank is empty — nothing to generate.")
         return 1
 
-    history = load_jsonl(HISTORY_PATH)
+    # Drop any existing entry for the target date: on a --force regeneration the
+    # previous run's own entry would otherwise damp the very items it served,
+    # making repeated runs of the same date produce different sets.
+    history = [h for h in load_jsonl(HISTORY_PATH) if h.get("date") != args.date]
     mistakes = load_jsonl(MISTAKES_PATH)
     attempts = load_jsonl(ATTEMPTS_PATH)
 
@@ -406,8 +409,8 @@ def main() -> int:
     out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     # history: record what was served so tomorrow avoids immediate repeats
-    history = [h for h in history if h.get("date") != args.date]
     history.append({"date": args.date, "item_ids": [e["item_id"] for e in exercises]})
+    history.sort(key=lambda h: h.get("date", ""))
     HISTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
     HISTORY_PATH.write_text(
         "".join(json.dumps(h, ensure_ascii=False) + "\n" for h in history), encoding="utf-8"

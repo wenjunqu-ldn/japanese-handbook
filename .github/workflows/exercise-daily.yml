@@ -1,3 +1,5 @@
+# Part of the daily exercise app (see docs/README.md), not handbook maintenance.
+# Reads handbook/ and writes docs/data/ — it never modifies handbook content.
 name: Daily exercises
 
 on:
