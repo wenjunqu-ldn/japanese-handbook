@@ -30,7 +30,13 @@ ATTEMPTS_PATH = ROOT / "docs" / "data" / "attempts.jsonl"
 STATS_PATH = ROOT / "docs" / "data" / "stats.json"
 
 FENCE_RE = re.compile(r"```(?:json)?\s*(\{.*?\})\s*```", re.DOTALL)
-VALID_ID_RE = re.compile(r"^(G|V|P|E|M|R|W-N|W-V|W-I|W-NA|W-ADV|W-CON|DUO)-?\d+$")
+# Every ID prefix the item bank can emit. `VF` (the V-004 verb-drill rows) must
+# come before `V`, or "VF-090" matches the `V` branch, fails on the "F" and gets
+# discarded — which silently dropped every conjugation answer.
+# scripts/check_id_pattern.py asserts this covers the whole bank.
+VALID_ID_RE = re.compile(
+    r"^(VF|G|V|P|E|M|R|W-N|W-V|W-I|W-NA|W-ADV|W-CON|DUO)-?\d+$"
+)
 
 
 def extract_payload(body: str) -> dict:
@@ -107,6 +113,7 @@ def main() -> int:
     parser.add_argument("--body", help="issue body text")
     parser.add_argument("--body-file", help="file containing the issue body")
     parser.add_argument("--reporter", default="web-app", help="who reported this result")
+    parser.add_argument("--issue", help="GitHub issue number this result came from")
     args = parser.parse_args()
 
     if args.body is not None:
@@ -123,6 +130,21 @@ def main() -> int:
         print(f"Could not read a result payload from the issue body: {exc}", file=sys.stderr)
         return 1
 
+    # Guard against recording the same submission twice — a workflow rerun, or a
+    # second webhook event for one issue, must not double-count answers.
+    if args.issue and ATTEMPTS_PATH.exists():
+        for line in ATTEMPTS_PATH.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if str(row.get("issue") or "") == str(args.issue):
+                print(f"Issue #{args.issue} has already been recorded; nothing to do.")
+                return 0
+
     recorded_at = datetime.now(timezone.utc).isoformat()
     missed = [r for r in results if not r["correct"]]
 
@@ -135,6 +157,7 @@ def main() -> int:
                 "type": entry["type"],
                 "reporter": args.reporter,
                 "recorded_at": recorded_at,
+                "issue": args.issue,
             }
             if entry.get("given"):
                 record["given"] = entry["given"]
@@ -155,6 +178,7 @@ def main() -> int:
                         "correct": entry["correct"],
                         "reporter": args.reporter,
                         "recorded_at": recorded_at,
+                        "issue": args.issue,
                     },
                     ensure_ascii=False,
                 )

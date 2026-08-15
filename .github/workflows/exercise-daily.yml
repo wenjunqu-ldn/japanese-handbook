@@ -62,6 +62,10 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Check every item ID is accepted
+        if: steps.gate.outputs.run == 'true'
+        run: python3 exercise-generator/check_id_pattern.py
+
       - name: Generate today's exercises
         if: steps.gate.outputs.run == 'true'
         env:
@@ -84,7 +88,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- docs/data; then
+          # `git diff` only reports tracked files. The result logs start life
+          # untracked, so checking with diff reported "no changes" and silently
+          # dropped them. `git status --porcelain` sees untracked files too.
+          if [ -z "$(git status --porcelain -- docs/data)" ]; then
             echo "No changes to commit."
             exit 0
           fi

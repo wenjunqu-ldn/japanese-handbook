@@ -2,70 +2,41 @@
   "date": "2026-08-16",
   "generated_from": "handbook/ (grammar, particles, expressions, vocabulary, verbs, mistakes, Duolingo)",
   "count": 5,
-  "review_item_ids": [],
+  "review_item_ids": [
+    "DUO-076",
+    "G-002"
+  ],
   "exercises": [
     {
-      "type": "correction",
-      "item_id": "M-009",
-      "prompt": "下面的句子有错误，请改成正确的说法：",
-      "wrong_sentence": "この町は人が小さいです。",
-      "sentence_zh": "这个城市人很少。",
-      "answer": "この町（まち）は人（ひと）が少（すく）ないです。",
-      "answer_plain": "この町は人が少ないです。",
+      "type": "translation",
+      "item_id": "DUO-076",
+      "prompt": "把下面的中文翻译成日语：",
+      "sentence_zh": "忘记密码了。",
+      "hint": "提示：使用 パスワード",
+      "answer": "パスワードを忘（わす）れてしまいました。",
+      "answer_plain": "パスワードを忘れてしまいました。",
       "accepted": [
-        "この町は人が少ないです。",
-        "この箱は小さいです。"
+        "パスワードを忘れてしまいました。"
       ],
-      "explanation": "M-009　❌ この町（まち）は人（ひと）が小（ちい）さいです。\n✅ この町（まち）は人（ひと）が少（すく）ないです。\n这个城市人很少。\n\n- `少ない`：数量少；\n- `小さい`：体积、尺寸或程度小。",
-      "source": "handbook/06-Mistakes.md",
+      "explanation": "DUO-076　参考答案：パスワードを忘（わす）れてしまいました。\nパスワード：密码",
+      "source": "handbook/08-Duolingo.md",
+      "probe": "パスワードを忘（わす）れてしまいました。",
       "n": 1
     },
     {
-      "type": "translation",
-      "item_id": "E-011",
-      "prompt": "把下面的中文翻译成日语：",
-      "sentence_zh": "我去了京都，而且也去了大阪。",
-      "hint": "提示：使用 そして／それから／それに／さらに",
-      "answer": "京都（きょうと）へ行（い）きました。そして、大阪（おおさか）にも行（い）きました。",
-      "answer_plain": "京都へ行きました。そして、大阪にも行きました。",
-      "accepted": [
-        "京都へ行きました。そして、大阪にも行きました。"
-      ],
-      "explanation": "E-011　参考答案：京都（きょうと）へ行（い）きました。そして、大阪（おおさか）にも行（い）きました。\nそして／それから／それに／さらに：| 表达 | 核心关系 |",
-      "source": "handbook/04-Expressions.md",
-      "probe": "京都（きょうと）へ行（い）きました。そして、大阪（おおさか）にも行（い）きました。",
-      "n": 2
-    },
-    {
       "type": "mcq",
-      "item_id": "DUO-038",
-      "prompt": "「忘れる」的读音是？",
+      "item_id": "E-012",
+      "prompt": "「例えば／など／とか」的意思是？",
       "options": [
-        "おくれる",
-        "ささえる",
-        "つかれる",
-        "わすれる"
+        "\"以便容易理解\"，用于说明整理或表达方式的目的。参见 [G-006](01-Grammar.md#G-006)（～ように）。",
+        "用于主动提出帮助或建议。",
+        "表示“这是从某人那里收到的东西”。",
+        "| 表达 | 用法 |"
       ],
-      "answer": "わすれる",
-      "explanation": "DUO-038　忘れる（わすれる）：忘记",
-      "source": "handbook/08-Duolingo.md",
-      "n": 3
-    },
-    {
-      "type": "fill_blank",
-      "item_id": "W-N003",
-      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
-      "sentence": "旅行の＿＿＿を始めました。",
-      "sentence_zh": "开始为旅行做准备。",
-      "answer": "準備",
-      "accepted": [
-        "じゅんび",
-        "準備"
-      ],
-      "explanation": "W-N003　完整句子：旅行（りょこう）の準備（じゅんび）を始（はじ）めました。\n开始为旅行做准备。\n準備（じゅんび）：准备；为将来的行动或计划做系统安排",
-      "source": "handbook/05-Vocabulary.md",
-      "probe": "旅行（りょこう）の準備（じゅんび）を始（はじ）めました。",
-      "n": 4
+      "answer": "| 表达 | 用法 |",
+      "explanation": "E-012　例えば／など／とか：| 表达 | 用法 |",
+      "source": "handbook/04-Expressions.md",
+      "n": 2
     },
     {
       "type": "fill_blank",
@@ -81,6 +52,38 @@
       "explanation": "DUO-079　完整句子：薬局（やっきょく）で薬（くすり）をもらいました。\n在药店拿了药。\n薬局（やっきょく）：药店",
       "source": "handbook/08-Duolingo.md",
       "probe": "薬局（やっきょく）で薬（くすり）をもらいました。",
+      "n": 3
+    },
+    {
+      "type": "fill_blank",
+      "item_id": "DUO-038",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "傘を電車に＿＿＿ました。",
+      "sentence_zh": "把伞忘在电车上了。",
+      "answer": "忘れ",
+      "accepted": [
+        "わすれる",
+        "忘れ",
+        "忘れる"
+      ],
+      "explanation": "DUO-038　完整句子：傘（かさ）を電車（でんしゃ）に忘（わす）れました。\n把伞忘在电车上了。\n忘れる（わすれる）：忘记",
+      "source": "handbook/08-Duolingo.md",
+      "probe": "傘（かさ）を電車（でんしゃ）に忘（わす）れました。",
+      "n": 4
+    },
+    {
+      "type": "mcq",
+      "item_id": "G-002",
+      "prompt": "「～たら」的意思是？",
+      "options": [
+        "表示假设条件或自然结果，常译为\"如果……的话\"\"一旦……就……\"。",
+        "た形表示过去或完成，也是 `～たら`、`～たことがある` 等句型的基础。",
+        "承接对方刚说的信息，表示“既然这样”“如果是这样的话”。",
+        "表示许可或允许，常译为“可以……”“……也没关系”。"
+      ],
+      "answer": "表示假设条件或自然结果，常译为\"如果……的话\"\"一旦……就……\"。",
+      "explanation": "G-002　～たら：表示假设条件或自然结果，常译为\"如果……的话\"\"一旦……就……\"。",
+      "source": "handbook/01-Grammar.md",
       "n": 5
     }
   ]

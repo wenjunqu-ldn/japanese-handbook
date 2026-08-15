@@ -4,7 +4,10 @@ name: Ingest exercise results
 
 on:
   issues:
-    types: [opened, labeled]
+    # `labeled` only. An issue created with the label already applied fires both
+    # `opened` and `labeled`, so listening for both ran this twice per result and
+    # would have recorded every answer twice.
+    types: [labeled]
 
 permissions:
   contents: write
@@ -29,6 +32,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Check every item ID is accepted
+        run: python3 exercise-generator/check_id_pattern.py
+
       - name: Record results
         id: record
         env:
@@ -36,17 +42,22 @@ jobs:
           # the body is user-controlled text.
           ISSUE_BODY: ${{ github.event.issue.body }}
           REPORTER: ${{ github.event.issue.user.login }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           set -o pipefail
           printf '%s' "$ISSUE_BODY" \
-            | python3 exercise-generator/ingest_mistakes.py --reporter "$REPORTER" \
+            | python3 exercise-generator/ingest_mistakes.py \
+                --reporter "$REPORTER" --issue "$ISSUE_NUMBER" \
             | tee summary.txt
 
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- docs/data; then
+          # `git diff` only reports tracked files. The result logs start life
+          # untracked, so checking with diff reported "no changes" and silently
+          # dropped them. `git status --porcelain` sees untracked files too.
+          if [ -z "$(git status --porcelain -- docs/data)" ]; then
             echo "No changes to commit."
             exit 0
           fi
