@@ -55,7 +55,11 @@ handbook/
 ├── 05-Vocabulary.md
 ├── 06-Mistakes.md
 ├── 07-Reviews.md
+├── 08-Duolingo.md
 └── 99-Index.md
+
+scripts/                 每日练习生成脚本
+docs/                    每日练习网页应用
 ```
 
 ---
@@ -71,7 +75,18 @@ handbook/
 - Vocabulary（词汇）
 - Common Mistakes（易错点）
 - Reviews（比较、复习与综合练习）
+- Duolingo Vocabulary（Duolingo Sections 1–4 词汇）
 - Index（索引）
+
+---
+
+## 🎯 每日练习 | Daily Exercises
+
+本仓库附带一个每日练习应用：每天自动生成 5 道小练习（选择题、填空题、中译日各占一部分），题目全部取自上面的手册内容。
+
+做错的题会回流到仓库，生成器每天预留名额优先复习没掌握的知识点；连续答对后该知识点自动退出复习队列。
+
+详见 [docs/README.md](docs/README.md)。
 
 ---
 

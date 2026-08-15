@@ -1,0 +1,79 @@
+{
+  "date": "2026-08-15",
+  "generated_from": "handbook/ + Duolingo Sections 1-4",
+  "count": 5,
+  "review_item_ids": [],
+  "exercises": [
+    {
+      "type": "mcq",
+      "item_id": "W-N026",
+      "prompt": "「日付（ひづけ）」的意思是？",
+      "options": [
+        "合同；合约",
+        "日期；日期信息",
+        "心情；感觉",
+        "专业"
+      ],
+      "answer": "日期；日期信息",
+      "explanation": "W-N026　日付（ひづけ）：日期；日期信息",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 1
+    },
+    {
+      "type": "fill_blank",
+      "item_id": "DUO-007",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "＿＿＿はとてもいい天気です。",
+      "sentence_zh": "今天天气非常好。",
+      "answer": "今日",
+      "accepted": [
+        "きょう",
+        "今日"
+      ],
+      "explanation": "DUO-007　完整句子：今日（きょう）はとてもいい天気（てんき）です。\n今天天气非常好。\n今日（きょう）：今天",
+      "source": "handbook/08-Duolingo.md",
+      "n": 2
+    },
+    {
+      "type": "mcq",
+      "item_id": "W-N019",
+      "prompt": "「結果（けっか）」的意思是？",
+      "options": [
+        "朋友",
+        "结果；成果",
+        "电车",
+        "工资"
+      ],
+      "answer": "结果；成果",
+      "explanation": "W-N019　結果（けっか）：结果；成果",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 3
+    },
+    {
+      "type": "fill_blank",
+      "item_id": "P-006",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "日本＿＿＿行きます。",
+      "sentence_zh": "去日本。",
+      "answer": "に",
+      "accepted": [
+        "に"
+      ],
+      "explanation": "P-006　完整句子：日本（にほん）に行（い）きます。\n去日本。\nに：`に` 用于标记到达点、存在位置、具体时间、动作对象或变化结果。",
+      "source": "handbook/03-Particles.md",
+      "n": 4
+    },
+    {
+      "type": "translation",
+      "item_id": "DUO-065",
+      "prompt": "把下面的中文翻译成日语：",
+      "sentence_zh": "一边看地图一边找路。",
+      "hint": "提示：使用 地図（ちず）",
+      "answer": "地図（ちず）を見（み）ながら道（みち）を探（さが）しました。",
+      "answer_plain": "地図を見ながら道を探しました。",
+      "explanation": "DUO-065　参考答案：地図（ちず）を見（み）ながら道（みち）を探（さが）しました。\n地図：地图",
+      "source": "handbook/08-Duolingo.md",
+      "n": 5
+    }
+  ]
+}

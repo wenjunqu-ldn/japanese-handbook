@@ -1,0 +1,57 @@
+name: Daily exercises
+
+on:
+  schedule:
+    # 21:00 UTC = 06:00 JST — the new set is ready first thing in the morning.
+    - cron: "0 21 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Date to generate (YYYY-MM-DD, default: today in JST)"
+        required: false
+      force:
+        description: "Regenerate even if the file already exists"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-exercises
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate today's exercises
+        run: |
+          DATE="${{ inputs.date }}"
+          if [ -z "$DATE" ]; then
+            DATE="$(TZ=Asia/Tokyo date +%F)"
+          fi
+          FORCE=""
+          if [ "${{ inputs.force }}" = "true" ]; then
+            FORCE="--force"
+          fi
+          echo "Generating exercises for $DATE"
+          python3 scripts/generate_exercises.py --date "$DATE" $FORCE
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- docs/data; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git add docs/data
+          git commit -m "Add daily exercises for $(TZ=Asia/Tokyo date +%F)"
+          git push

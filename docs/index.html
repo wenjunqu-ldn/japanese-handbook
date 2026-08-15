@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>每日日语练习 | Daily Japanese Exercises</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <h1>每日日语练习</h1>
+    <div class="meta">
+      <select id="date-picker" aria-label="选择日期"></select>
+      <span id="streak" class="streak"></span>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <p id="status" class="status">正在加载今天的练习……</p>
+  <form id="quiz" class="quiz" hidden></form>
+
+  <div class="actions">
+    <button id="submit-btn" class="btn primary" hidden>提交答案</button>
+  </div>
+
+  <section id="result" class="result" hidden>
+    <h2 id="score"></h2>
+    <p id="score-note" class="muted"></p>
+    <div class="result-actions">
+      <a id="report-link" class="btn primary" target="_blank" rel="noopener">把错题记录到 GitHub</a>
+      <button id="copy-btn" class="btn">复制结果 JSON</button>
+      <button id="retry-btn" class="btn">再做一次</button>
+    </div>
+    <p class="muted small">
+      提交后仓库会记录错题，明天的练习会优先复习做错的知识点；连续答对后该知识点自动退出复习队列。
+    </p>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>题目来自 <a href="https://github.com/wenjunqu-ldn/japanese-handbook" target="_blank" rel="noopener">japanese-handbook</a> ——
+  语法、助词、固定表达、词汇与 Duolingo Section 1–4 词汇。</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
