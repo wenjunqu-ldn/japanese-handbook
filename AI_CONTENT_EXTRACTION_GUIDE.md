@@ -48,6 +48,18 @@ Do not automatically preserve:
 - material unrelated to Japanese learning.
 - common English-derived loanwords, unless they have a specifically Japanese meaning, formation, contrast, or usage worth explaining.
 
+On that last point, the exception applies only when the word carries something
+specifically Japanese:
+
+| | Example | Why |
+|---|---|---|
+| Record | `ホチキス` | 和製英語 — English does not use this word for a stapler |
+| Record | `レポート` | Has a narrower Japanese sense worth stating |
+| Skip | `パスワード` | Matches its English original in meaning and usage |
+
+This rule governs only whether a word gets its own Vocabulary entry. Loanwords
+may still appear freely in example sentences.
+
 ## 4. Split before classifying
 
 One sentence may contain several knowledge points.
@@ -166,6 +178,7 @@ This is analysis material and should not be committed unless explicitly required
 - [ ] Candidates were split into reusable concepts.
 - [ ] Temporary chat material was excluded.
 - [ ] Existing entries and variants were searched.
+- [ ] Plain English loanwords were not added as Vocabulary entries (§3).
 - [ ] Each new definition has one primary location.
 - [ ] Duplicate definitions were not introduced.
 - [ ] Accepted content was rewritten in Handbook style.

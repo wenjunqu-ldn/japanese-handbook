@@ -7,8 +7,7 @@
 5. [词汇 | Vocabulary](handbook/05-Vocabulary.md)
 6. [易错点 | Common Mistakes](handbook/06-Mistakes.md)
 7. [复习 | Reviews](handbook/07-Reviews.md)
-8. [Duolingo 词汇（Sections 1–4） | Duolingo Vocabulary](handbook/08-Duolingo.md)
-9. [索引 | Index](handbook/99-Index.md)
+8. [索引 | Index](handbook/99-Index.md)
 
 ---
 
