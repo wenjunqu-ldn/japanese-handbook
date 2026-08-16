@@ -194,6 +194,17 @@ input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px
   cursor: pointer;
 }
 
+.pending {
+  background: var(--review-bg);
+  border: 1px solid var(--review);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.pending p { margin: 0 0 0.6rem; color: var(--review); font-size: 0.92rem; }
+.pending .result-actions { margin: 0; }
+
 .actions { margin: 1.25rem 0; }
 
 .btn {
