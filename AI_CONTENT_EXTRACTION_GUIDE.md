@@ -48,6 +48,16 @@ Do not automatically preserve:
 - material unrelated to Japanese learning.
 - common English-derived loanwords, unless they have a specifically Japanese meaning, formation, contrast, or usage worth explaining.
 
+关于最后一条（普通英语外来词）——例外只在该词有**日语特有**之处时成立：
+
+| | 例 | 为什么 |
+|---|---|---|
+| 收录 | `ホチキス` | 和製英語，英语里不这么说 |
+| 收录 | `レポート` | 有日语特有用法，需要说明它具体指什么 |
+| 不收录 | `パスワード` | 含义和用法与英语原词完全对应，无需解释 |
+
+外来词出现在**例句**中不受此限；此条只约束是否为它单独建立词条。
+
 ## 4. Split before classifying
 
 One sentence may contain several knowledge points.
@@ -166,6 +176,7 @@ This is analysis material and should not be committed unless explicitly required
 - [ ] Candidates were split into reusable concepts.
 - [ ] Temporary chat material was excluded.
 - [ ] Existing entries and variants were searched.
+- [ ] Plain English loanwords were not added as Vocabulary entries (§3).
 - [ ] Each new definition has one primary location.
 - [ ] Duplicate definitions were not introduced.
 - [ ] Accepted content was rewritten in Handbook style.

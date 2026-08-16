@@ -16,6 +16,11 @@
 - `PROJECT_SPEC.md`、`README.md`、`SUMMARY.md`、`docs/README.md` 同步移除 08-Duolingo 相关条目
 - `exercise-generator/itembank.py` 不再读取已删除的文件
 
+### Changed
+- `AI_CONTENT_EXTRACTION_GUIDE.md` §3「不收录普通英语外来词」一条补充判断示例：`ホチキス`（和製英語）、`レポート`（日语特有用法）属例外可收录；`パスワード` 与英语原词完全对应，不收录。并说明该条只约束是否单独立条目，不限制外来词出现在例句中
+- 提取流程自检清单相应增加一项
+- `docs/README.md` 明确出题原则：例句可以使用题库外的词，但被考的对象必须是题库条目
+
 ### Notes
 - 编号映射记录于独立的 `MIGRATION_MAP.md`，不写入本文件与手册正文
 - 本次属 `PROJECT_SPEC.md` 第 4 节第 7 条允许的结构迁移：提供完整映射、更新全部引用并在此记录
