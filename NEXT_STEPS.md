@@ -5,7 +5,7 @@
 > This is a working list for the exercise app, not handbook knowledge. Items are
 > removed once done; completed work is recorded in `CHANGELOG.md` instead.
 
-现状基线：`v0.7.1`（合并于 2026-08-15），题库 361 条。
+现状基线：`v0.7.2`（2026-08-16），题库 361 条。
 
 ---
 
@@ -71,25 +71,7 @@ python3 exercise-generator/generate_exercises.py --date 2026-08-20 --count 10 --
 
 ---
 
-## 3. 自动运行时间改为 UTC 午夜 | Switch the schedule to UTC midnight
-
-**改动**：把 `exercise-daily.yml` 的两个 cron 换成一个：
-
-```yaml
-on:
-  schedule:
-    - cron: "0 0 * * *"
-```
-
-并**删除**「Keep only the run that lands on 08:00 UK time」这个判断步骤——它存在的唯一原因就是 GitHub cron 不跟随夏令时，改用 UTC 后不再需要。同时可以删掉 `docs/README.md` 里解释 BST/GMT 双 cron 的那一节。
-
-**日期不受影响**：00:00 UTC 无论夏令时与否，落在伦敦都是同一个日历日（冬令时 00:00 GMT，夏令时 01:00 BST），所以 `TZ=Europe/London date +%F` 仍然给出正确日期。也可以顺手统一改成 UTC，两者等价。
-
-**实际效果**：练习会在英国时间**午夜或凌晨 1 点**生成，比现在的早上 8 点更早备好。缺点是提交记录的时间戳会落在半夜。
-
----
-
-## 4. 把 Duolingo 词汇并入 Vocabulary | Merge Duolingo into the vocabulary chapter
+## 3. 把 Duolingo 词汇并入 Vocabulary | Merge Duolingo into the vocabulary chapter
 
 涉及 `handbook/08-Duolingo.md` 的 107 个词条（名词 78、动词 22、い形 4、な形 2、词组 1）。
 
