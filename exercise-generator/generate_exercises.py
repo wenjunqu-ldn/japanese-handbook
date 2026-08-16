@@ -279,9 +279,15 @@ def _label(item: dict) -> str:
     return item["term"]
 
 
+MARKUP_RE = re.compile(r"^[|\-:\s]*$|^\|")
+
+
 def make_mcq_meaning(item: dict, bank: list[dict], rng: random.Random, confusion) -> dict | None:
     """MCQ: given the Japanese word/pattern, choose the Chinese meaning."""
-    if not item.get("meaning_zh") or item["category"] in ("mistake", "verb_form"):
+    meaning = (item.get("meaning_zh") or "").strip()
+    # Never offer leftover markdown as a definition: a comparison entry opening
+    # with a table once had "| 表达 | 用法 |" served to the learner as its meaning.
+    if not meaning or MARKUP_RE.match(meaning) or item["category"] in ("mistake", "verb_form"):
         return None
     wrong = _distractors(item, bank, "meaning_zh", rng, confusion)
     if len(wrong) < 3:
@@ -788,6 +794,11 @@ def quality_check(
         tag = f"#{ex.get('n')} {ex.get('item_id')}"
         if not ex.get("answer"):
             problems.append(f"{tag}: no answer")
+        # Markdown that leaked out of the handbook is never a valid answer.
+        for field in ("answer", *(ex.get("options") or [])):
+            value = ex.get(field) if field == "answer" else field
+            if isinstance(value, str) and MARKUP_RE.match(value.strip()):
+                problems.append(f"{tag}: markup leaked into an answer/option: {value[:30]!r}")
         if not ex.get("explanation"):
             problems.append(f"{tag}: no explanation")
         if ex["type"] == "mcq":
