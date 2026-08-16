@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>每日日语练习 | Daily Japanese Exercises</title>
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#34d399">
+<meta name="description" content="每天 5 道日语小练习，题目来自个人日语学习手册">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="毎日日本語">
 </head>
 <body>
 <header class="topbar">
@@ -18,6 +26,10 @@
 </header>
 
 <main id="main">
+  <div id="pending" class="pending" hidden>
+    <p id="pending-text"></p>
+    <div id="pending-actions" class="result-actions"></div>
+  </div>
   <p id="status" class="status">正在加载今天的练习……</p>
   <form id="quiz" class="quiz" hidden></form>
 
@@ -45,5 +57,16 @@
 </footer>
 
 <script src="app.js"></script>
+<script>
+  // Registration lives here rather than in app.js so a syntax error in the app
+  // cannot leave the page without its offline cache.
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch(() => {
+        /* offline support is optional; the app works without it */
+      });
+    });
+  }
+</script>
 </body>
 </html>

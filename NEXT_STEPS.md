@@ -5,7 +5,7 @@
 > This is a working list for the exercise app, not handbook knowledge. Items are
 > removed once done; completed work is recorded in `CHANGELOG.md` instead.
 
-现状基线：`v0.8.0`（2026-08-16）。
+现状基线：`v0.8.1`（2026-08-16）。
 
 ## 优先级 | Priority order
 
@@ -14,13 +14,12 @@
 | # | 事项 | 代价 | 为什么排这个位置 |
 |---|------|------|-----------------|
 | 1 | 每日提醒 | 很小 | 决定练习会不会真的被做。生成器再好，不打开就没有价值 |
-| 2 | 网页变成手机应用 | 中 | 让每天使用更顺手；「添加到主屏幕」今天就能用，可以先当过渡方案 |
-| 3 | 任意一天出更多题 | 小 | 锦上添花；`--count` 已经存在，缺的是入口 |
-| 4 | LLM 补充例句 | 大 | 收益真实但最贵，需要 API key、成本和审核流程；每天只出 5 题，重复暂时不密集 |
+| 2 | 任意一天出更多题 | 小 | 锦上添花；`--count` 已经存在，缺的是入口 |
+| 3 | LLM 补充例句 | 大 | 收益真实但最贵，需要 API key、成本和审核流程；每天只出 5 题，重复暂时不密集 |
 
 第 1 项最便宜且直接影响坚持率，建议优先做。
 
-> Duolingo 词汇合并已于 v0.8.0 完成，见 `CHANGELOG.md` 与 `MIGRATION_MAP.md`。
+> 已完成：Duolingo 词汇合并（v0.8.0）、手机应用 PWA（v0.8.1）。见 `CHANGELOG.md`。
 
 ---
 
@@ -60,43 +59,13 @@ https://wenjunqu-ldn.github.io/japanese-handbook/
 
 ### C. PWA 的 Web Push（最完整，也最麻烦）
 
-真正的网页推送需要 service worker、VAPID 密钥和一个负责发送的服务端。跟第 2 项（PWA）天然配套，但只为了提醒的话不值得单独做。
+真正的网页推送需要 service worker、VAPID 密钥和一个负责发送的服务端。跟已完成的 PWA 天然配套（service worker 已就绪），但仍需 VAPID 密钥和发送端，只为了提醒的话不值得单独做。
 
 **建议**：先用 A 立刻开始（今天就能设），再按 B 做成「生成成功才提醒」。
 
 ---
 
-## 2. 把网页变成手机应用 | Turn the web page into a phone app
-
-**先说一件事**：网页本身已经是响应式的，现在用手机浏览器打开、选择「添加到主屏幕」，就会得到一个带图标、全屏、没有浏览器地址栏的入口。**不需要任何改动**，可以先这样用，看看是否已经够了。
-
-如果要更进一步，三条路线：
-
-### A. PWA（推荐）
-
-加一个 `manifest.json`（名称、图标、主题色、`display: standalone`）和一个 service worker。相比「添加到主屏幕」多出来的是：
-
-- **离线可用**——service worker 缓存当天的题目 JSON 后，地铁上没信号也能做题。对每日练习来说这是最实在的收益。
-- 安装后的启动画面和图标更正规。
-- 后续要做 Web Push 通知，也是以此为基础。
-
-代价：几十行代码，不需要账号、不需要审核、不需要费用。仍然由 GitHub Pages 托管。
-
-需要一起想清楚的一点：**离线做题之后结果怎么回传**。现在是点按钮跳到 GitHub 开 issue，没网就断了。配套的改法是把结果先存在本地（localStorage），联网后再一次性提交——这也顺带解决「每次都要手动提交」的问题。
-
-### B. Capacitor／React Native 等打包成原生应用
-
-能上应用商店、能用原生推送。但需要 Apple 开发者账号（约 $99/年）、审核流程和构建管线。对一个自用工具来说，代价远大于收益。
-
-### C. 只做「添加到主屏幕」
-
-零成本。缺点是没有离线能力，断网时打开是一片空白。
-
-**建议**：先用 C 试用，确认每天真的会用之后再做 A；B 基本不必考虑。
-
----
-
-## 3. 支持任意一天生成更多题目 | More questions on demand
+## 2. 支持任意一天生成更多题目 | More questions on demand
 
 **已有的部分**：`generate_exercises.py` 已经支持 `--count`，例如：
 
@@ -120,7 +89,7 @@ python3 exercise-generator/generate_exercises.py --date 2026-08-20 --count 10 --
 
 ---
 
-## 4. 用 LLM 补充例句等资源 | LLM-generated resources
+## 3. 用 LLM 补充例句等资源 | LLM-generated resources
 
 **动机**：题库里 **187 个条目只有 1 个例句**（其中 182 个是词汇，107 个来自 Duolingo 章节）。填空题和翻译题都从例句取材，例句只有一个时：
 

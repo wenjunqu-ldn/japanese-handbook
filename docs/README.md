@@ -161,6 +161,37 @@ python3 -m http.server 8000
 # 打开 http://localhost:8000
 ```
 
+### 装到手机上 | Install on a phone
+
+应用是 PWA，可以像 App 一样装到主屏幕：
+
+- **iPhone**：Safari 打开网址 → 分享 → 「添加到主屏幕」
+- **Android**：Chrome 打开网址 → 菜单 → 「安装应用」／「添加到主屏幕」
+
+装好后是独立图标、全屏运行，没有浏览器地址栏。
+
+**可以离线做题。** Service worker 会缓存应用本身和当天的题目，地铁上没信号也能打开。首次访问时就会预先缓存最新一天，不需要先联网访问第二次。
+
+离线完成的练习会**存在本机**，联网后页面顶部出现提示条，点一下就能提交：
+
+```
+有 1 天的练习结果还没上报，点下面的按钮提交：
+[ 提交 2026-08-16 ]  [ 全部清除 ]
+```
+
+同一天重复作答只保留最后一次。没提交就关掉页面也不会丢——下次打开还在。
+
+相关文件：`manifest.json`（应用名称、图标、启动方式）、`sw.js`（缓存策略）、`icon-192.png` / `icon-512.png` / `icon-180.png`（图标）。
+
+缓存策略分两种，因为两类文件的需求相反：
+
+| 内容 | 策略 | 原因 |
+|------|------|------|
+| 应用本身（html/js/css/图标） | 缓存优先，后台更新 | 很少变，启动要快 |
+| 题目数据（`data/*.json`） | 网络优先，失败回落缓存 | 否则缓存的 `index.json` 会挡住当天新生成的题 |
+
+改动 `sw.js` 或应用文件后，把文件里的 `VERSION` 加一（`v1` → `v2`），旧缓存会在下次激活时清掉。
+
 ---
 
 ## 6. 自动化 | Automation
@@ -215,6 +246,8 @@ python3 exercise-generator/ingest_mistakes.py --body-file result.txt
 | `docs/data/attempts.jsonl` | 全部答题记录（对与错） |
 | `docs/data/stats.json` | 错题统计汇总 |
 | `docs/data/mastery.json` | 每个知识点的掌握度状态 |
+
+应用文件：`index.html`、`app.js`、`style.css`、`manifest.json`、`sw.js`、`icon-*.png`。
 
 ---
 

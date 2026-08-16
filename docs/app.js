@@ -20,7 +20,12 @@ const el = {
   retryBtn: document.getElementById("retry-btn"),
   datePicker: document.getElementById("date-picker"),
   streak: document.getElementById("streak"),
+  pending: document.getElementById("pending"),
+  pendingText: document.getElementById("pending-text"),
+  pendingActions: document.getElementById("pending-actions"),
 };
+
+const PENDING_KEY = "jp-pending-results";
 
 let currentDay = null;
 let graded = null;
@@ -231,7 +236,10 @@ function buildPayload() {
 }
 
 function buildIssueUrl() {
-  const payload = buildPayload();
+  return issueUrlFor(buildPayload());
+}
+
+function issueUrlFor(payload) {
   const correctCount = payload.results.filter((r) => r.correct).length;
   const title = `练习结果 ${payload.date}（${correctCount}/${payload.results.length}）`;
   const body =
@@ -267,7 +275,79 @@ function grade() {
   el.result.hidden = false;
   updateScore();
   recordStreak();
+  // Kept locally until reported, so a session finished offline — or a tab
+  // closed before submitting — is not lost.
+  queuePending(buildPayload());
   el.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+/* ---------- pending results (offline queue) ---------- */
+
+// Reporting a result opens a prefilled GitHub issue, which needs a connection.
+// Offline, the payload is kept locally so a session done on the train is not
+// lost; the app offers to submit it once there is a network again.
+
+function readPending() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(PENDING_KEY) || "[]");
+    return Array.isArray(raw) ? raw : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+function writePending(list) {
+  try {
+    localStorage.setItem(PENDING_KEY, JSON.stringify(list));
+  } catch (_) {
+    /* storage unavailable — nothing more we can do */
+  }
+}
+
+function queuePending(payload) {
+  const list = readPending().filter((p) => p.date !== payload.date);
+  list.push(payload);
+  writePending(list);
+  renderPending();
+}
+
+function dropPending(date) {
+  writePending(readPending().filter((p) => p.date !== date));
+  renderPending();
+}
+
+function renderPending() {
+  const shown = graded && currentDay ? currentDay.date : null;
+  const list = readPending().filter((p) => p.date !== shown);
+  if (!list.length) {
+    el.pending.hidden = true;
+    return;
+  }
+  el.pending.hidden = false;
+  el.pendingText.textContent = navigator.onLine
+    ? `有 ${list.length} 天的练习结果还没上报，点下面的按钮提交：`
+    : `有 ${list.length} 天的练习结果已保存在本机，联网后即可提交。`;
+
+  el.pendingActions.innerHTML = "";
+  list.sort((a, b) => (a.date < b.date ? -1 : 1));
+  for (const payload of list) {
+    const link = document.createElement("a");
+    link.className = "btn primary";
+    link.textContent = `提交 ${payload.date}`;
+    link.href = issueUrlFor(payload);
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.addEventListener("click", () => dropPending(payload.date));
+    el.pendingActions.appendChild(link);
+  }
+  const clear = document.createElement("button");
+  clear.className = "btn";
+  clear.textContent = "全部清除";
+  clear.addEventListener("click", () => {
+    writePending([]);
+    renderPending();
+  });
+  el.pendingActions.appendChild(clear);
 }
 
 /* ---------- streak (local only) ---------- */
@@ -319,6 +399,9 @@ async function init() {
     /* ignore */
   }
 
+  // Anything finished but not yet reported — typically a session done offline.
+  renderPending();
+
   let index;
   try {
     index = await getJSON(`${DATA}/index.json`);
@@ -361,9 +444,17 @@ el.quiz.addEventListener("change", (e) => {
   card.classList.toggle("correct", e.target.checked);
   card.classList.toggle("wrong", !e.target.checked);
   updateScore();
+  queuePending(buildPayload());
+});
+
+el.reportLink.addEventListener("click", () => {
+  if (currentDay) dropPending(currentDay.date);
 });
 
 el.retryBtn.addEventListener("click", () => loadDate(el.datePicker.value));
+
+window.addEventListener("online", renderPending);
+window.addEventListener("offline", renderPending);
 
 el.copyBtn.addEventListener("click", async () => {
   const text = "```json\n" + JSON.stringify(buildPayload(), null, 2) + "\n```";
