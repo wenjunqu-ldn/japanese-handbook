@@ -86,7 +86,6 @@ handbook/
   05-Vocabulary.md
   06-Mistakes.md
   07-Reviews.md
-  08-Duolingo.md
   99-Index.md
 ```
 

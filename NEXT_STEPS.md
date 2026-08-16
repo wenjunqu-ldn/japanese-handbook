@@ -5,7 +5,7 @@
 > This is a working list for the exercise app, not handbook knowledge. Items are
 > removed once done; completed work is recorded in `CHANGELOG.md` instead.
 
-现状基线：`v0.7.2`（2026-08-16），题库 361 条。
+现状基线：`v0.8.0`（2026-08-16）。
 
 ## 优先级 | Priority order
 
@@ -14,12 +14,13 @@
 | # | 事项 | 代价 | 为什么排这个位置 |
 |---|------|------|-----------------|
 | 1 | 每日提醒 | 很小 | 决定练习会不会真的被做。生成器再好，不打开就没有价值 |
-| 2 | Duolingo 词汇合并 | 中 | **唯一有时限的一项**：现在学习记录几乎是空的，迁移接近零成本；累积几个月后必须写迁移脚本 |
-| 3 | 网页变成手机应用 | 中 | 让每天使用更顺手；「添加到主屏幕」今天就能用，可以先当过渡方案 |
-| 4 | 任意一天出更多题 | 小 | 锦上添花；`--count` 已经存在，缺的是入口 |
-| 5 | LLM 补充例句 | 大 | 收益真实但最贵，需要 API key、成本和审核流程；题库 361 条、每天只出 5 题，重复暂时不密集 |
+| 2 | 网页变成手机应用 | 中 | 让每天使用更顺手；「添加到主屏幕」今天就能用，可以先当过渡方案 |
+| 3 | 任意一天出更多题 | 小 | 锦上添花；`--count` 已经存在，缺的是入口 |
+| 4 | LLM 补充例句 | 大 | 收益真实但最贵，需要 API key、成本和审核流程；每天只出 5 题，重复暂时不密集 |
 
-前两项建议优先做：第 1 项最便宜且直接影响坚持率，第 2 项拖得越久越贵。
+第 1 项最便宜且直接影响坚持率，建议优先做。
+
+> Duolingo 词汇合并已于 v0.8.0 完成，见 `CHANGELOG.md` 与 `MIGRATION_MAP.md`。
 
 ---
 
@@ -59,41 +60,13 @@ https://wenjunqu-ldn.github.io/japanese-handbook/
 
 ### C. PWA 的 Web Push（最完整，也最麻烦）
 
-真正的网页推送需要 service worker、VAPID 密钥和一个负责发送的服务端。跟第 3 项（PWA）天然配套，但只为了提醒的话不值得单独做。
+真正的网页推送需要 service worker、VAPID 密钥和一个负责发送的服务端。跟第 2 项（PWA）天然配套，但只为了提醒的话不值得单独做。
 
 **建议**：先用 A 立刻开始（今天就能设），再按 B 做成「生成成功才提醒」。
 
 ---
 
-## 2. 把 Duolingo 词汇并入 Vocabulary | Merge Duolingo into the vocabulary chapter
-
-涉及 `handbook/08-Duolingo.md` 的 107 个词条（名词 78、动词 22、い形 4、な形 2、词组 1）。
-
-**这里有一个重要的前提问题：要不要重新编号。**
-
-`PROJECT_SPEC.md` 规定永久 ID 默认禁止重编号，只有不可避免的结构迁移才允许，且必须保留旧锚点、提供完整映射、更新全部引用并记入 CHANGELOG。把 `DUO-001` 改成 `W-N032` 属于重编号，代价不小：
-
-- `docs/data/` 下的 `mistakes.jsonl`、`attempts.jsonl`、`history.jsonl`、`mastery.json` 全部按 ID 记录学习历史，**重编号会让这些历史失效**，必须一并迁移；
-- `ingest_mistakes.py` 的 `VALID_ID_RE` 需要同步修改；
-- `99-Index.md` 的 107 条链接要全部重写。
-
-**两个选项：**
-
-**A. 物理合并，保留 ID（推荐）**
-把 08-Duolingo.md 的表格行移进 `05-Vocabulary.md` 对应词性的表格里，`DUO-*` 编号原样保留。结果是「词汇只有一章」，但不动任何 ID，学习历史不受影响，也不违反永久 ID 规则。生成器无需改动——它按锚点解析，不关心编号前缀。可以在表格里保留一列或加一句说明标注来源是 Duolingo。
-
-**B. 完全合并并重新编号**
-按词性并入 `W-N`／`W-V`／`W-I`／`W-NA` 连续编号。更整齐，但需要：ID 映射表、旧锚点保留、`docs/data/*` 的历史数据迁移脚本、`VALID_ID_RE` 更新、Index 重写、CHANGELOG 记录。
-
-**如果要选 B，越早做越便宜。** 目前学习历史几乎是空的（只有测试产生的少量记录），迁移成本接近零；一旦累积几个月的答题记录，迁移脚本就必须写得非常小心，否则会丢掉掌握度数据。
-
-**顺带需要决定的一件事**：合并后 Duolingo 词汇的 `duo_section` 字段（Section 1–4 主题分组）是否保留。生成器用它来挑同主题的干扰项——「电话」的干扰项是「打扫」「洗衣服」而不是「女儿」「学生」，靠的就是这个字段。合并时如果丢掉分组信息，选择题的干扰项质量会下降。
-
----
-
----
-
-## 3. 把网页变成手机应用 | Turn the web page into a phone app
+## 2. 把网页变成手机应用 | Turn the web page into a phone app
 
 **先说一件事**：网页本身已经是响应式的，现在用手机浏览器打开、选择「添加到主屏幕」，就会得到一个带图标、全屏、没有浏览器地址栏的入口。**不需要任何改动**，可以先这样用，看看是否已经够了。
 
@@ -123,7 +96,7 @@ https://wenjunqu-ldn.github.io/japanese-handbook/
 
 ---
 
-## 4. 支持任意一天生成更多题目 | More questions on demand
+## 3. 支持任意一天生成更多题目 | More questions on demand
 
 **已有的部分**：`generate_exercises.py` 已经支持 `--count`，例如：
 
@@ -147,7 +120,7 @@ python3 exercise-generator/generate_exercises.py --date 2026-08-20 --count 10 --
 
 ---
 
-## 5. 用 LLM 补充例句等资源 | LLM-generated resources
+## 4. 用 LLM 补充例句等资源 | LLM-generated resources
 
 **动机**：题库里 **187 个条目只有 1 个例句**（其中 182 个是词汇，107 个来自 Duolingo 章节）。填空题和翻译题都从例句取材，例句只有一个时：
 

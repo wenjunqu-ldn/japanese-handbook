@@ -421,7 +421,6 @@ def load_item_bank() -> list[dict]:
     items += _parse_prose_file(HANDBOOK_DIR / "03-Particles.md", "particle")
     items += _parse_prose_file(HANDBOOK_DIR / "04-Expressions.md", "expression")
     items += _parse_vocab_file(HANDBOOK_DIR / "05-Vocabulary.md", default_pos_by_section=True)
-    items += _parse_vocab_file(HANDBOOK_DIR / "08-Duolingo.md", default_pos_by_section=False)
 
     # Only prose/vocab items need an example sentence; correction and
     # conjugation items carry their own purpose-built data instead.

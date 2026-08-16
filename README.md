@@ -60,7 +60,6 @@ handbook/
 ├── 05-Vocabulary.md
 ├── 06-Mistakes.md
 ├── 07-Reviews.md
-├── 08-Duolingo.md
 └── 99-Index.md
 ```
 
@@ -90,7 +89,6 @@ docs/                            练习网页应用与生成的练习数据
 - Vocabulary（词汇）
 - Common Mistakes（易错点）
 - Reviews（比较、复习与综合练习）
-- Duolingo Vocabulary（Duolingo Sections 1–4 词汇）
 - Index（索引）
 
 ---
