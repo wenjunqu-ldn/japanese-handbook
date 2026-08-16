@@ -48,15 +48,17 @@ Do not automatically preserve:
 - material unrelated to Japanese learning.
 - common English-derived loanwords, unless they have a specifically Japanese meaning, formation, contrast, or usage worth explaining.
 
-关于最后一条（普通英语外来词）——例外只在该词有**日语特有**之处时成立：
+On that last point, the exception applies only when the word carries something
+specifically Japanese:
 
-| | 例 | 为什么 |
+| | Example | Why |
 |---|---|---|
-| 收录 | `ホチキス` | 和製英語，英语里不这么说 |
-| 收录 | `レポート` | 有日语特有用法，需要说明它具体指什么 |
-| 不收录 | `パスワード` | 含义和用法与英语原词完全对应，无需解释 |
+| Record | `ホチキス` | 和製英語 — English does not use this word for a stapler |
+| Record | `レポート` | Has a narrower Japanese sense worth stating |
+| Skip | `パスワード` | Matches its English original in meaning and usage |
 
-外来词出现在**例句**中不受此限；此条只约束是否为它单独建立词条。
+This rule governs only whether a word gets its own Vocabulary entry. Loanwords
+may still appear freely in example sentences.
 
 ## 4. Split before classifying
 
