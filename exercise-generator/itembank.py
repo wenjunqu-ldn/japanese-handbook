@@ -58,17 +58,51 @@ def _split_examples(block: str) -> list[dict]:
     return examples
 
 
+def _is_prose(line: str) -> bool:
+    """True for a line that reads as an explanation rather than page furniture.
+
+    Comparison entries such as E-012 open with a markdown table, and taking the
+    first non-blank line there yielded `| 表达 | 用法 |` — a table header served
+    to the learner as the meaning of the expression.
+    """
+    if not line:
+        return False
+    if line.startswith((">", "#", "---", "|", "-", "*", "+")):
+        return False
+    # A row of table/rule punctuation with no actual words.
+    if not re.search(r"[一-鿿぀-ヿA-Za-z]", line):
+        return False
+    return True
+
+
+MD_LINK_RE = re.compile(r"\[([^\]]+)\]\([^)]*\)")
+
+
+def _clean_meaning(text: str) -> str:
+    """Reduce a handbook line to plain text; the app renders meanings verbatim.
+
+    Inline-code marks are dropped and markdown links collapse to their label, so
+    a cross-reference reads "参见 G-006" rather than showing raw brackets and a
+    file path in a multiple-choice option.
+    """
+    text = MD_LINK_RE.sub(r"\1", text)
+    return text.replace("`", "").strip()
+
+
 def _extract_meaning(block: str) -> str:
     m = re.search(r"###\s*含义\s*\n(.+?)(?=\n###|\n---|\Z)", block, re.DOTALL)
     if m:
-        return m.group(1).strip().splitlines()[0].strip()
-    # Fallback: first non-blank, non-blockquote, non-heading line after the title.
-    lines = block.splitlines()[1:]
-    for line in lines:
+        for line in m.group(1).strip().splitlines():
+            if _is_prose(line.strip()):
+                return _clean_meaning(line.strip())
+    # Fallback: the first line of actual prose anywhere in the entry. Tables,
+    # examples, headings and link lists are skipped rather than mistaken for a
+    # definition; an entry with no prose at all yields "" and is simply not
+    # asked as a "what does this mean" question.
+    for line in block.splitlines()[1:]:
         stripped = line.strip()
-        if not stripped or stripped.startswith(">") or stripped.startswith("#") or stripped.startswith("---"):
-            continue
-        return stripped
+        if _is_prose(stripped):
+            return _clean_meaning(stripped)
     return ""
 
 
