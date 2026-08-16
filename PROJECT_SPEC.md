@@ -156,6 +156,19 @@ README 可以使用中英双语。
 
 所有日语例句必须保留原文。
 
+## 5.1 各文件适用的语言 | Which language applies where
+
+「正文说明使用中文」约束的是手册内容与面向使用者的说明；面向 AI 的流程文档沿用英文。
+
+| 文件 | 语言 |
+|------|------|
+| `handbook/*.md` | 中文（日语例句保留原文） |
+| `PROJECT_SPEC.md`、`CHANGELOG.md`、`SUMMARY.md`、`docs/README.md` | 中文 |
+| `README.md` | 中英双语 |
+| `AI_CONTENT_EXTRACTION_GUIDE.md`、`KNOWLEDGE_CLASSIFICATION.md`、`RELEASE_WORKFLOW.md` | 英文 |
+
+修改某个文件时使用该文件既有的语言，不要在一份文档中混用。日语例句、术语（如 `和製英語`）和引用的原始素材不受此限。
+
 ---
 
 # 6. 日语书写规范 | Japanese Writing Rules
