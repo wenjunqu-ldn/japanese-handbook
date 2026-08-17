@@ -133,6 +133,12 @@ python3 exercise-generator/generate_exercises.py --date 2026-08-20 --count 10 --
 
 ## 其他待确认 | Also open
 
+- **`exercise-generator` 需要一次 Duolingo 遗留代码清理**（单独进行，不要顺手夹在内容修改里）。`handbook/08-Duolingo.md` 已在 v0.8.0 删除，但解析器与生成器里仍留着当时的专用逻辑：
+  - `itembank.py`：`DUO_SECTION_RE`、`current_duo_section`、条目上的 `duo_section` 字段、`ID_IN_TEXT_RE` 与文档注释里的 `DUO-\d{3}`
+  - `generate_exercises.py`：干扰项分层里按 `duo_section` 匹配的两处
+  - `ingest_mistakes.py`：`VALID_ID_RE` 中的 `DUO` 前缀
+
+  清理前需要先确认：`duo_section` 现在是否恒为 `None`（若是，则那两层干扰项筛选实际从不生效，删除后干扰项质量不变）；`DUO-` 前缀是否还需保留以接受历史 Issue 与 `docs/data/*.jsonl` 里的旧编号——历史记录不改写，所以读取侧的兼容可能仍要留着。确认之后再删，并补上对应的测试。
 - **Duolingo 词表仍是按主题整理的代表性词汇**，不是实际学习进度。替换成真正学过的词，对练习质量的提升比上面任何一项都大，而且不需要改代码——直接编辑表格即可。
 - **`EXERCISE_GENERATION_GUIDE.md` §9 列出的 5 个知识点不在手册里**：`とおり`、`まみれ`、`味がする`、`おかげで`、`～なさい`。若确实学过，加进 `01-Grammar.md` 或 `04-Expressions.md` 就会自动进入题库。
 - **该指南 §12 的例句有误**：`写真を撮るように、公園に行きました` 不是「不够自然」而是错误（`ように` 要求可能形、自动词或否定形式，或主语不同；`撮る` 是同主语可控动作，只能用 `ために`）。指南 §8.1 的例子反而用对了同一条规则。建议修正指南，避免以后照它实现时把错误判成可接受。
