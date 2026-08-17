@@ -226,7 +226,10 @@ function buildPayload() {
       // Multiple-choice picks are omitted: the wrong option is already known.
       if (!g.correct && g.type !== "mcq" && g.given && g.given.trim()) {
         row.given = g.given.trim().slice(0, 300);
-        row.expected = g.expected || "";
+        // The expected answer is not sent: the workflow reads it back out of
+        // that day's exercise file. Japanese costs nine characters apiece once
+        // URL-encoded, and this link has to survive a login redirect.
+        //
         // A near miss may well have been acceptable Japanese, so it is flagged
         // and never replayed as though it were definitely an error.
         row.near = Boolean(g.near);
@@ -240,14 +243,16 @@ function buildIssueUrl() {
   return issueUrlFor(buildPayload());
 }
 
+function payloadBody(payload) {
+  // Compact rather than pretty-printed: every space and newline is three bytes
+  // in the URL, and the workflow is the only reader.
+  return `由每日练习网页提交。\n\n` + "```json\n" + JSON.stringify(payload) + "\n```\n";
+}
+
 function issueUrlFor(payload) {
   const correctCount = payload.results.filter((r) => r.correct).length;
   const title = `练习结果 ${payload.date}（${correctCount}/${payload.results.length}）`;
-  const body =
-    `由每日练习网页提交。\n\n` +
-    "```json\n" +
-    JSON.stringify(payload, null, 2) +
-    "\n```\n";
+  const body = payloadBody(payload);
   return (
     `https://github.com/${REPO}/issues/new` +
     `?labels=exercise-result` +
@@ -338,8 +343,23 @@ function renderPending() {
     link.href = issueUrlFor(payload);
     link.target = "_blank";
     link.rel = "noopener";
-    link.addEventListener("click", () => dropPending(payload.date));
+    // The result stays queued after the link is opened. Clicking only means the
+    // GitHub page was launched, not that the issue was created — it can fail, or
+    // be abandoned — and dropping it here lost the day's answers for good.
+    link.addEventListener("click", () => {
+      const done = document.createElement("button");
+      done.className = "btn";
+      done.textContent = `已提交 ${payload.date}，清除`;
+      done.addEventListener("click", () => dropPending(payload.date));
+      link.replaceWith(done);
+    });
     el.pendingActions.appendChild(link);
+
+    const copy = document.createElement("button");
+    copy.className = "btn";
+    copy.textContent = "复制";
+    copy.addEventListener("click", () => copyText(payloadBody(payload), copy, "复制"));
+    el.pendingActions.appendChild(copy);
   }
   const clear = document.createElement("button");
   clear.className = "btn";
@@ -457,15 +477,18 @@ el.retryBtn.addEventListener("click", () => loadDate(el.datePicker.value));
 window.addEventListener("online", renderPending);
 window.addEventListener("offline", renderPending);
 
-el.copyBtn.addEventListener("click", async () => {
-  const text = "```json\n" + JSON.stringify(buildPayload(), null, 2) + "\n```";
+async function copyText(text, button, label) {
   try {
     await navigator.clipboard.writeText(text);
-    el.copyBtn.textContent = "已复制";
-    setTimeout(() => (el.copyBtn.textContent = "复制结果 JSON"), 1500);
+    button.textContent = "已复制";
+    setTimeout(() => (button.textContent = label), 1500);
   } catch (_) {
     window.prompt("复制下面的内容：", text);
   }
-});
+}
+
+el.copyBtn.addEventListener("click", () =>
+  copyText(payloadBody(buildPayload()), el.copyBtn, "复制结果 JSON")
+);
 
 init();

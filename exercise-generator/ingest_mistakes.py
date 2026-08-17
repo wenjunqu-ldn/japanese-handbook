@@ -71,6 +71,30 @@ def sanitize_sentence(value) -> str:
     return text.strip()[:MAX_SENTENCE]
 
 
+def expected_answers(day: str) -> dict[str, str]:
+    """The right answer for each item asked on `day`, read from that day's file.
+
+    The app no longer sends the expected answer: a Japanese sentence costs nine
+    characters per kana once URL-encoded, and the prefilled issue link has to fit
+    through a login redirect. It is already in the repository, so it is looked up
+    here instead.
+    """
+    path = ROOT / "docs" / "data" / "exercises" / f"{day}.json"
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    answers = {}
+    for exercise in data.get("exercises", []):
+        item_id = exercise.get("item_id")
+        answer = exercise.get("answer_plain") or exercise.get("answer") or ""
+        if item_id and answer:
+            answers[item_id] = answer
+    return answers
+
+
 def normalize_results(payload: dict) -> tuple[str, list[dict]]:
     day = str(payload.get("date") or datetime.now(timezone.utc).date().isoformat())
     if not re.match(r"^\d{4}-\d{2}-\d{2}$", day):
@@ -81,6 +105,7 @@ def normalize_results(payload: dict) -> tuple[str, list[dict]]:
         raise ValueError("Payload is missing a 'results' list.")
 
     cleaned = []
+    answers = expected_answers(day)
     for entry in results:
         if not isinstance(entry, dict):
             continue
@@ -99,7 +124,11 @@ def normalize_results(payload: dict) -> tuple[str, list[dict]]:
         given = sanitize_sentence(entry.get("given"))
         if given:
             row["given"] = given
-            row["expected"] = sanitize_sentence(entry.get("expected"))
+            # Older submissions carried the expected answer with them; newer ones
+            # leave it out and it comes from the day's exercise file.
+            row["expected"] = sanitize_sentence(
+                entry.get("expected") or answers.get(item_id, "")
+            )
             row["near"] = bool(entry.get("near"))
         cleaned.append(row)
 
