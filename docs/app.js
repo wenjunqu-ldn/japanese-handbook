@@ -16,6 +16,7 @@ const el = {
   score: document.getElementById("score"),
   scoreNote: document.getElementById("score-note"),
   reportLink: document.getElementById("report-link"),
+  reportDone: document.getElementById("report-done"),
   copyBtn: document.getElementById("copy-btn"),
   retryBtn: document.getElementById("retry-btn"),
   datePicker: document.getElementById("date-picker"),
@@ -468,8 +469,18 @@ el.quiz.addEventListener("change", (e) => {
   queuePending(buildPayload());
 });
 
+// Opening the GitHub page is not proof that the issue was created: it can fail,
+// or be abandoned at the login screen. The result therefore stays on this device
+// until the learner confirms it landed — dropping it here lost a whole day of
+// answers the first time GitHub returned a 500.
 el.reportLink.addEventListener("click", () => {
+  el.reportDone.hidden = false;
+});
+
+el.reportDone.addEventListener("click", () => {
   if (currentDay) dropPending(currentDay.date);
+  el.reportDone.hidden = true;
+  el.reportDone.blur();
 });
 
 el.retryBtn.addEventListener("click", () => loadDate(el.datePicker.value));

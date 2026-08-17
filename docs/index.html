@@ -42,12 +42,13 @@
     <p id="score-note" class="muted"></p>
     <div class="result-actions">
       <a id="report-link" class="btn primary" target="_blank" rel="noopener">把错题记录到 GitHub</a>
+      <button id="report-done" class="btn" hidden>已提交，清除本机记录</button>
       <button id="copy-btn" class="btn">复制结果 JSON</button>
       <button id="retry-btn" class="btn">再做一次</button>
     </div>
     <p class="muted small">
       提交后仓库会记录错题，明天的练习会优先复习做错的知识点；连续答对后该知识点自动退出复习队列。
-      如果 GitHub 页面报错，结果仍然存在本机：可以稍后再提交，或用「复制结果 JSON」自己新建 issue 粘贴（记得加 <code>exercise-result</code> 标签）。
+      Issue 建好之后点「已提交，清除本机记录」。在你点它之前结果一直存在本机，所以 GitHub 报错或中途放弃都不会丢——下次打开应用会出现在顶部提示条里。也可以用「复制结果 JSON」自己新建 issue 粘贴（记得加 <code>exercise-result</code> 标签）。
     </p>
   </section>
 </main>
