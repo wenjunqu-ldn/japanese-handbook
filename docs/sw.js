@@ -10,7 +10,7 @@
  * rarely and a version bump replaces it wholesale.
  */
 
-const VERSION = "v4";
+const VERSION = "v5";
 const SHELL_CACHE = `jp-shell-${VERSION}`;
 const DATA_CACHE = `jp-data-${VERSION}`;
 
