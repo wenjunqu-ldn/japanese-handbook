@@ -397,7 +397,9 @@ _ENDINGS = (
     # Voiced で／だ belong to the て形 and た形 of 読む・泳ぐ・遊ぶ, where the ん or
     # い sits directly on the kanji stem. The same two kana after kana are the
     # copula instead — 休みでした, 挑戦したいです, 詳しいんですか — and stay out.
-    r"(?<=[一-鿿々ァ-ヴー][んい])[でだ]|"
+    # An い-adjective has the verb's shape (悪い vs 泳い), so で is also refused
+    # in front of す, where it is the です of 天気が悪いです.
+    r"(?<=[一-鿿々ァ-ヴー][んい])(?:で(?!す)|だ)|"
     r"いました|います|いる|いた|ください|おく|"
     r"られませんでした|られましょう|られません|られました|られます|られない|られる|"
     r"れませんでした|れません|れました|れます|れない|れる|"
