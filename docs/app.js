@@ -85,7 +85,8 @@ function renderExercise(ex, isReview) {
       <p class="sentence">${escapeHtml(ex.sentence)}</p>
       <p class="sentence-zh">${escapeHtml(ex.sentence_zh || "")}</p>
       <input type="text" name="q${ex.n}" autocomplete="off" autocapitalize="off"
-             spellcheck="false" placeholder="填入空格处的词">`;
+             spellcheck="false" placeholder="填入空格处的词">
+      ${ex.hint ? `<p class="hint">${escapeHtml(ex.hint)}</p>` : ""}`;
   } else if (ex.type === "conjugation") {
     body = `
       <p class="prompt">${escapeHtml(ex.prompt)}</p>

@@ -373,6 +373,129 @@ def stem_candidates(item: dict) -> list[str]:
     return out
 
 
+# Characters the blank must never swallow: particles carry the sentence
+# structure the learner needs in order to work out what goes in the gap, and
+# punctuation marks its edges.
+BLANK_STOP = set("はがをにへでともやのかねよ、。「」！？")
+# Where a blank may legitimately begin. や in やすい and ね in ねこ are ordinary
+# word-internal kana, so stopping there means the scan cut a word in half;
+# お／ご are honorific prefixes and make a clean edge in front of お手伝いします.
+BLANK_LEFT_EDGE = set("はがをにへでとものかおご、。「」！？")
+KANA_RE = re.compile(r"[ぁ-ん]")
+KANJI_RE = re.compile(r"[一-鿿々]")
+KATAKANA_RE = re.compile(r"[ァ-ヴー]")
+
+# What may follow a stem and still belong to the same word. A blind run of kana
+# swallowed the head of whatever came next (ように＋ま of まとめます), so the blank
+# only grows over an actual inflection. Longer endings come first: た must not
+# win where たら is meant.
+_MASU = r"ませんでした|ましょうか|ませんか|ましょう|ました|ません|ます"
+_ENDINGS = (
+    rf"{_MASU}|"
+    r"なかった|ないで|ない|たかった|たくない|たい|"
+    r"てください|ています|ておきます|ている|ておく|てある|てしまう|ても|て|"
+    # Voiced で／だ belong to the て形 and た形 of 読む・泳ぐ・遊ぶ, where the ん or
+    # い sits directly on the kanji stem. The same two kana after kana are the
+    # copula instead — 休みでした, 挑戦したいです, 詳しいんですか — and stay out.
+    r"(?<=[一-鿿々ァ-ヴー][んい])[でだ]|"
+    r"いました|います|いる|いた|ください|おく|"
+    r"られませんでした|られましょう|られません|られました|られます|られない|られる|"
+    r"れませんでした|れません|れました|れます|れない|れる|"
+    r"させる|せる|たら|たり|た|ながら|やすい|にくい|すぎる|ようか|よう|ば"
+)
+# 治 and 焼 are stems without their ます-row kana, so the ending is reached across
+# one of those: 治＋り＋ました, 焼＋い＋て. That kana may also stand alone, as in
+# 買い に行きます, where nothing more attaches to it. に is the exception: it is a
+# particle far more often than the ます-stem of 死ぬ, so it bridges only to ます
+# itself — 上司に説明します must keep its に outside the blank.
+INFLECTION_TAIL = re.compile(
+    rf"[っん]?(?:{_ENDINGS})|に(?:{_MASU})|[いきぎしちびみり](?:{_ENDINGS})?"
+)
+
+
+def _absorb_word_body(plain: str, start: int, span_head: str) -> int:
+    """Extend a blank leftwards over the kanji/katakana body of the same word.
+
+    Stopping at the first kanji leaves the learner the front of the word — the
+    complaint that 毎日練習し＿＿＿ tests only ～たら applies just as much to
+    毎日練習＿＿＿. What is safe to swallow depends on the shape of the word:
+
+      サ变 verbs (the span starts with し) carry a noun body of at most two
+      kanji, or a whole katakana word: 練習したら, コピーしたら.
+      Everything else is a single-stem verb, so its kanji run is absorbed only
+      when the run itself is short — 終わったら, お手伝いしましょうか. A long run
+      such as 図書館行ったら spans two words and is left alone.
+    """
+    if start == 0 or KATAKANA_RE.match(plain[start - 1]):
+        run = start
+        while run > 0 and KATAKANA_RE.match(plain[run - 1]):
+            run -= 1
+        return run if span_head == "し" and run < start else start
+
+    body = start
+    while body > 0 and KANJI_RE.match(plain[body - 1]):
+        body -= 1
+    length = start - body
+    if length == 0:
+        return start
+    if span_head == "し":
+        return max(body, start - 2)
+    return body if length <= 2 else start
+
+
+def expand_blank(plain: str, stem: str, attaches_left: bool = False) -> str:
+    """Grow a blank over the whole inflected word, not just the pattern.
+
+    ～たら sits after 練習し, and 忘れ sits before ました; in both cases the part
+    left showing is the conjugation itself, which is most of the point. The span
+    grows across adjacent hiragana, then over the word body the inflection hangs
+    off, stopping at a particle so the sentence structure stays intact.
+
+    `attaches_left` marks a grammar pattern, the only kind of item that hangs off
+    what precedes it. A noun keeps its own boundary however it is written: お城
+    begins with kana too, and growing leftwards there swallowed the whole
+    relative clause in 二人が行ったお城.
+    """
+    start = plain.find(stem)
+    if start < 0:
+        return stem
+    end = start + len(stem)
+
+    # Only a pattern that itself begins with kana (～たら, ～ので) attaches to an
+    # inflection on its left. When the stem starts with a kanji the kana before
+    # it belong to the previous word — expanding there turned もう治りました into
+    # a nonsense "う治りました".
+    if attaches_left and KANA_RE.match(stem[0]):
+        scan = start
+        while scan > 0:
+            ch = plain[scan - 1]
+            if ch in BLANK_STOP or not KANA_RE.match(ch):
+                break
+            scan -= 1
+        # Stopping on a kana that is not a real edge means the scan ran into the
+        # middle of the preceding word (分かりや|すいように), so nothing is taken.
+        if scan == 0 or not KANA_RE.match(plain[scan - 1]) or plain[scan - 1] in BLANK_LEFT_EDGE:
+            start = _absorb_word_body(plain, scan, plain[scan])
+
+    while True:
+        match = INFLECTION_TAIL.match(plain, end)
+        if not match or match.end() == end:
+            break
+        tail, end = plain[end:match.end()], match.end()
+        # Only a て形 takes a further ending (読んで＋います). Anything else is
+        # already the end of the word, and carrying on swallows the next one.
+        if not tail.endswith(("て", "で")):
+            break
+
+    span = plain[start:end]
+    # An expanded blank must still be unambiguous within the sentence, and it has
+    # to leave something behind: blanking 心配しないでください whole turns the
+    # question into "＿＿＿。" with nothing to work from.
+    if plain.count(span) != 1 or not plain.replace(span, "", 1).strip("、。！？「」 　"):
+        return stem
+    return span
+
+
 def make_fill_blank(item: dict, rng: random.Random, avoid: set[str] | None = None) -> dict | None:
     """Fill in the blank: remove the target word from one of its example sentences."""
     if item["category"] in ("mistake", "verb_form"):
@@ -401,7 +524,13 @@ def make_fill_blank(item: dict, rng: random.Random, avoid: set[str] | None = Non
 
     example, plain, stem = found
     sentence = example["ja"]
-    blanked_plain = plain.replace(stem, "＿＿＿", 1)
+    # Blank the whole inflected word, not just the pattern. Leaving 練習し in
+    # front of a ～たら blank tests only the two trailing kana; swallowing the
+    # inflection makes the learner produce 練習したら from scratch.
+    blank_text = expand_blank(
+        plain, stem, attaches_left=item["category"] in ("grammar", "expression")
+    )
+    blanked_plain = plain.replace(blank_text, "＿＿＿", 1)
 
     return {
         "type": "fill_blank",
@@ -409,8 +538,24 @@ def make_fill_blank(item: dict, rng: random.Random, avoid: set[str] | None = Non
         "prompt": "在空格处填入合适的词（可写汉字或假名）：",
         "sentence": blanked_plain,
         "sentence_zh": example["zh"],
-        "answer": stem,
-        "accepted": sorted({s for s in (stem, term, item.get("reading"), strip_furigana(term)) if s}),
+        "answer": blank_text,
+        # When the blank was widened to cover the inflection, only the full form
+        # counts — accepting a bare たら would give back exactly the shortcut the
+        # wider blank exists to remove.
+        "accepted": (
+            [blank_text]
+            if blank_text != stem
+            else sorted({s for s in (stem, term, item.get("reading"), strip_furigana(term)) if s})
+        ),
+        # A wider blank needs a prompt for what belongs there, or it is guesswork
+        # rather than a harder question. Plain vocabulary gaps already have the
+        # answer in their translation, so they get no redundant hint.
+        "hint": (
+            f"提示：{item['meaning_zh']}"
+            if item.get("meaning_zh")
+            and (blank_text != stem or item["category"] in ("grammar", "expression"))
+            else ""
+        ),
         "explanation": f"{item['id']}　完整句子：{sentence}\n{example['zh']}\n{_label(item)}：{item['meaning_zh']}",
         "source": item["source"],
         "probe": example["ja"],
@@ -559,7 +704,91 @@ def make_naturalness(item: dict, rng: random.Random) -> dict | None:
 CONJUGATION_FORMS = {
     "masu": ("ます形", "ます形"),
     "te": ("て形", "て形"),
+    "ta": ("た形", "た形"),
+    "nai": ("ない形", "ない形"),
+    "potential": ("可能形", "可能形"),
 }
+
+# ます形 is the first form learned and quickly becomes automatic, so it is asked
+# only when nothing harder can be derived for that verb.
+FORM_PRIORITY = ["potential", "nai", "ta", "te", "masu"]
+
+# Verbs whose ない形 or 可能形 do not follow the class rule. An empty string means
+# the form is not worth asking: ある has no ordinary 可能形 (有り得る is a separate
+# word, not a conjugation), so the drill skips it instead of teaching a wrong rule.
+IRREGULAR_FORMS = {
+    "ある": {"nai": "ない", "potential": ""},
+    "する": {"nai": "しない", "potential": "できる"},
+    "来る": {"nai": "来ない", "potential": "来られる"},
+    "いる": {"nai": "いない", "potential": "いられる"},
+}
+
+
+def kana_form(item: dict, answer: str) -> str:
+    """The same conjugated form written entirely in kana.
+
+    Typing 話せる on a phone means finding the kanji; はなせる is the same answer
+    and tests the same rule, so it is accepted too. The kanji stem maps onto the
+    head of the reading — 話す／はなす gives 話→はな — which fails only for 来る,
+    whose reading changes with the form (くる／こられる), so カ变 is left out.
+    """
+    reading, term = item.get("reading", ""), item["term"]
+    pos = (item.get("pos") or "").strip()
+    if not reading or reading == term or pos.startswith("カ变"):
+        return ""
+    kanji_len = 0
+    while kanji_len < len(term) and KANJI_RE.match(term[kanji_len]):
+        kanji_len += 1
+    okurigana = len(term) - kanji_len
+    if not kanji_len or okurigana >= len(reading) or not answer.startswith(term[:kanji_len]):
+        return ""
+    return reading[: len(reading) - okurigana] + answer[kanji_len:]
+
+
+def derive_form(item: dict, key: str) -> str:
+    """Build た形／ない形／可能形 from the dictionary form and the verb class.
+
+    Only ます形 and て形 are tabulated in V-004. The rest follow from the class
+    (V-005 – V-007), and た形 in particular is just て形 with its final kana
+    voiced-swapped, so it needs no separate rule.
+    """
+    forms = item.get("forms") or {}
+    if key in forms and forms[key]:
+        return forms[key]
+
+    term = forms.get("dictionary") or item["term"]
+    verb_class = (item.get("pos") or "").strip()
+    te = forms.get("te", "")
+
+    override = IRREGULAR_FORMS.get(term, {})
+    if key in override:
+        return override[key]
+
+    if key == "ta":
+        # 遊んで → 遊んだ, 会って → 会った, 行って → 行った (the 行く exception is
+        # already baked into its tabulated て形).
+        if not te:
+            return ""
+        return te[:-1] + ("だ" if te.endswith("で") else "た")
+
+    if verb_class.startswith("サ变"):
+        stem = term[:-2] if term.endswith("する") else term
+        return {"nai": stem + "しない", "potential": stem + "できる"}.get(key, "")
+
+    if verb_class.startswith("カ变"):
+        return {"nai": "来ない", "potential": "来られる"}.get(key, "")
+
+    if verb_class.startswith("一段"):
+        stem = term[:-1]
+        return {"nai": stem + "ない", "potential": stem + "られる"}.get(key, "")
+
+    if verb_class.startswith("五段"):
+        body, tail = term[:-1], term[-1]
+        if key == "nai" and tail in GODAN_NAI_STEM:
+            return body + GODAN_NAI_STEM[tail] + "ない"
+        if key == "potential" and tail in GODAN_POTENTIAL_STEM:
+            return body + GODAN_POTENTIAL_STEM[tail] + "る"
+    return ""
 
 # 五段 て形 endings, used to build the mistakes a learner actually makes.
 GODAN_TE = {"う": "って", "つ": "って", "る": "って", "む": "んで", "ぶ": "んで",
@@ -569,6 +798,9 @@ GODAN_MASU_STEM = {"う": "い", "つ": "ち", "る": "り", "む": "み", "ぶ"
 # The ない-form stem; using it before ます (遊ばます) is a classic slip.
 GODAN_NAI_STEM = {"う": "わ", "つ": "た", "る": "ら", "む": "ま", "ぶ": "ば",
                   "ぬ": "な", "く": "か", "ぐ": "が", "す": "さ"}
+# The え-row stem the 可能形 is built on: 話す → 話せる, 飲む → 飲める.
+GODAN_POTENTIAL_STEM = {"う": "え", "つ": "て", "る": "れ", "む": "め", "ぶ": "べ",
+                        "ぬ": "ね", "く": "け", "ぐ": "げ", "す": "せ"}
 
 
 def wrong_conjugations(item: dict, key: str) -> list[str]:
@@ -578,9 +810,9 @@ def wrong_conjugations(item: dict, key: str) -> list[str]:
     遊ぶ. Those make far better distractors than the correct form of an unrelated
     verb, which can be eliminated without knowing any conjugation rule.
     """
-    term = item["term"]
+    term = (item.get("forms") or {}).get("dictionary") or item["term"]
     verb_class = (item.get("pos") or "").strip()
-    correct = (item.get("forms") or {}).get(key, "")
+    correct = derive_form(item, key)
     if len(term) < 2:
         return []
 
@@ -597,7 +829,7 @@ def wrong_conjugations(item: dict, key: str) -> list[str]:
             # ない-stem instead of ます-stem: 歩く -> 歩かます
             if tail in GODAN_NAI_STEM:
                 out.append(body + GODAN_NAI_STEM[tail] + "ます")
-    else:  # て形
+    elif key in ("te", "ta"):
         if verb_class.startswith("一段"):
             out.append(body + "って")          # 食べる -> 食べって
             out.append(term + "て")            # 食べる -> 食べるて
@@ -605,9 +837,52 @@ def wrong_conjugations(item: dict, key: str) -> list[str]:
             if tail in GODAN_MASU_STEM:
                 out.append(body + GODAN_MASU_STEM[tail] + "て")  # 遊ぶ -> 遊びて
             for ending in ("って", "んで", "いて"):
-                candidate = body + ending
-                if candidate != correct:
-                    out.append(candidate)
+                out.append(body + ending)
+        elif verb_class.startswith("サ变"):
+            stem = term[:-2] if term.endswith("する") else term
+            out.append(term + "て")                        # 勉強するて
+            out.append(stem + "すて")                      # 勉強すて
+        elif verb_class.startswith("カ变"):
+            out.extend(["来るて", "来って", "来きて"])
+        if key == "ta":
+            # た形 errors are て形 errors with the same voicing swap, so the wrong
+            # 遊びて becomes the wrong 遊びた rather than a separate rule set.
+            out = [f[:-1] + ("だ" if f.endswith("で") else "た") for f in out]
+    elif key == "nai":
+        if verb_class.startswith("一段"):
+            out.append(term + "ない")                      # 食べる -> 食べるない
+            out.append(body + "らない")                    # as 五段: 食べらない
+        elif verb_class.startswith("五段"):
+            out.append(body + "ない")                      # as 一段: 飲ない
+            if tail in GODAN_MASU_STEM:
+                # ます-stem instead of ない-stem: 飲む -> 飲みない
+                out.append(body + GODAN_MASU_STEM[tail] + "ない")
+            for stem in ("ら", "わ", "か"):
+                out.append(body + stem + "ない")           # wrong row of the same class
+        elif verb_class.startswith("サ变"):
+            stem = term[:-2] if term.endswith("する") else term
+            out.append(stem + "するない")
+            out.append(stem + "さない")
+        elif verb_class.startswith("カ变"):
+            out.extend(["来るない", "来らない", "来れない"])
+    elif key == "potential":
+        if verb_class.startswith("一段"):
+            out.append(body + "れる")                      # ら抜き: 食べれる
+            out.append(term + "られる")                    # 食べるられる
+            out.append(body + "える")                      # as 五段: 食べえる
+        elif verb_class.startswith("五段"):
+            out.append(body + "られる")                    # as 一段: 飲られる
+            if tail in GODAN_NAI_STEM:
+                # ない-stem + れる, i.e. the passive shape: 飲む -> 飲まれる
+                out.append(body + GODAN_NAI_STEM[tail] + "れる")
+            if tail in GODAN_MASU_STEM:
+                out.append(body + GODAN_MASU_STEM[tail] + "れる")
+            out.append(term + "られる")
+        elif verb_class.startswith("サ变"):
+            stem = term[:-2] if term.endswith("する") else term
+            out.extend([stem + "しられる", stem + "される", stem + "するできる"])
+        elif verb_class.startswith("カ变"):
+            out.extend(["来れる", "来できる", "来るられる"])
 
     seen, unique = set(), []
     for form in out:
@@ -621,13 +896,15 @@ def make_conjugation(item: dict, bank: list[dict], rng: random.Random, confusion
     """Verb conjugation drill from the V-004 table (guide §8.5)."""
     if item["category"] != "verb_form":
         return None
-    forms = item.get("forms") or {}
-    choices = [k for k in ("te", "masu") if forms.get(k)]
-    if not choices:
+    available = [k for k in FORM_PRIORITY if derive_form(item, k)]
+    if not available:
         return None
-    key = rng.choice(choices)
+    # Prefer the harder forms. ます形 is the first one learned and stops testing
+    # anything once it is automatic, so it is only used when it is all there is.
+    harder = [k for k in available if k != "masu"]
+    key = rng.choice(harder) if harder else "masu"
     label = CONJUGATION_FORMS[key][0]
-    answer = forms[key]
+    answer = derive_form(item, key)
 
     # Half the time ask the learner to produce the form rather than recognise it:
     # writing 遊んで from 遊ぶ is a different (and harder) skill than picking it
@@ -643,7 +920,9 @@ def make_conjugation(item: dict, bank: list[dict], rng: random.Random, confusion
             "form_label": label,
             "meaning_zh": item["meaning_zh"],
             "answer": answer,
-            "accepted": [answer, strip_furigana(answer)],
+            "accepted": sorted(
+                {s for s in (answer, strip_furigana(answer), kana_form(item, answer)) if s}
+            ),
             "explanation": (
                 f"{item['id']}　{item['term']}（{item['reading']}）"
                 f"［{item['pos']}］{label}：{answer}\n意思：{item['meaning_zh']}"
@@ -665,20 +944,17 @@ def make_conjugation(item: dict, bank: list[dict], rng: random.Random, confusion
 
     # Top up from other verbs' forms if the rules produced too few.
     others = [
-        b for b in bank
-        if b["category"] == "verb_form"
-        and b["id"] != item["id"]
-        and (b.get("forms") or {}).get(key)
-        and b["forms"][key] != answer
+        (b, derive_form(b, key)) for b in bank
+        if b["category"] == "verb_form" and b["id"] != item["id"]
     ]
+    others = [(b, form) for b, form in others if form and form != answer]
     tail = item["term"][-1]
-    near = [b for b in others if b["term"].endswith(tail)]
+    near = [pair for pair in others if pair[0]["term"].endswith(tail)]
     pool = near if len(near) >= 3 else others
     rng.shuffle(pool)
-    for b in pool:
+    for _, candidate in pool:
         if len(wrong_options) >= 3:
             break
-        candidate = b["forms"][key]
         if candidate not in seen:
             wrong_options.append(candidate)
             seen.add(candidate)
