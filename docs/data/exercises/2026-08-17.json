@@ -1,0 +1,91 @@
+{
+  "date": "2026-08-17",
+  "generated_from": "handbook/ (grammar, particles, expressions, vocabulary, verbs, mistakes, Duolingo)",
+  "count": 5,
+  "review_item_ids": [
+    "G-002"
+  ],
+  "exercises": [
+    {
+      "type": "mcq",
+      "item_id": "W-N056",
+      "prompt": "「部屋」的读音是？",
+      "options": [
+        "へや",
+        "ともだち",
+        "けいやく",
+        "はんにち"
+      ],
+      "answer": "へや",
+      "explanation": "W-N056　部屋（へや）：房间",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 1
+    },
+    {
+      "type": "translation",
+      "item_id": "W-N047",
+      "prompt": "把下面的中文翻译成日语：",
+      "sentence_zh": "买了很多蔬菜。",
+      "hint": "提示：使用 野菜（やさい）",
+      "answer": "野菜（やさい）をたくさん買（か）いました。",
+      "answer_plain": "野菜をたくさん買いました。",
+      "accepted": [
+        "野菜をたくさん買いました。"
+      ],
+      "explanation": "W-N047　参考答案：野菜（やさい）をたくさん買（か）いました。\n野菜：蔬菜",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "野菜（やさい）をたくさん買（か）いました。",
+      "n": 2
+    },
+    {
+      "type": "conjugation",
+      "item_id": "VF-063",
+      "prompt": "写出「習う（ならう）」的ます形：",
+      "verb": "習う",
+      "verb_reading": "ならう",
+      "verb_class": "五段",
+      "form_label": "ます形",
+      "meaning_zh": "学习（向人学）",
+      "answer": "習います",
+      "accepted": [
+        "習います",
+        "習います"
+      ],
+      "explanation": "VF-063　習う（ならう）［五段］ます形：習います\n意思：学习（向人学）",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 3
+    },
+    {
+      "type": "fill_blank",
+      "item_id": "G-002",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "毎日練習し＿＿＿上手になります。",
+      "sentence_zh": "只要每天练习，就会变得熟练。",
+      "answer": "たら",
+      "accepted": [
+        "たら",
+        "～たら"
+      ],
+      "explanation": "G-002　完整句子：毎日（まいにち）練習（れんしゅう）したら上手（じょうず）になります。\n只要每天练习，就会变得熟练。\n～たら：表示假设条件或自然结果，常译为\"如果……的话\"\"一旦……就……\"。",
+      "source": "handbook/01-Grammar.md",
+      "probe": "毎日（まいにち）練習（れんしゅう）したら上手（じょうず）になります。",
+      "n": 4
+    },
+    {
+      "type": "fill_blank",
+      "item_id": "G-031",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "来年はスノーボードにも挑戦し＿＿＿です。",
+      "sentence_zh": "明年我还想挑战单板滑雪。",
+      "answer": "たい",
+      "accepted": [
+        "たい",
+        "～たい"
+      ],
+      "explanation": "G-031　完整句子：来年（らいねん）はスノーボードにも挑戦（ちょうせん）したいです。\n明年我还想挑战单板滑雪。\n～たい：表示说话人自己想做某事，常译为“想……”。",
+      "source": "handbook/01-Grammar.md",
+      "probe": "来年（らいねん）はスノーボードにも挑戦（ちょうせん）したいです。",
+      "n": 5
+    }
+  ]
+}
