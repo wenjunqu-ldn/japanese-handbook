@@ -313,7 +313,7 @@
 - [W-V048 打つ](05-Vocabulary.md#W-V048)
 - [W-V049 塗る](05-Vocabulary.md#W-V049)
 - [W-V050 掛ける](05-Vocabulary.md#W-V050)
-- [W-V051 測る](05-Vocabulary.md#W-V051)
+- [W-V051 量る](05-Vocabulary.md#W-V051)
 - [W-V052 回る](05-Vocabulary.md#W-V052)
 - [W-V053 撫でる](05-Vocabulary.md#W-V053)
 - [W-V054 履く](05-Vocabulary.md#W-V054)
