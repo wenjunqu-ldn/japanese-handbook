@@ -208,7 +208,7 @@
 - [W-I005 少ない](05-Vocabulary.md#W-I005)
 - [W-I006 小さい](05-Vocabulary.md#W-I006)
 - [W-I007 多い](05-Vocabulary.md#W-I007)
-- [W-I008 美味しい](05-Vocabulary.md#W-I008)
+- [W-I008 おいしい](05-Vocabulary.md#W-I008)
 - [W-I009 忙しい](05-Vocabulary.md#W-I009)
 - [W-I010 苦い](05-Vocabulary.md#W-I010)
 - [W-I011 甘い](05-Vocabulary.md#W-I011)
