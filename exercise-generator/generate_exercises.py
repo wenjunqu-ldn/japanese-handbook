@@ -750,11 +750,13 @@ def kana_form(item: dict, answer: str) -> str:
 
 
 def derive_form(item: dict, key: str) -> str:
-    """Build た形／ない形／可能形 from the dictionary form and the verb class.
+    """Build every form from the dictionary form and the verb class.
 
-    Only ます形 and て形 are tabulated in V-004. The rest follow from the class
-    (V-005 – V-007), and た形 in particular is just て形 with its final kana
-    voiced-swapped, so it needs no separate rule.
+    V-004 tabulates ます形 and て形, and those are trusted first — they carry the
+    exceptions, such as 行く → 行って. Everything else follows from the class
+    (V-005 – V-007). The vocabulary chapter's verbs have no tabulated forms at
+    all, so for them ます形 and て形 are derived here too, which is what lets
+    them join the drill pool.
     """
     forms = item.get("forms") or {}
     if key in forms and forms[key]:
@@ -762,37 +764,67 @@ def derive_form(item: dict, key: str) -> str:
 
     term = forms.get("dictionary") or item["term"]
     verb_class = (item.get("pos") or "").strip()
-    te = forms.get("te", "")
 
     override = IRREGULAR_FORMS.get(term, {})
     if key in override:
         return override[key]
 
+    if key == "potential" and (term in NO_POTENTIAL or "自动词" in verb_class):
+        return ""
+
+    if key == "dictionary":
+        return term
+
     if key == "ta":
-        # 遊んで → 遊んだ, 会って → 会った, 行って → 行った (the 行く exception is
-        # already baked into its tabulated て形).
+        # 遊んで → 遊んだ, 会って → 会った, 行って → 行った (the 行く exception
+        # rides along inside its て形, tabulated or derived).
+        te = derive_form(item, "te")
         if not te:
             return ""
         return te[:-1] + ("だ" if te.endswith("で") else "た")
 
     if verb_class.startswith("サ变"):
         stem = term[:-2] if term.endswith("する") else term
-        return {"nai": stem + "しない", "potential": stem + "できる"}.get(key, "")
+        return {"masu": stem + "します", "te": stem + "して",
+                "nai": stem + "しない", "potential": stem + "できる"}.get(key, "")
 
     if verb_class.startswith("カ变"):
-        return {"nai": "来ない", "potential": "来られる"}.get(key, "")
+        return {"masu": "来ます", "te": "来て",
+                "nai": "来ない", "potential": "来られる"}.get(key, "")
 
     if verb_class.startswith("一段"):
         stem = term[:-1]
-        return {"nai": stem + "ない", "potential": stem + "られる"}.get(key, "")
+        return {"masu": stem + "ます", "te": stem + "て",
+                "nai": stem + "ない", "potential": stem + "られる"}.get(key, "")
 
     if verb_class.startswith("五段"):
         body, tail = term[:-1], term[-1]
+        if key == "te" and term in IRREGULAR_TE:
+            return IRREGULAR_TE[term]
+        if key == "masu" and tail in GODAN_MASU_STEM:
+            return body + GODAN_MASU_STEM[tail] + "ます"
+        if key == "te" and tail in GODAN_TE:
+            return body + GODAN_TE[tail]
         if key == "nai" and tail in GODAN_NAI_STEM:
             return body + GODAN_NAI_STEM[tail] + "ない"
         if key == "potential" and tail in GODAN_POTENTIAL_STEM:
             return body + GODAN_POTENTIAL_STEM[tail] + "る"
     return ""
+
+# 五段 verbs whose て形 breaks the ending table. V-004 tabulates 行く correctly,
+# but the vocabulary chapter has no table, so the exception is listed here for
+# anything derived from the class alone.
+IRREGULAR_TE = {"行く": "行って", "問う": "問うて", "請う": "請うて"}
+
+# Verbs that are not drilled on 可能形. Two reasons, both of which teach a wrong
+# equation if ignored:
+#   * an intransitive verb's derived potential is usually unnatural （始まれる、
+#     咲ける、壊れられる）, and where it is not, it often collides with its own
+#     transitive partner — 付く→付ける, 並ぶ→並べる, 入る→入れる. The handbook
+#     marks these with 自动词, so the marker does the work.
+#   * V-004 carries no 自他 marker, and a few verbs elsewhere have no potential
+#     in ordinary use, so they are named here.
+NO_POTENTIAL = {"開く", "入る", "違う", "分かる", "できる", "見える", "聞こえる"}
 
 # 五段 て形 endings, used to build the mistakes a learner actually makes.
 GODAN_TE = {"う": "って", "つ": "って", "る": "って", "む": "んで", "ぶ": "んで",
@@ -1031,9 +1063,29 @@ def make_verb_translation(
 # Which form the drill shows. The dictionary form is the usual starting point,
 # but converting out of ます形 or て形 is a different (and harder) lookup, so both
 # appear regularly.
+# Verb classes that do not drill cleanly: 「手を洗う」→ 写出た形 is a phrase, not
+# a form, and 付いてくる is a compound whose tail conjugates on its own rules.
+DRILL_EXCLUDED_CLASSES = ("固定搭配", "复合动词")
 DRILL_SOURCES = [("dictionary", 5), ("masu", 3), ("te", 2)]
 DRILL_COOLDOWN = 2         # days a drilled verb sits out of the weak-slot queue
 DRILL_FORMS = ["dictionary", "masu", "te", "ta", "nai", "potential"]
+
+
+def is_drillable_verb(item: dict) -> bool:
+    """Verbs the drill block may use.
+
+    Both the V-004 table and the vocabulary chapter's verbs qualify: with ます形
+    and て形 now derived from the class, a `W-V` row carries everything a drill
+    needs. Fixed phrases and compounds are left out.
+    """
+    if item["category"] == "verb_form":
+        return True
+    if not item["id"].startswith("W-V"):
+        return False
+    verb_class = (item.get("pos") or "").strip()
+    if not verb_class or any(x in verb_class for x in DRILL_EXCLUDED_CLASSES):
+        return False
+    return verb_class.startswith(("五段", "一段", "サ变", "カ变"))
 
 
 def make_conjugation_drill(item: dict, rng: random.Random) -> dict | None:
@@ -1043,7 +1095,7 @@ def make_conjugation_drill(item: dict, rng: random.Random) -> dict | None:
     meant to be answered quickly and in volume, so the daily five can stay on
     meaning and usage.
     """
-    if item["category"] != "verb_form":
+    if not is_drillable_verb(item):
         return None
     forms = {k: derive_form(item, k) for k in DRILL_FORMS}
     forms = {k: v for k, v in forms.items() if v}
@@ -1468,7 +1520,7 @@ def main() -> int:
         # A verb already asked in the daily five is not drilled again the same
         # day: two questions on one item makes the set feel narrower than it is.
         served = {e["item_id"] for e in exercises}
-        verbs = [b for b in bank if b["category"] == "verb_form" and b["id"] not in served]
+        verbs = [b for b in bank if is_drillable_verb(b) and b["id"] not in served]
         drill_history = [
             {"date": h.get("date"), "item_ids": h.get("drill_item_ids", [])} for h in history
         ]
