@@ -2,3 +2,5 @@
 {"date": "2026-08-15", "item_id": "DUO-076", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-15T17:31:57.192756+00:00", "issue": "6", "given": "パスワードを忘れました", "expected": "パスワードを忘れてしまいました。", "near": true}
 {"date": "2026-08-16", "item_id": "DUO-076", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-16T14:50:27.859755+00:00", "issue": "9", "given": "パスワードを忘れてしていました", "expected": "パスワードを忘れてしまいました。", "near": true}
 {"date": "2026-08-17", "item_id": "VF-063", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-17T21:06:12.819420+00:00", "issue": "19", "given": "ならいます", "expected": "習います", "near": true}
+{"date": "2026-08-18", "item_id": "W-V008", "type": "fill_blank", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-18T18:30:43.992630+00:00", "issue": "21", "given": "始めました", "expected": "始まりました", "near": true}
+{"date": "2026-08-18", "item_id": "W-V013", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-18T18:30:43.992630+00:00", "issue": "21", "given": "雪に転びました", "expected": "雪の上で転びました。", "near": true}

@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-08-17T21:06:12.819420+00:00",
-  "total_misses": 4,
-  "distinct_items": 3,
+  "updated_at": "2026-08-18T18:30:43.992630+00:00",
+  "total_misses": 6,
+  "distinct_items": 5,
   "top_missed": [
     {
       "item_id": "DUO-076",
@@ -13,6 +13,14 @@
     },
     {
       "item_id": "VF-063",
+      "misses": 1
+    },
+    {
+      "item_id": "W-V008",
+      "misses": 1
+    },
+    {
+      "item_id": "W-V013",
       "misses": 1
     }
   ]

@@ -13,3 +13,8 @@
 {"date": "2026-08-17", "item_id": "VF-063", "type": "conjugation", "correct": false, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-17T21:06:12.819420+00:00", "issue": "19"}
 {"date": "2026-08-17", "item_id": "G-002", "type": "fill_blank", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-17T21:06:12.819420+00:00", "issue": "19"}
 {"date": "2026-08-17", "item_id": "G-031", "type": "fill_blank", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-17T21:06:12.819420+00:00", "issue": "19"}
+{"date": "2026-08-18", "item_id": "W-V017", "type": "mcq", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-18T18:30:43.992630+00:00", "issue": "21"}
+{"date": "2026-08-18", "item_id": "VF-069", "type": "mcq", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-18T18:30:43.992630+00:00", "issue": "21"}
+{"date": "2026-08-18", "item_id": "W-V008", "type": "fill_blank", "correct": false, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-18T18:30:43.992630+00:00", "issue": "21"}
+{"date": "2026-08-18", "item_id": "VF-063", "type": "mcq", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-18T18:30:43.992630+00:00", "issue": "21"}
+{"date": "2026-08-18", "item_id": "W-V013", "type": "translation", "correct": false, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-18T18:30:43.992630+00:00", "issue": "21"}
