@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-17",
+  "updated_at": "2026-08-18",
   "items": [
     {
       "item_id": "DUO-038",
@@ -39,12 +39,21 @@
     },
     {
       "item_id": "G-002",
-      "correct_count": 1,
+      "correct_count": 2,
       "wrong_count": 1,
-      "streak": 1,
-      "last_seen": "2026-08-16",
+      "streak": 2,
+      "last_seen": "2026-08-17",
       "last_wrong": "2026-08-15",
-      "mastery": 0.6
+      "mastery": 0.8
+    },
+    {
+      "item_id": "G-031",
+      "correct_count": 1,
+      "wrong_count": 0,
+      "streak": 1,
+      "last_seen": "2026-08-17",
+      "last_wrong": null,
+      "mastery": 0.767
     },
     {
       "item_id": "VF-023",
@@ -54,6 +63,15 @@
       "last_seen": "2026-08-15",
       "last_wrong": null,
       "mastery": 0.767
+    },
+    {
+      "item_id": "VF-063",
+      "correct_count": 0,
+      "wrong_count": 1,
+      "streak": 0,
+      "last_seen": "2026-08-17",
+      "last_wrong": "2026-08-17",
+      "mastery": 0.333
     },
     {
       "item_id": "VF-090",
@@ -70,6 +88,24 @@
       "wrong_count": 0,
       "streak": 1,
       "last_seen": "2026-08-15",
+      "last_wrong": null,
+      "mastery": 0.767
+    },
+    {
+      "item_id": "W-N047",
+      "correct_count": 1,
+      "wrong_count": 0,
+      "streak": 1,
+      "last_seen": "2026-08-17",
+      "last_wrong": null,
+      "mastery": 0.767
+    },
+    {
+      "item_id": "W-N056",
+      "correct_count": 1,
+      "wrong_count": 0,
+      "streak": 1,
+      "last_seen": "2026-08-17",
       "last_wrong": null,
       "mastery": 0.767
     }

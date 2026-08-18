@@ -1,0 +1,87 @@
+{
+  "date": "2026-08-18",
+  "generated_from": "handbook/ (grammar, particles, expressions, vocabulary, verbs, mistakes, Duolingo)",
+  "count": 5,
+  "review_item_ids": [
+    "VF-063"
+  ],
+  "exercises": [
+    {
+      "type": "mcq",
+      "item_id": "W-V017",
+      "prompt": "「ごまかす（ごまかす）」的意思是？",
+      "options": [
+        "哭",
+        "选择",
+        "寻找",
+        "掩饰；含糊带过；蒙混"
+      ],
+      "answer": "掩饰；含糊带过；蒙混",
+      "explanation": "W-V017　ごまかす（ごまかす）：掩饰；含糊带过；蒙混",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 1
+    },
+    {
+      "type": "mcq",
+      "item_id": "VF-069",
+      "prompt": "「乗る（のる）」的ない形是？",
+      "options": [
+        "乗りない",
+        "乗わない",
+        "乗ない",
+        "乗らない"
+      ],
+      "answer": "乗らない",
+      "explanation": "VF-069　乗る（のる）［五段］ない形：乗らない\n意思：乘坐",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 2
+    },
+    {
+      "type": "fill_blank",
+      "item_id": "W-V008",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "番組が＿＿＿。",
+      "sentence_zh": "节目开始了。",
+      "answer": "始まりました",
+      "accepted": [
+        "始まりました"
+      ],
+      "hint": "提示：开始",
+      "explanation": "W-V008　完整句子：番組（ばんぐみ）が始（はじ）まりました。\n节目开始了。\n始まる（はじまる）：开始",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "番組（ばんぐみ）が始（はじ）まりました。",
+      "n": 3
+    },
+    {
+      "type": "mcq",
+      "item_id": "VF-063",
+      "prompt": "「習う」的读音是？",
+      "options": [
+        "あるく",
+        "とる",
+        "ならう",
+        "まがる"
+      ],
+      "answer": "ならう",
+      "explanation": "VF-063　習う（ならう）：学习（向人学）",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 4
+    },
+    {
+      "type": "translation",
+      "item_id": "W-V013",
+      "prompt": "把下面的中文翻译成日语：",
+      "sentence_zh": "在雪地上摔倒了。",
+      "hint": "提示：使用 転ぶ（ころぶ）",
+      "answer": "雪（ゆき）の上（うえ）で転（ころ）びました。",
+      "answer_plain": "雪の上で転びました。",
+      "accepted": [
+        "雪の上で転びました。"
+      ],
+      "explanation": "W-V013　参考答案：雪（ゆき）の上（うえ）で転（ころ）びました。\n転ぶ：摔倒",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "雪（ゆき）の上（うえ）で転（ころ）びました。",
+      "n": 5
+    }
+  ]
+}
