@@ -1054,6 +1054,7 @@ def build_exercise(
     confusion: dict[str, set[str]],
     avoid: set[str],
     personal: dict[str, dict],
+    exclude: set[str] | None = None,
 ) -> dict | None:
     """Build one exercise, trying the requested formats in order.
 
@@ -1072,7 +1073,14 @@ def build_exercise(
         "fill_blank": lambda: make_fill_blank(item, rng, avoid),
         "translation": lambda: make_translation(item, rng, avoid),
     }
-    order = list(preferred) + [k for k in builders if k not in preferred]
+    # `exclude` is a hard ban, not a preference: the fallback below tries every
+    # remaining builder, so a format merely left out of `preferred` would come
+    # straight back — which is how conjugation kept reappearing in the daily
+    # five after being moved to its own block.
+    for key in exclude or ():
+        builders.pop(key, None)
+    order = [k for k in preferred if k in builders]
+    order += [k for k in builders if k not in order]
     for key in order:
         result = builders[key]()
         if result:
@@ -1094,12 +1102,19 @@ FORMAT_DISPLAY = {
 }
 
 
-def candidate_formats(item: dict, personal: dict[str, dict]) -> list[str]:
-    """Formats this item could plausibly support, best first."""
+def candidate_formats(
+    item: dict, personal: dict[str, dict], allow_conjugation: bool = True
+) -> list[str]:
+    """Formats this item could plausibly support, best first.
+
+    `allow_conjugation` is off whenever the day carries its own drill block:
+    form conversion belongs there, and spending one of the daily five on it
+    would ask the same thing twice in one sitting.
+    """
     if item["category"] == "mistake":
         return ["correction" if item.get("severity") == "error" else "naturalness"]
     if item["category"] == "verb_form":
-        return ["conjugation", "mcq_reading"]
+        return ["conjugation", "mcq_reading"] if allow_conjugation else ["mcq_reading"]
     formats = ["fill_blank", "translation", "mcq_meaning", "mcq_reading"]
     # Re-testing a sentence the learner actually got wrong beats any generated
     # question for that item, so it goes first when one exists (guide §5.1).
@@ -1253,18 +1268,35 @@ def main() -> int:
     selected = review_picks + fill_picks
     rng.shuffle(selected)
 
+    # Form conversion has its own block below, so the daily five leave it out.
+    allow_conjugation = args.drills <= 0
+
     exercises = []
     used_formats: dict[str, int] = {}
-    for item in selected:
-        options = candidate_formats(item, personal)
+    # Spares to draw on when a picked item cannot produce a question at all —
+    # otherwise the day silently comes up short and the quality check kills it.
+    spares = [
+        it for it in bank
+        if it["id"] not in {s["id"] for s in selected}
+    ]
+    rng.shuffle(spares)
+    queue = list(selected)
+    while queue and len(exercises) < args.count:
+        item = queue.pop(0)
+        options = candidate_formats(item, personal, allow_conjugation)
         # A personal correction is a deliberate priority, not something to be
         # shuffled away for the sake of format balance.
         if options and options[0] == "personal_correction":
             wanted = options
         else:
             wanted = order_by_balance(options, used_formats, rng)
-        ex = build_exercise(item, bank, wanted, rng, confusion, recent_probes, personal)
+        ex = build_exercise(
+            item, bank, wanted, rng, confusion, recent_probes, personal,
+            exclude=None if allow_conjugation else {"conjugation"},
+        )
         if ex is None:
+            if spares:
+                queue.append(spares.pop(0))
             continue
         ex["n"] = len(exercises) + 1
         display = FORMAT_DISPLAY.get(ex.pop("format_key", ""), ex["type"])
