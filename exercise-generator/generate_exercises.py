@@ -382,6 +382,7 @@ BLANK_STOP = set("はがをにへでともやのかねよ、。「」！？")
 # お／ご are honorific prefixes and make a clean edge in front of お手伝いします.
 BLANK_LEFT_EDGE = set("はがをにへでとものかおご、。「」！？")
 KANA_RE = re.compile(r"[ぁ-ん]")
+KANA_ANY_RE = re.compile(r"[ぁ-んァ-ヶ]")
 KANJI_RE = re.compile(r"[一-鿿々]")
 KATAKANA_RE = re.compile(r"[ァ-ヴー]")
 
@@ -895,6 +896,131 @@ def wrong_conjugations(item: dict, key: str) -> list[str]:
     return unique
 
 
+def verb_surfaces(item: dict) -> list[tuple[str, bool]]:
+    """Written shapes of a verb to look for in a sentence.
+
+    Returns (surface, needs_masu) — the bare ます-stem (入り) is only a verb when
+    ます follows it, otherwise it matches nouns like 入り口.
+    """
+    forms = {k: derive_form(item, k) for k in DRILL_FORMS}
+    out = [(v, False) for v in forms.values() if v and len(v) >= 2]
+    stem = forms.get("masu", "")[:-2]
+    if len(stem) >= 2:
+        out.append((stem, True))
+    seen, unique = set(), []
+    for surface, needs in sorted(out, key=lambda s: -len(s[0])):
+        if surface not in seen:
+            seen.add(surface)
+            unique.append((surface, needs))
+    return unique
+
+
+def verb_usage_index(bank: list[dict]) -> dict[str, list[dict]]:
+    """Sentences elsewhere in the handbook that actually use each V-004 verb.
+
+    The verb table has no example sentences of its own, which is why those items
+    could only ever be asked as bare form conversion. Borrowing a real sentence
+    lets the same verb be asked the harder way — work out which form the
+    sentence needs — without inventing Japanese.
+    """
+    pool = [
+        {"ja": ex["ja"], "zh": ex["zh"], "plain": strip_furigana(ex["ja"]), "owner": b["id"]}
+        for b in bank if b["category"] != "verb_form"
+        for ex in b["examples"]
+        # A translation with kana in it is not a translation: dialogue examples
+        # (A：… / B：…) split into two Japanese lines and the second was being
+        # served as the Chinese prompt.
+        if ex["zh"] and not KANA_ANY_RE.search(ex["zh"])
+    ]
+    index: dict[str, list[dict]] = {}
+    for item in bank:
+        if item["category"] != "verb_form":
+            continue
+        found = []
+        for sentence in pool:
+            for surface, needs_masu in verb_surfaces(item):
+                at = sentence["plain"].find(surface)
+                if at < 0 or sentence["plain"].count(surface) != 1:
+                    continue
+                if needs_masu and not sentence["plain"][at + len(surface):].startswith("ま"):
+                    continue
+                found.append({**sentence, "surface": surface})
+                break
+        if found:
+            index[item["id"]] = found
+    return index
+
+
+def _pick_usage(item, usage, rng, avoid):
+    sentences = list(usage.get(item["id"], []))
+    if not sentences:
+        return None
+    rng.shuffle(sentences)
+    sentences.sort(key=lambda s: s["ja"] in (avoid or set()))
+    return sentences[0]
+
+
+def make_verb_form_choice(
+    item: dict, usage: dict, rng: random.Random, avoid: set[str] | None = None
+) -> dict | None:
+    """Give the dictionary form, ask which form the sentence needs.
+
+    Harder than the drill block: nothing states the target form, so the sentence
+    itself has to be read before anything can be written.
+    """
+    if item["category"] != "verb_form":
+        return None
+    sentence = _pick_usage(item, usage, rng, avoid)
+    if not sentence:
+        return None
+    blank = expand_blank(sentence["plain"], sentence["surface"])
+    if sentence["plain"].count(blank) != 1 or blank == sentence["plain"]:
+        return None
+    return {
+        "type": "fill_blank",
+        "item_id": item["id"],
+        "prompt": f"在空格处填入「{item['term']}（{item['reading']}）」的正确形式：",
+        "sentence": sentence["plain"].replace(blank, "＿＿＿", 1),
+        "sentence_zh": sentence["zh"],
+        "hint": f"提示：{item['pos']}　{item['meaning_zh']}",
+        "answer": blank,
+        "accepted": sorted({s for s in (blank, kana_form(item, blank)) if s}),
+        "explanation": (
+            f"{item['id']}　完整句子：{sentence['ja']}\n{sentence['zh']}\n"
+            f"{item['term']}（{item['reading']}）［{item['pos']}］：{item['meaning_zh']}"
+        ),
+        "source": item["source"],
+        "probe": sentence["ja"],
+    }
+
+
+def make_verb_translation(
+    item: dict, usage: dict, rng: random.Random, avoid: set[str] | None = None
+) -> dict | None:
+    """Whole-sentence translation built around a verb from the V-004 table."""
+    if item["category"] != "verb_form":
+        return None
+    sentence = _pick_usage(item, usage, rng, avoid)
+    if not sentence:
+        return None
+    return {
+        "type": "translation",
+        "item_id": item["id"],
+        "prompt": "把下面的中文翻译成日语：",
+        "sentence_zh": sentence["zh"],
+        "hint": f"提示：使用 {item['term']}（{item['reading']}）",
+        "answer": sentence["ja"],
+        "answer_plain": sentence["plain"],
+        "accepted": [sentence["plain"]],
+        "explanation": (
+            f"{item['id']}　参考答案：{sentence['ja']}\n"
+            f"{item['term']}（{item['reading']}）［{item['pos']}］：{item['meaning_zh']}"
+        ),
+        "source": item["source"],
+        "probe": sentence["ja"],
+    }
+
+
 # Which form the drill shows. The dictionary form is the usual starting point,
 # but converting out of ます形 or て形 is a different (and harder) lookup, so both
 # appear regularly.
@@ -1054,6 +1180,7 @@ def build_exercise(
     confusion: dict[str, set[str]],
     avoid: set[str],
     personal: dict[str, dict],
+    usage: dict[str, list[dict]],
     exclude: set[str] | None = None,
 ) -> dict | None:
     """Build one exercise, trying the requested formats in order.
@@ -1072,6 +1199,8 @@ def build_exercise(
         "mcq_reading": lambda: make_mcq_reading(item, bank, rng, confusion),
         "fill_blank": lambda: make_fill_blank(item, rng, avoid),
         "translation": lambda: make_translation(item, rng, avoid),
+        "verb_form_choice": lambda: make_verb_form_choice(item, usage, rng, avoid),
+        "verb_translation": lambda: make_verb_translation(item, usage, rng, avoid),
     }
     # `exclude` is a hard ban, not a preference: the fallback below tries every
     # remaining builder, so a format merely left out of `preferred` would come
@@ -1091,6 +1220,8 @@ def build_exercise(
 
 # Which builders each format key ultimately renders as, for balancing purposes.
 FORMAT_DISPLAY = {
+    "verb_form_choice": "fill_blank",
+    "verb_translation": "translation",
     "personal_correction": "correction",
     "correction": "correction",
     "naturalness": "mcq",
@@ -1114,7 +1245,11 @@ def candidate_formats(
     if item["category"] == "mistake":
         return ["correction" if item.get("severity") == "error" else "naturalness"]
     if item["category"] == "verb_form":
-        return ["conjugation", "mcq_reading"] if allow_conjugation else ["mcq_reading"]
+        # Without the drill block the plain conversion is still the best question
+        # for a verb-table row. With it, the same verb is asked the harder way:
+        # decide the form from the sentence, or produce the whole sentence.
+        harder = ["verb_form_choice", "verb_translation", "mcq_reading"]
+        return (["conjugation"] + harder) if allow_conjugation else harder
     formats = ["fill_blank", "translation", "mcq_meaning", "mcq_reading"]
     # Re-testing a sentence the learner actually got wrong beats any generated
     # question for that item, so it goes first when one exists (guide §5.1).
@@ -1231,6 +1366,9 @@ def main() -> int:
         print("Item bank is empty — nothing to generate.")
         return 1
     confusion = load_confusion_map()
+    # Sentences from elsewhere in the handbook that use each V-004 verb, so the
+    # verb table can be asked with real context and not only as conversion.
+    usage = verb_usage_index(bank)
 
     # Drop any existing entry for the target date: on a --force regeneration the
     # previous run's own entry would otherwise damp the very items it served,
@@ -1284,14 +1422,24 @@ def main() -> int:
     while queue and len(exercises) < args.count:
         item = queue.pop(0)
         options = candidate_formats(item, personal, allow_conjugation)
-        # A personal correction is a deliberate priority, not something to be
-        # shuffled away for the sake of format balance.
         if options and options[0] == "personal_correction":
+            # A personal correction is a deliberate priority, not something to be
+            # shuffled away for the sake of format balance.
             wanted = options
+        elif item["category"] == "verb_form":
+            # Verbs keep their own priority: work out the form from the sentence,
+            # or produce the whole sentence. Balancing would keep promoting the
+            # reading question, which is the easiest thing a verb can be asked
+            # and is already covered by writing the forms in the drill block.
+            wanted = list(options)
+            if len(wanted) >= 2:
+                head = wanted[:2]
+                rng.shuffle(head)
+                wanted[:2] = head
         else:
             wanted = order_by_balance(options, used_formats, rng)
         ex = build_exercise(
-            item, bank, wanted, rng, confusion, recent_probes, personal,
+            item, bank, wanted, rng, confusion, recent_probes, personal, usage,
             exclude=None if allow_conjugation else {"conjugation"},
         )
         if ex is None:
