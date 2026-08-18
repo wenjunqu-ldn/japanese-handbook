@@ -19,7 +19,7 @@ import collections
 import sys
 
 from ingest_mistakes import VALID_ID_RE
-from itembank import load_item_bank
+from itembank import load_irregular_forms, load_item_bank
 
 
 def main() -> int:
@@ -44,6 +44,33 @@ def main() -> int:
     prefixes = sorted({i["id"].split("-")[0] for i in bank})
     print(f"OK: all {len(bank)} item IDs are accepted.")
     print(f"    prefixes in use: {', '.join(prefixes)}")
+
+    return check_irregular_forms(bank)
+
+
+def check_irregular_forms(bank: list[dict]) -> int:
+    """V-009 must actually reach the verbs it names.
+
+    A typo in the table is silent otherwise: the row parses, no verb matches it,
+    and the drill goes on serving the regular — wrong — form.
+    """
+    irregular = load_irregular_forms()
+    if not irregular:
+        print("FAIL: handbook V-009 parsed to nothing; check the table format.")
+        return 1
+
+    verbs = {
+        (b.get("forms") or {}).get("dictionary") or b["term"]
+        for b in bank
+        if b["category"] == "verb_form" or b["id"].startswith("W-V")
+    }
+    unmatched = sorted(set(irregular) - verbs)
+
+    print(f"OK: handbook V-009 lists {len(irregular)} irregular verbs.")
+    if unmatched:
+        # Not fatal: a verb may be listed ahead of being added to the handbook,
+        # which is better than the exception being forgotten. Say so loudly.
+        print(f"    note: {len(unmatched)} not (yet) a handbook verb entry: {', '.join(unmatched)}")
     return 0
 
 

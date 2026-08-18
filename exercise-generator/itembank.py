@@ -356,6 +356,47 @@ RELATED_RE = re.compile(r"###\s*(?:Related|易混淆表达)\s*\n(.*?)(?=\n###|\n
 ID_IN_TEXT_RE = re.compile(r"\b([GPEVMR]-\d{3}|W-(?:N|V|I|NA|ADV|CON)\d{3}|DUO-\d{3})\b")
 
 
+FORM_KEYS_ZH = {
+    "辞书形": "dictionary", "ます形": "masu", "て形": "te",
+    "た形": "ta", "ない形": "nai", "可能形": "potential",
+}
+
+
+def load_irregular_forms() -> dict[str, dict[str, str]]:
+    """V-009 — verbs whose forms the class rules get wrong.
+
+    Returns {dictionary form: {form key: value}}, where an empty value means the
+    form is not used in modern Japanese and should never be asked. Keeping this
+    in the handbook rather than in the generator is the point: conjugation is
+    Japanese knowledge, and PROJECT_SPEC §3 puts all of that in handbook/.
+    """
+    path = HANDBOOK_DIR / "02-Verbs.md"
+    if not path.exists():
+        return {}
+    text = path.read_text(encoding="utf-8")
+    section = re.search(r"^## V-009.*?(?=^## |\Z)", text, re.M | re.S)
+    if not section:
+        return {}
+
+    out: dict[str, dict[str, str]] = {}
+    for line in section.group(0).splitlines():
+        cells = _parse_table_line(line)
+        # 动词 | 假名 | 类型 | 不规则形式 | 说明
+        if not cells or len(cells) < 4 or cells[0] in ("动词", ""):
+            continue
+        forms: dict[str, str] = {}
+        for part in cells[3].split("／"):
+            if "＝" not in part:
+                continue
+            label, value = (x.strip() for x in part.split("＝", 1))
+            key = FORM_KEYS_ZH.get(label)
+            if key:
+                forms[key] = "" if value in ("—", "-", "－") else value
+        if forms:
+            out[cells[0]] = forms
+    return out
+
+
 def load_confusion_map(items: list[dict] | None = None) -> dict[str, set[str]]:
     """Which items the handbook itself flags as easily confused with which.
 

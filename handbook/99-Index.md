@@ -50,6 +50,7 @@
 - [V-006 ない形](02-Verbs.md#V-006)
 - [V-007 可能形](02-Verbs.md#V-007)
 - [V-008 意向形](02-Verbs.md#V-008)
+- [V-009 不规则变形一览](02-Verbs.md#V-009)
 
 ## Particles
 - [P-001 は](03-Particles.md#P-001)
