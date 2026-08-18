@@ -107,7 +107,7 @@ function renderExercise(ex, isReview) {
       <p class="sentence">${escapeHtml(ex.sentence_zh)}</p>
       <input type="text" name="q${ex.n}" autocomplete="off" autocapitalize="off"
              spellcheck="false" placeholder="写出日语句子">
-      <p class="hint">${escapeHtml(ex.hint || "")}</p>`;
+      ${ex.hint ? `<p class="hint">${escapeHtml(ex.hint)}</p>` : ""}`;
   }
 
   card.innerHTML = `

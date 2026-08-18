@@ -979,10 +979,13 @@ def make_verb_form_choice(
     return {
         "type": "fill_blank",
         "item_id": item["id"],
-        "prompt": f"在空格处填入「{item['term']}（{item['reading']}）」的正确形式：",
+        # The verb itself is never named: printing 「曲がる」 above the blank turns
+        # the question into pure conjugation, which is what the drill block is
+        # for. The Chinese sentence plus the meaning is enough to identify it.
+        "prompt": "在空格处填入合适的动词形式：",
         "sentence": sentence["plain"].replace(blank, "＿＿＿", 1),
         "sentence_zh": sentence["zh"],
-        "hint": f"提示：{item['pos']}　{item['meaning_zh']}",
+        "hint": f"提示：{item['meaning_zh']}｜{item['pos']}",
         "answer": blank,
         "accepted": sorted({s for s in (blank, kana_form(item, blank)) if s}),
         "explanation": (
@@ -1008,7 +1011,11 @@ def make_verb_translation(
         "item_id": item["id"],
         "prompt": "把下面的中文翻译成日语：",
         "sentence_zh": sentence["zh"],
-        "hint": f"提示：使用 {item['term']}（{item['reading']}）",
+        # No hint at all. Naming the verb would hand over the answer, and naming
+        # its Chinese meaning misleads whenever the verb sits inside a pattern —
+        # なる in ようになりました is not the learner's "become". Translating the
+        # whole sentence correctly already proves the verb was known.
+        "hint": "",
         "answer": sentence["ja"],
         "answer_plain": sentence["plain"],
         "accepted": [sentence["plain"]],
