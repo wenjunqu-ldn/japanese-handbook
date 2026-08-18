@@ -23,7 +23,7 @@ import re
 from datetime import date, datetime
 from pathlib import Path
 
-from itembank import load_confusion_map, load_item_bank
+from itembank import load_confusion_map, load_irregular_forms, load_item_bank
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "docs" / "data"
@@ -717,15 +717,11 @@ CONJUGATION_FORMS = {
 # only when nothing harder can be derived for that verb.
 FORM_PRIORITY = ["potential", "nai", "ta", "te", "masu"]
 
-# Verbs whose ない形 or 可能形 do not follow the class rule. An empty string means
-# the form is not worth asking: ある has no ordinary 可能形 (有り得る is a separate
-# word, not a conjugation), so the drill skips it instead of teaching a wrong rule.
-IRREGULAR_FORMS = {
-    "ある": {"nai": "ない", "potential": ""},
-    "する": {"nai": "しない", "potential": "できる"},
-    "来る": {"nai": "来ない", "potential": "来られる"},
-    "いる": {"nai": "いない", "potential": "いられる"},
-}
+# Verbs the class rules get wrong, read from handbook V-009 rather than written
+# here: conjugation is Japanese knowledge, and PROJECT_SPEC §3 keeps all of that
+# in handbook/. An empty value means the form is not used in modern Japanese and
+# is never asked.
+IRREGULAR_FORMS = load_irregular_forms()
 
 
 def kana_form(item: dict, answer: str) -> str:
@@ -769,7 +765,11 @@ def derive_form(item: dict, key: str) -> str:
     if key in override:
         return override[key]
 
-    if key == "potential" and (term in NO_POTENTIAL or "自动词" in verb_class):
+    # An intransitive verb's derived potential is either unnatural （始まれる、
+    # 咲ける） or collides with its own transitive partner （付く→付ける,
+    # 並ぶ→並べる）, so the 自他 marker in the vocabulary table rules it out
+    # wholesale. Cases the marker cannot see are listed in V-009 instead.
+    if key == "potential" and "自动词" in verb_class:
         return ""
 
     if key == "dictionary":
@@ -799,8 +799,6 @@ def derive_form(item: dict, key: str) -> str:
 
     if verb_class.startswith("五段"):
         body, tail = term[:-1], term[-1]
-        if key == "te" and term in IRREGULAR_TE:
-            return IRREGULAR_TE[term]
         if key == "masu" and tail in GODAN_MASU_STEM:
             return body + GODAN_MASU_STEM[tail] + "ます"
         if key == "te" and tail in GODAN_TE:
@@ -810,21 +808,6 @@ def derive_form(item: dict, key: str) -> str:
         if key == "potential" and tail in GODAN_POTENTIAL_STEM:
             return body + GODAN_POTENTIAL_STEM[tail] + "る"
     return ""
-
-# 五段 verbs whose て形 breaks the ending table. V-004 tabulates 行く correctly,
-# but the vocabulary chapter has no table, so the exception is listed here for
-# anything derived from the class alone.
-IRREGULAR_TE = {"行く": "行って", "問う": "問うて", "請う": "請うて"}
-
-# Verbs that are not drilled on 可能形. Two reasons, both of which teach a wrong
-# equation if ignored:
-#   * an intransitive verb's derived potential is usually unnatural （始まれる、
-#     咲ける、壊れられる）, and where it is not, it often collides with its own
-#     transitive partner — 付く→付ける, 並ぶ→並べる, 入る→入れる. The handbook
-#     marks these with 自动词, so the marker does the work.
-#   * V-004 carries no 自他 marker, and a few verbs elsewhere have no potential
-#     in ordinary use, so they are named here.
-NO_POTENTIAL = {"開く", "入る", "違う", "分かる", "できる", "見える", "聞こえる"}
 
 # 五段 て形 endings, used to build the mistakes a learner actually makes.
 GODAN_TE = {"う": "って", "つ": "って", "る": "って", "む": "んで", "ぶ": "んで",

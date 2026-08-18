@@ -142,6 +142,33 @@ Accepted content must:
 
 An incorrect learner sentence may appear only in Common Mistakes, with an explanation and corrected alternatives. It must not be reused as a normal example.
 
+## 8.1 Verbs: check the conjugation before recording
+
+Every verb entry carries a class (`五段`, `一段`, `サ变`, `カ变`), and the exercise
+generator derives ます形, て形, た形, ない形 and 可能形 from that class alone. A verb
+whose real forms do not follow its class will therefore be **drilled with a wrong
+answer** unless the exception is recorded.
+
+So, before adding a verb:
+
+1. Confirm the class. Watch for 五段 verbs that look 一段 — `帰る`, `走る`, `切る`,
+   `要る`, `知る`, `入る`, `限る`, `喋る` all end in いる／える but conjugate as 五段.
+2. Derive its forms mentally and check each against actual usage. The usual traps:
+   て形／た形 (`行く→行って`, not `行いて`), a suppletive form (`する→できる`),
+   and a form that simply is not used (`ある` has no 可能形).
+3. If any form breaks the rule, add a row to [V-009 不规则变形一览](handbook/02-Verbs.md#V-009)
+   with `形式＝值`, separating several with `／`. Write `—` for a form that modern
+   Japanese does not use, so the generator skips it instead of inventing one.
+4. If every form follows the rule, record nothing — the class alone is enough.
+
+Do not put conjugation exceptions in the generator. `handbook/` is the only place
+knowledge lives (`PROJECT_SPEC.md` §3); the generator reads V-009 at run time.
+
+One case is handled automatically and needs no row: an intransitive verb's 可能形
+is skipped wholesale, because it is either unnatural (`始まれる`, `咲ける`) or
+collides with its own transitive partner (`付く→付ける`, `並ぶ→並べる`). Marking the
+entry `自动词` in the vocabulary table is what triggers this.
+
 ## 9. Multi-category sentences
 
 A sentence may support several entries, but each concept has one primary definition.
@@ -179,6 +206,7 @@ This is analysis material and should not be committed unless explicitly required
 - [ ] Temporary chat material was excluded.
 - [ ] Existing entries and variants were searched.
 - [ ] Plain English loanwords were not added as Vocabulary entries (§3).
+- [ ] Each new verb's class was confirmed, and any irregular form was recorded in V-009 (§8.1).
 - [ ] Each new definition has one primary location.
 - [ ] Duplicate definitions were not introduced.
 - [ ] Accepted content was rewritten in Handbook style.
