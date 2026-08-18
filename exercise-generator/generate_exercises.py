@@ -382,6 +382,7 @@ BLANK_STOP = set("はがをにへでともやのかねよ、。「」！？")
 # お／ご are honorific prefixes and make a clean edge in front of お手伝いします.
 BLANK_LEFT_EDGE = set("はがをにへでとものかおご、。「」！？")
 KANA_RE = re.compile(r"[ぁ-ん]")
+KANA_ANY_RE = re.compile(r"[ぁ-んァ-ヶ]")
 KANJI_RE = re.compile(r"[一-鿿々]")
 KATAKANA_RE = re.compile(r"[ァ-ヴー]")
 
@@ -704,6 +705,7 @@ def make_naturalness(item: dict, rng: random.Random) -> dict | None:
 
 
 CONJUGATION_FORMS = {
+    "dictionary": ("辞书形", "辞书形"),
     "masu": ("ます形", "ます形"),
     "te": ("て形", "て形"),
     "ta": ("た形", "た形"),
@@ -894,6 +896,199 @@ def wrong_conjugations(item: dict, key: str) -> list[str]:
     return unique
 
 
+def verb_surfaces(item: dict) -> list[tuple[str, bool]]:
+    """Written shapes of a verb to look for in a sentence.
+
+    Returns (surface, needs_masu) — the bare ます-stem (入り) is only a verb when
+    ます follows it, otherwise it matches nouns like 入り口.
+    """
+    forms = {k: derive_form(item, k) for k in DRILL_FORMS}
+    out = [(v, False) for v in forms.values() if v and len(v) >= 2]
+    stem = forms.get("masu", "")[:-2]
+    if len(stem) >= 2:
+        out.append((stem, True))
+    seen, unique = set(), []
+    for surface, needs in sorted(out, key=lambda s: -len(s[0])):
+        if surface not in seen:
+            seen.add(surface)
+            unique.append((surface, needs))
+    return unique
+
+
+def verb_usage_index(bank: list[dict]) -> dict[str, list[dict]]:
+    """Sentences elsewhere in the handbook that actually use each V-004 verb.
+
+    The verb table has no example sentences of its own, which is why those items
+    could only ever be asked as bare form conversion. Borrowing a real sentence
+    lets the same verb be asked the harder way — work out which form the
+    sentence needs — without inventing Japanese.
+    """
+    pool = [
+        {"ja": ex["ja"], "zh": ex["zh"], "plain": strip_furigana(ex["ja"]), "owner": b["id"]}
+        for b in bank if b["category"] != "verb_form"
+        for ex in b["examples"]
+        # A translation with kana in it is not a translation: dialogue examples
+        # (A：… / B：…) split into two Japanese lines and the second was being
+        # served as the Chinese prompt.
+        if ex["zh"] and not KANA_ANY_RE.search(ex["zh"])
+    ]
+    index: dict[str, list[dict]] = {}
+    for item in bank:
+        if item["category"] != "verb_form":
+            continue
+        found = []
+        for sentence in pool:
+            for surface, needs_masu in verb_surfaces(item):
+                at = sentence["plain"].find(surface)
+                if at < 0 or sentence["plain"].count(surface) != 1:
+                    continue
+                if needs_masu and not sentence["plain"][at + len(surface):].startswith("ま"):
+                    continue
+                found.append({**sentence, "surface": surface})
+                break
+        if found:
+            index[item["id"]] = found
+    return index
+
+
+def _pick_usage(item, usage, rng, avoid):
+    sentences = list(usage.get(item["id"], []))
+    if not sentences:
+        return None
+    rng.shuffle(sentences)
+    sentences.sort(key=lambda s: s["ja"] in (avoid or set()))
+    return sentences[0]
+
+
+def make_verb_form_choice(
+    item: dict, usage: dict, rng: random.Random, avoid: set[str] | None = None
+) -> dict | None:
+    """Give the dictionary form, ask which form the sentence needs.
+
+    Harder than the drill block: nothing states the target form, so the sentence
+    itself has to be read before anything can be written.
+    """
+    if item["category"] != "verb_form":
+        return None
+    sentence = _pick_usage(item, usage, rng, avoid)
+    if not sentence:
+        return None
+    blank = expand_blank(sentence["plain"], sentence["surface"])
+    if sentence["plain"].count(blank) != 1 or blank == sentence["plain"]:
+        return None
+    return {
+        "type": "fill_blank",
+        "item_id": item["id"],
+        # The verb itself is never named: printing 「曲がる」 above the blank turns
+        # the question into pure conjugation, which is what the drill block is
+        # for. The Chinese sentence plus the meaning is enough to identify it.
+        "prompt": "在空格处填入合适的动词形式：",
+        "sentence": sentence["plain"].replace(blank, "＿＿＿", 1),
+        "sentence_zh": sentence["zh"],
+        "hint": f"提示：{item['meaning_zh']}｜{item['pos']}",
+        "answer": blank,
+        "accepted": sorted({s for s in (blank, kana_form(item, blank)) if s}),
+        "explanation": (
+            f"{item['id']}　完整句子：{sentence['ja']}\n{sentence['zh']}\n"
+            f"{item['term']}（{item['reading']}）［{item['pos']}］：{item['meaning_zh']}"
+        ),
+        "source": item["source"],
+        "probe": sentence["ja"],
+    }
+
+
+def make_verb_translation(
+    item: dict, usage: dict, rng: random.Random, avoid: set[str] | None = None
+) -> dict | None:
+    """Whole-sentence translation built around a verb from the V-004 table."""
+    if item["category"] != "verb_form":
+        return None
+    sentence = _pick_usage(item, usage, rng, avoid)
+    if not sentence:
+        return None
+    return {
+        "type": "translation",
+        "item_id": item["id"],
+        "prompt": "把下面的中文翻译成日语：",
+        "sentence_zh": sentence["zh"],
+        # No hint at all. Naming the verb would hand over the answer, and naming
+        # its Chinese meaning misleads whenever the verb sits inside a pattern —
+        # なる in ようになりました is not the learner's "become". Translating the
+        # whole sentence correctly already proves the verb was known.
+        "hint": "",
+        "answer": sentence["ja"],
+        "answer_plain": sentence["plain"],
+        "accepted": [sentence["plain"]],
+        "explanation": (
+            f"{item['id']}　参考答案：{sentence['ja']}\n"
+            f"{item['term']}（{item['reading']}）［{item['pos']}］：{item['meaning_zh']}"
+        ),
+        "source": item["source"],
+        "probe": sentence["ja"],
+    }
+
+
+# Which form the drill shows. The dictionary form is the usual starting point,
+# but converting out of ます形 or て形 is a different (and harder) lookup, so both
+# appear regularly.
+DRILL_SOURCES = [("dictionary", 5), ("masu", 3), ("te", 2)]
+DRILL_COOLDOWN = 2         # days a drilled verb sits out of the weak-slot queue
+DRILL_FORMS = ["dictionary", "masu", "te", "ta", "nai", "potential"]
+
+
+def make_conjugation_drill(item: dict, rng: random.Random) -> dict | None:
+    """Pure form-conversion drill: given one form of a verb, write another.
+
+    No sentence and no context — this is the flash-card half of the practice,
+    meant to be answered quickly and in volume, so the daily five can stay on
+    meaning and usage.
+    """
+    if item["category"] != "verb_form":
+        return None
+    forms = {k: derive_form(item, k) for k in DRILL_FORMS}
+    forms = {k: v for k, v in forms.items() if v}
+    if len(forms) < 2:
+        return None
+
+    pairs = [(k, w) for k, w in DRILL_SOURCES if k in forms]
+    if not pairs:
+        return None
+    source = rng.choices([k for k, _ in pairs], [w for _, w in pairs])[0]
+    # A target that happens to be spelled like the source teaches nothing.
+    targets = [k for k, v in forms.items() if k != source and v != forms[source]]
+    if not targets:
+        return None
+    # ます形 is the first form learned; ask for it only when nothing else exists.
+    harder = [k for k in targets if k != "masu"]
+    target = rng.choice(harder or targets)
+
+    answer = forms[target]
+    table = "｜".join(
+        f"{CONJUGATION_FORMS[k][0]}：{forms[k]}" for k in DRILL_FORMS if k in forms
+    )
+    return {
+        "type": "conjugation",
+        "item_id": item["id"],
+        "prompt": f"「{forms[source]}」（{CONJUGATION_FORMS[source][0]}）→ 写出{CONJUGATION_FORMS[target][0]}：",
+        "verb": item["term"],
+        "verb_reading": item["reading"],
+        "verb_class": item["pos"],
+        "source_label": CONJUGATION_FORMS[source][0],
+        "source_form": forms[source],
+        "form_label": CONJUGATION_FORMS[target][0],
+        "meaning_zh": item["meaning_zh"],
+        "answer": answer,
+        "accepted": sorted(
+            {s for s in (answer, strip_furigana(answer), kana_form(item, answer)) if s}
+        ),
+        "explanation": (
+            f"{item['id']}　{item['term']}（{item['reading']}）［{item['pos']}］\n"
+            f"{table}\n意思：{item['meaning_zh']}"
+        ),
+        "source": item["source"],
+    }
+
+
 def make_conjugation(item: dict, bank: list[dict], rng: random.Random, confusion) -> dict | None:
     """Verb conjugation drill from the V-004 table (guide §8.5)."""
     if item["category"] != "verb_form":
@@ -992,6 +1187,8 @@ def build_exercise(
     confusion: dict[str, set[str]],
     avoid: set[str],
     personal: dict[str, dict],
+    usage: dict[str, list[dict]],
+    exclude: set[str] | None = None,
 ) -> dict | None:
     """Build one exercise, trying the requested formats in order.
 
@@ -1009,8 +1206,17 @@ def build_exercise(
         "mcq_reading": lambda: make_mcq_reading(item, bank, rng, confusion),
         "fill_blank": lambda: make_fill_blank(item, rng, avoid),
         "translation": lambda: make_translation(item, rng, avoid),
+        "verb_form_choice": lambda: make_verb_form_choice(item, usage, rng, avoid),
+        "verb_translation": lambda: make_verb_translation(item, usage, rng, avoid),
     }
-    order = list(preferred) + [k for k in builders if k not in preferred]
+    # `exclude` is a hard ban, not a preference: the fallback below tries every
+    # remaining builder, so a format merely left out of `preferred` would come
+    # straight back — which is how conjugation kept reappearing in the daily
+    # five after being moved to its own block.
+    for key in exclude or ():
+        builders.pop(key, None)
+    order = [k for k in preferred if k in builders]
+    order += [k for k in builders if k not in order]
     for key in order:
         result = builders[key]()
         if result:
@@ -1021,6 +1227,8 @@ def build_exercise(
 
 # Which builders each format key ultimately renders as, for balancing purposes.
 FORMAT_DISPLAY = {
+    "verb_form_choice": "fill_blank",
+    "verb_translation": "translation",
     "personal_correction": "correction",
     "correction": "correction",
     "naturalness": "mcq",
@@ -1032,12 +1240,23 @@ FORMAT_DISPLAY = {
 }
 
 
-def candidate_formats(item: dict, personal: dict[str, dict]) -> list[str]:
-    """Formats this item could plausibly support, best first."""
+def candidate_formats(
+    item: dict, personal: dict[str, dict], allow_conjugation: bool = True
+) -> list[str]:
+    """Formats this item could plausibly support, best first.
+
+    `allow_conjugation` is off whenever the day carries its own drill block:
+    form conversion belongs there, and spending one of the daily five on it
+    would ask the same thing twice in one sitting.
+    """
     if item["category"] == "mistake":
         return ["correction" if item.get("severity") == "error" else "naturalness"]
     if item["category"] == "verb_form":
-        return ["conjugation", "mcq_reading"]
+        # Without the drill block the plain conversion is still the best question
+        # for a verb-table row. With it, the same verb is asked the harder way:
+        # decide the form from the sentence, or produce the whole sentence.
+        harder = ["verb_form_choice", "verb_translation", "mcq_reading"]
+        return (["conjugation"] + harder) if allow_conjugation else harder
     formats = ["fill_blank", "translation", "mcq_meaning", "mcq_reading"]
     # Re-testing a sentence the learner actually got wrong beats any generated
     # question for that item, so it goes first when one exists (guide §5.1).
@@ -1051,6 +1270,26 @@ def order_by_balance(options: list[str], used: dict[str, int], rng: random.Rando
     shuffled = list(options)
     rng.shuffle(shuffled)
     return sorted(shuffled, key=lambda key: used.get(FORMAT_DISPLAY.get(key, key), 0))
+
+
+def drill_problems(drills: list[dict], expected: int) -> list[str]:
+    """The drills get the same refusal-to-ship treatment as the daily five."""
+    problems: list[str] = []
+    if len(drills) != expected:
+        problems.append(f"expected {expected} drills, produced {len(drills)}")
+    seen: set[str] = set()
+    for d in drills:
+        tag = f"drill #{d.get('n')} {d.get('item_id')}"
+        if not d.get("answer"):
+            problems.append(f"{tag}: no answer")
+        if not d.get("accepted"):
+            problems.append(f"{tag}: no accepted answers")
+        if d.get("answer") == d.get("source_form"):
+            problems.append(f"{tag}: answer repeats the form it was given")
+        if d.get("item_id") in seen:
+            problems.append(f"{tag}: same verb drilled twice in one day")
+        seen.add(d.get("item_id"))
+    return problems
 
 
 def quality_check(
@@ -1117,6 +1356,10 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--date", default=date.today().isoformat())
     parser.add_argument("--count", type=int, default=5)
+    parser.add_argument(
+        "--drills", type=int, default=5,
+        help="verb-form conversion drills to append (0 disables them)",
+    )
     parser.add_argument("--force", action="store_true", help="regenerate even if the file exists")
     args = parser.parse_args()
 
@@ -1130,6 +1373,9 @@ def main() -> int:
         print("Item bank is empty — nothing to generate.")
         return 1
     confusion = load_confusion_map()
+    # Sentences from elsewhere in the handbook that use each V-004 verb, so the
+    # verb table can be asked with real context and not only as conversion.
+    usage = verb_usage_index(bank)
 
     # Drop any existing entry for the target date: on a --force regeneration the
     # previous run's own entry would otherwise damp the very items it served,
@@ -1167,23 +1413,91 @@ def main() -> int:
     selected = review_picks + fill_picks
     rng.shuffle(selected)
 
+    # Form conversion has its own block below, so the daily five leave it out.
+    allow_conjugation = args.drills <= 0
+
     exercises = []
     used_formats: dict[str, int] = {}
-    for item in selected:
-        options = candidate_formats(item, personal)
-        # A personal correction is a deliberate priority, not something to be
-        # shuffled away for the sake of format balance.
+    # Spares to draw on when a picked item cannot produce a question at all —
+    # otherwise the day silently comes up short and the quality check kills it.
+    spares = [
+        it for it in bank
+        if it["id"] not in {s["id"] for s in selected}
+    ]
+    rng.shuffle(spares)
+    queue = list(selected)
+    while queue and len(exercises) < args.count:
+        item = queue.pop(0)
+        options = candidate_formats(item, personal, allow_conjugation)
         if options and options[0] == "personal_correction":
+            # A personal correction is a deliberate priority, not something to be
+            # shuffled away for the sake of format balance.
             wanted = options
+        elif item["category"] == "verb_form":
+            # Verbs keep their own priority: work out the form from the sentence,
+            # or produce the whole sentence. Balancing would keep promoting the
+            # reading question, which is the easiest thing a verb can be asked
+            # and is already covered by writing the forms in the drill block.
+            wanted = list(options)
+            if len(wanted) >= 2:
+                head = wanted[:2]
+                rng.shuffle(head)
+                wanted[:2] = head
         else:
             wanted = order_by_balance(options, used_formats, rng)
-        ex = build_exercise(item, bank, wanted, rng, confusion, recent_probes, personal)
+        ex = build_exercise(
+            item, bank, wanted, rng, confusion, recent_probes, personal, usage,
+            exclude=None if allow_conjugation else {"conjugation"},
+        )
         if ex is None:
+            if spares:
+                queue.append(spares.pop(0))
             continue
         ex["n"] = len(exercises) + 1
         display = FORMAT_DISPLAY.get(ex.pop("format_key", ""), ex["type"])
         used_formats[display] = used_formats.get(display, 0) + 1
         exercises.append(ex)
+
+    # --- verb-form drills -------------------------------------------------
+    # A separate block from the daily five: no sentence, no context, just a
+    # form conversion. Selection uses the same mastery machinery, but over its
+    # own history so a verb drilled yesterday is not drilled again today while
+    # still being free to appear in the main set.
+    drills: list[dict] = []
+    if args.drills > 0:
+        # A verb already asked in the daily five is not drilled again the same
+        # day: two questions on one item makes the set feel narrower than it is.
+        served = {e["item_id"] for e in exercises}
+        verbs = [b for b in bank if b["category"] == "verb_form" and b["id"] not in served]
+        drill_history = [
+            {"date": h.get("date"), "item_ids": h.get("drill_item_ids", [])} for h in history
+        ]
+        drill_weights = build_weights(verbs, drill_history, mastery, args.date)
+        weak_verbs = [
+            v for v in verbs
+            if v["id"] in mastery and mastery[v["id"]]["mastery"] < MASTERY_THRESHOLD
+        ]
+        weak_verbs.sort(key=lambda v: (mastery[v["id"]]["mastery"], v["id"]))
+        # The verb pool is small enough that one stubborn verb would otherwise
+        # hold a weak slot every single day — with a single weak verb on record
+        # it appeared 29 days out of 30. A verb just drilled sits out of the
+        # reserved slots for two days; the slot is then left to the weighted
+        # sample, which still favours weak items but damps recent ones, so the
+        # verb returns every few days instead of every day.
+        cooling: set[str] = set()
+        for row in drill_history[-DRILL_COOLDOWN:]:
+            cooling.update(row.get("item_ids", []))
+        rested = [v for v in weak_verbs if v["id"] not in cooling]
+        picks = rested[: min(REVIEW_SLOTS, args.drills)]
+        rest = [v for v in verbs if v["id"] not in {p["id"] for p in picks}]
+        picks += weighted_sample(rest, drill_weights, args.drills - len(picks), rng)
+        rng.shuffle(picks)
+        for verb in picks:
+            drill = make_conjugation_drill(verb, rng)
+            if drill is None:
+                continue
+            drill["n"] = len(drills) + 1
+            drills.append(drill)
 
     review_ids = [
         e["item_id"] for e in exercises
@@ -1193,6 +1507,7 @@ def main() -> int:
     problems, warnings = quality_check(
         exercises, args.count, recent_probes, {b["id"]: b for b in bank}
     )
+    problems += drill_problems(drills, args.drills)
     if problems:
         print("Quality check failed:")
         for p in problems:
@@ -1207,6 +1522,8 @@ def main() -> int:
         "count": len(exercises),
         "review_item_ids": review_ids,
         "exercises": exercises,
+        "drill_count": len(drills),
+        "drills": drills,
     }
 
     EXERCISE_DIR.mkdir(parents=True, exist_ok=True)
@@ -1216,6 +1533,7 @@ def main() -> int:
         {
             "date": args.date,
             "item_ids": [e["item_id"] for e in exercises],
+            "drill_item_ids": [d["item_id"] for d in drills],
             "probes": [e["probe"] for e in exercises if e.get("probe")],
         }
     )
@@ -1241,10 +1559,13 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    print(f"Wrote {out_path} ({len(exercises)} exercises)")
+    print(f"Wrote {out_path} ({len(exercises)} exercises, {len(drills)} drills)")
     for e in exercises:
         marker = " [复习]" if e["item_id"] in review_ids else ""
         print(f"  {e['n']}. [{e['type']}] {e['item_id']}{marker}")
+    for d in drills:
+        print(f"  变形 {d['n']}. {d['item_id']} {d['source_form']}（{d['source_label']}）"
+              f" → {d['form_label']}：{d['answer']}")
     return 0
 
 

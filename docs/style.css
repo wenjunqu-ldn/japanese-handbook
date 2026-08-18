@@ -256,3 +256,15 @@ input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px
 }
 
 .footer a, main a { color: var(--accent); }
+
+/* --- verb-form drills: a second, visually distinct block --- */
+.block-heading {
+  margin: 2rem 0 0.75rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--border);
+  font-size: 1.05rem;
+}
+
+/* Marked with the accent colour so the two blocks are told apart at a glance;
+   the correct/wrong states still override the left border after grading. */
+.card.drill { border-left-color: var(--accent); }
