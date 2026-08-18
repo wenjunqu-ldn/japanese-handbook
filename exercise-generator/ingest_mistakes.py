@@ -87,7 +87,7 @@ def expected_answers(day: str) -> dict[str, str]:
     except json.JSONDecodeError:
         return {}
     answers = {}
-    for exercise in data.get("exercises", []):
+    for exercise in list(data.get("exercises", [])) + list(data.get("drills", [])):
         item_id = exercise.get("item_id")
         answer = exercise.get("answer_plain") or exercise.get("answer") or ""
         if item_id and answer:

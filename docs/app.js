@@ -60,7 +60,7 @@ async function getJSON(path) {
 
 function renderExercise(ex, isReview) {
   const card = document.createElement("div");
-  card.className = "card";
+  card.className = ex.block === "drill" ? "card drill" : "card";
   card.dataset.n = ex.n;
 
   const reviewTag = isReview ? '<span class="tag review">复习</span>' : "";
@@ -112,7 +112,7 @@ function renderExercise(ex, isReview) {
 
   card.innerHTML = `
     <div class="q-head">
-      <strong>第 ${ex.n} 题</strong>
+      <strong>${escapeHtml(ex.label || `第 ${ex.n} 题`)}</strong>
       <span class="tag">${TYPE_LABEL[ex.type] || ex.type}</span>
       <span class="tag">${escapeHtml(ex.item_id)}</span>
       ${reviewTag}
@@ -128,6 +128,24 @@ function renderDay(day) {
 
   el.quiz.innerHTML = "";
   day.exercises.forEach((ex) => el.quiz.appendChild(renderExercise(ex, reviewSet.has(ex.item_id))));
+
+  // The drills are a second block: no sentence, no context, just form
+  // conversion. They keep counting up from the daily five so that every input
+  // name, card lookup and feedback slot stays unique across the whole page.
+  const drills = day.drills || [];
+  if (drills.length) {
+    const heading = document.createElement("h2");
+    heading.className = "block-heading";
+    heading.textContent = "动词变形练习";
+    el.quiz.appendChild(heading);
+    drills.forEach((d, i) => {
+      d.n = day.exercises.length + i + 1;
+      d.block = "drill";
+      d.label = `变形 ${i + 1}`;
+      el.quiz.appendChild(renderExercise(d, reviewSet.has(d.item_id)));
+    });
+  }
+  currentDay.all = [...day.exercises, ...drills];
 
   el.status.hidden = true;
   el.quiz.hidden = false;
@@ -208,8 +226,13 @@ function showFeedback(ex, given, correct) {
 }
 
 function updateScore() {
-  const correctCount = graded.filter((g) => g.correct).length;
-  el.score.textContent = `得分：${correctCount} / ${graded.length}`;
+  const main = graded.filter((g) => !g.drill);
+  const drill = graded.filter((g) => g.drill);
+  const hit = (rows) => rows.filter((g) => g.correct).length;
+  // The two blocks are scored apart: mixing them hides which half went wrong.
+  el.score.textContent = drill.length
+    ? `得分：${hit(main)} / ${main.length}　·　变形：${hit(drill)} / ${drill.length}`
+    : `得分：${hit(main)} / ${main.length}`;
   const missed = graded.filter((g) => !g.correct);
   el.scoreNote.textContent = missed.length
     ? `需要复习：${missed.map((m) => m.item_id).join("、")}`
@@ -263,7 +286,7 @@ function issueUrlFor(payload) {
 }
 
 function grade() {
-  graded = currentDay.exercises.map((ex) => {
+  graded = (currentDay.all || currentDay.exercises).map((ex) => {
     const given = readAnswer(ex);
     const correct = isCorrect(ex, given);
     showFeedback(ex, given, correct);
@@ -271,6 +294,7 @@ function grade() {
       n: ex.n,
       item_id: ex.item_id,
       type: ex.type,
+      drill: ex.block === "drill",
       correct,
       given,
       expected: ex.answer_plain || ex.answer || "",

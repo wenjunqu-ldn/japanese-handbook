@@ -1,6 +1,6 @@
 # 每日日语练习 | Daily Japanese Exercises
 
-一个每天自动生成 5 道日语小练习的应用。题目全部来自本仓库的手册内容，做错的题会回流到仓库，用来调整后续练习的出题重点。
+一个每天自动生成 5 道日语小练习、外加 5 道动词变形题的应用。题目全部来自本仓库的手册内容，做错的题会回流到仓库，用来调整后续练习的出题重点。
 
 > **本文档只覆盖练习应用**（`exercise-generator/`、`docs/`、`.github/workflows/exercise-*.yml`）。
 >
@@ -49,6 +49,24 @@ exercise-generator/ingest_mistakes.py
 | 变形题 Conjugation | `02-Verbs.md` V-004 ～ V-007 | 写出或选出动词的て形／た形／ない形／可能形 |
 
 每天 5 题，题型由「哪些题型对该知识点可行」和「今天已经出过哪些题型」共同决定，因此不会出现 5 题全是选择题的情况。
+
+### 动词变形练习（另加 5 题）
+
+5 道正题之后是一个独立的**动词变形**区块，同样每天 5 道。这一块没有例句、没有上下文——给出动词的某一种形式，写出另一种：
+
+```
+「歩きます」（ます形）→ 写出可能形：      →  歩ける
+「習って」（て形）  → 写出辞书形：        →  習う
+「呼ぶ」（辞书形）  → 写出た形：          →  呼んだ
+```
+
+- 给出的形式在**辞书形／ます形／て形**之间轮换，目标形式可以是辞书形、て形、た形、ない形、可能形（ます形只在推不出别的形式时才作为目标）
+- 答案接受汉字或全假名（`歩ける` 与 `あるける` 都算对）
+- 词源是 `02-Verbs.md` V-004 的 100 个动词，选词同样由掌握度驱动；答错的动词会隔几天回来
+- 同一个动词不会在同一天既出现在正题里、又出现在变形题里
+- 计分与正题分开显示：`得分：4 / 5　·　变形：3 / 5`；两块的结果一起提交，都会进入复习队列
+
+生成时用 `--drills N` 调整题量，`--drills 0` 关闭这一块。
 
 ### 干扰项从哪来 | Where distractors come from
 
@@ -235,6 +253,9 @@ python3 exercise-generator/generate_exercises.py
 # 生成指定日期，并覆盖已有文件
 python3 exercise-generator/generate_exercises.py --date 2026-08-20 --force
 
+# 调整变形题数量（0 表示不出变形题）
+python3 exercise-generator/generate_exercises.py --drills 10
+
 # 查看解析出的题库（调试用）
 python3 exercise-generator/itembank.py > /tmp/bank.json
 
@@ -248,9 +269,9 @@ python3 exercise-generator/ingest_mistakes.py --body-file result.txt
 
 | 文件 | 内容 |
 |------|------|
-| `docs/data/exercises/YYYY-MM-DD.json` | 每天的 5 道题（含答案与解析） |
+| `docs/data/exercises/YYYY-MM-DD.json` | 每天的 5 道正题与 5 道变形题（含答案与解析） |
 | `docs/data/index.json` | 已生成的日期列表 |
-| `docs/data/history.jsonl` | 每天出过哪些知识点 |
+| `docs/data/history.jsonl` | 每天出过哪些知识点（`item_ids` 正题、`drill_item_ids` 变形题） |
 | `docs/data/mistakes.jsonl` | 错题记录 |
 | `docs/data/attempts.jsonl` | 全部答题记录（对与错） |
 | `docs/data/stats.json` | 错题统计汇总 |

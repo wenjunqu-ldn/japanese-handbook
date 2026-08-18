@@ -704,6 +704,7 @@ def make_naturalness(item: dict, rng: random.Random) -> dict | None:
 
 
 CONJUGATION_FORMS = {
+    "dictionary": ("辞书形", "辞书形"),
     "masu": ("ます形", "ます形"),
     "te": ("て形", "て形"),
     "ta": ("た形", "た形"),
@@ -894,6 +895,67 @@ def wrong_conjugations(item: dict, key: str) -> list[str]:
     return unique
 
 
+# Which form the drill shows. The dictionary form is the usual starting point,
+# but converting out of ます形 or て形 is a different (and harder) lookup, so both
+# appear regularly.
+DRILL_SOURCES = [("dictionary", 5), ("masu", 3), ("te", 2)]
+DRILL_COOLDOWN = 2         # days a drilled verb sits out of the weak-slot queue
+DRILL_FORMS = ["dictionary", "masu", "te", "ta", "nai", "potential"]
+
+
+def make_conjugation_drill(item: dict, rng: random.Random) -> dict | None:
+    """Pure form-conversion drill: given one form of a verb, write another.
+
+    No sentence and no context — this is the flash-card half of the practice,
+    meant to be answered quickly and in volume, so the daily five can stay on
+    meaning and usage.
+    """
+    if item["category"] != "verb_form":
+        return None
+    forms = {k: derive_form(item, k) for k in DRILL_FORMS}
+    forms = {k: v for k, v in forms.items() if v}
+    if len(forms) < 2:
+        return None
+
+    pairs = [(k, w) for k, w in DRILL_SOURCES if k in forms]
+    if not pairs:
+        return None
+    source = rng.choices([k for k, _ in pairs], [w for _, w in pairs])[0]
+    # A target that happens to be spelled like the source teaches nothing.
+    targets = [k for k, v in forms.items() if k != source and v != forms[source]]
+    if not targets:
+        return None
+    # ます形 is the first form learned; ask for it only when nothing else exists.
+    harder = [k for k in targets if k != "masu"]
+    target = rng.choice(harder or targets)
+
+    answer = forms[target]
+    table = "｜".join(
+        f"{CONJUGATION_FORMS[k][0]}：{forms[k]}" for k in DRILL_FORMS if k in forms
+    )
+    return {
+        "type": "conjugation",
+        "item_id": item["id"],
+        "prompt": f"「{forms[source]}」（{CONJUGATION_FORMS[source][0]}）→ 写出{CONJUGATION_FORMS[target][0]}：",
+        "verb": item["term"],
+        "verb_reading": item["reading"],
+        "verb_class": item["pos"],
+        "source_label": CONJUGATION_FORMS[source][0],
+        "source_form": forms[source],
+        "form_label": CONJUGATION_FORMS[target][0],
+        "meaning_zh": item["meaning_zh"],
+        "answer": answer,
+        "accepted": sorted(
+            {s for s in (answer, strip_furigana(answer), kana_form(item, answer)) if s}
+        ),
+        "explanation": (
+            f"{item['id']}　{item['term']}（{item['reading']}）［{item['pos']}］\n"
+            f"{table}\n意思：{item['meaning_zh']}"
+        ),
+        "source": item["source"],
+    }
+
+
 def make_conjugation(item: dict, bank: list[dict], rng: random.Random, confusion) -> dict | None:
     """Verb conjugation drill from the V-004 table (guide §8.5)."""
     if item["category"] != "verb_form":
@@ -1053,6 +1115,26 @@ def order_by_balance(options: list[str], used: dict[str, int], rng: random.Rando
     return sorted(shuffled, key=lambda key: used.get(FORMAT_DISPLAY.get(key, key), 0))
 
 
+def drill_problems(drills: list[dict], expected: int) -> list[str]:
+    """The drills get the same refusal-to-ship treatment as the daily five."""
+    problems: list[str] = []
+    if len(drills) != expected:
+        problems.append(f"expected {expected} drills, produced {len(drills)}")
+    seen: set[str] = set()
+    for d in drills:
+        tag = f"drill #{d.get('n')} {d.get('item_id')}"
+        if not d.get("answer"):
+            problems.append(f"{tag}: no answer")
+        if not d.get("accepted"):
+            problems.append(f"{tag}: no accepted answers")
+        if d.get("answer") == d.get("source_form"):
+            problems.append(f"{tag}: answer repeats the form it was given")
+        if d.get("item_id") in seen:
+            problems.append(f"{tag}: same verb drilled twice in one day")
+        seen.add(d.get("item_id"))
+    return problems
+
+
 def quality_check(
     exercises: list[dict], count: int, recent_probes: set[str], bank_by_id: dict[str, dict]
 ) -> tuple[list[str], list[str]]:
@@ -1117,6 +1199,10 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--date", default=date.today().isoformat())
     parser.add_argument("--count", type=int, default=5)
+    parser.add_argument(
+        "--drills", type=int, default=5,
+        help="verb-form conversion drills to append (0 disables them)",
+    )
     parser.add_argument("--force", action="store_true", help="regenerate even if the file exists")
     args = parser.parse_args()
 
@@ -1185,6 +1271,47 @@ def main() -> int:
         used_formats[display] = used_formats.get(display, 0) + 1
         exercises.append(ex)
 
+    # --- verb-form drills -------------------------------------------------
+    # A separate block from the daily five: no sentence, no context, just a
+    # form conversion. Selection uses the same mastery machinery, but over its
+    # own history so a verb drilled yesterday is not drilled again today while
+    # still being free to appear in the main set.
+    drills: list[dict] = []
+    if args.drills > 0:
+        # A verb already asked in the daily five is not drilled again the same
+        # day: two questions on one item makes the set feel narrower than it is.
+        served = {e["item_id"] for e in exercises}
+        verbs = [b for b in bank if b["category"] == "verb_form" and b["id"] not in served]
+        drill_history = [
+            {"date": h.get("date"), "item_ids": h.get("drill_item_ids", [])} for h in history
+        ]
+        drill_weights = build_weights(verbs, drill_history, mastery, args.date)
+        weak_verbs = [
+            v for v in verbs
+            if v["id"] in mastery and mastery[v["id"]]["mastery"] < MASTERY_THRESHOLD
+        ]
+        weak_verbs.sort(key=lambda v: (mastery[v["id"]]["mastery"], v["id"]))
+        # The verb pool is small enough that one stubborn verb would otherwise
+        # hold a weak slot every single day — with a single weak verb on record
+        # it appeared 29 days out of 30. A verb just drilled sits out of the
+        # reserved slots for two days; the slot is then left to the weighted
+        # sample, which still favours weak items but damps recent ones, so the
+        # verb returns every few days instead of every day.
+        cooling: set[str] = set()
+        for row in drill_history[-DRILL_COOLDOWN:]:
+            cooling.update(row.get("item_ids", []))
+        rested = [v for v in weak_verbs if v["id"] not in cooling]
+        picks = rested[: min(REVIEW_SLOTS, args.drills)]
+        rest = [v for v in verbs if v["id"] not in {p["id"] for p in picks}]
+        picks += weighted_sample(rest, drill_weights, args.drills - len(picks), rng)
+        rng.shuffle(picks)
+        for verb in picks:
+            drill = make_conjugation_drill(verb, rng)
+            if drill is None:
+                continue
+            drill["n"] = len(drills) + 1
+            drills.append(drill)
+
     review_ids = [
         e["item_id"] for e in exercises
         if e["item_id"] in mastery and mastery[e["item_id"]]["mastery"] < MASTERY_THRESHOLD
@@ -1193,6 +1320,7 @@ def main() -> int:
     problems, warnings = quality_check(
         exercises, args.count, recent_probes, {b["id"]: b for b in bank}
     )
+    problems += drill_problems(drills, args.drills)
     if problems:
         print("Quality check failed:")
         for p in problems:
@@ -1207,6 +1335,8 @@ def main() -> int:
         "count": len(exercises),
         "review_item_ids": review_ids,
         "exercises": exercises,
+        "drill_count": len(drills),
+        "drills": drills,
     }
 
     EXERCISE_DIR.mkdir(parents=True, exist_ok=True)
@@ -1216,6 +1346,7 @@ def main() -> int:
         {
             "date": args.date,
             "item_ids": [e["item_id"] for e in exercises],
+            "drill_item_ids": [d["item_id"] for d in drills],
             "probes": [e["probe"] for e in exercises if e.get("probe")],
         }
     )
@@ -1241,10 +1372,13 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    print(f"Wrote {out_path} ({len(exercises)} exercises)")
+    print(f"Wrote {out_path} ({len(exercises)} exercises, {len(drills)} drills)")
     for e in exercises:
         marker = " [复习]" if e["item_id"] in review_ids else ""
         print(f"  {e['n']}. [{e['type']}] {e['item_id']}{marker}")
+    for d in drills:
+        print(f"  变形 {d['n']}. {d['item_id']} {d['source_form']}（{d['source_label']}）"
+              f" → {d['form_label']}：{d['answer']}")
     return 0
 
 
