@@ -18,3 +18,8 @@
 {"date": "2026-08-18", "item_id": "W-V008", "type": "fill_blank", "correct": false, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-18T18:30:43.992630+00:00", "issue": "21"}
 {"date": "2026-08-18", "item_id": "VF-063", "type": "mcq", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-18T18:30:43.992630+00:00", "issue": "21"}
 {"date": "2026-08-18", "item_id": "W-V013", "type": "translation", "correct": false, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-18T18:30:43.992630+00:00", "issue": "21"}
+{"date": "2026-08-19", "item_id": "W-V008", "type": "fill_blank", "correct": false, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:04:39.684656+00:00", "issue": "24"}
+{"date": "2026-08-19", "item_id": "W-ADV001", "type": "mcq", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:04:39.684656+00:00", "issue": "24"}
+{"date": "2026-08-19", "item_id": "W-N163", "type": "translation", "correct": false, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:04:39.684656+00:00", "issue": "24"}
+{"date": "2026-08-19", "item_id": "W-ADV002", "type": "translation", "correct": false, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:04:39.684656+00:00", "issue": "24"}
+{"date": "2026-08-19", "item_id": "W-V013", "type": "mcq", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:04:39.684656+00:00", "issue": "24"}

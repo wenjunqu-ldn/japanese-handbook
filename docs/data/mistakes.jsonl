@@ -4,3 +4,6 @@
 {"date": "2026-08-17", "item_id": "VF-063", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-17T21:06:12.819420+00:00", "issue": "19", "given": "ならいます", "expected": "習います", "near": true}
 {"date": "2026-08-18", "item_id": "W-V008", "type": "fill_blank", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-18T18:30:43.992630+00:00", "issue": "21", "given": "始めました", "expected": "始まりました", "near": true}
 {"date": "2026-08-18", "item_id": "W-V013", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-18T18:30:43.992630+00:00", "issue": "21", "given": "雪に転びました", "expected": "雪の上で転びました。", "near": true}
+{"date": "2026-08-19", "item_id": "W-V008", "type": "fill_blank", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:04:39.684656+00:00", "issue": "24", "given": "はじまりました", "expected": "始まりました", "near": true}
+{"date": "2026-08-19", "item_id": "W-N163", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:04:39.684656+00:00", "issue": "24", "given": "太陽はにしに降りました", "expected": "太陽は西に沈みます。", "near": false}
+{"date": "2026-08-19", "item_id": "W-ADV002", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:04:39.684656+00:00", "issue": "24", "given": "みんなはもっと野菜を食べて欲しい", "expected": "みんなにもっと野菜を食べてほしいです。", "near": true}
