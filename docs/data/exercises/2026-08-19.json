@@ -1,0 +1,192 @@
+{
+  "date": "2026-08-19",
+  "generated_from": "handbook/ (grammar, particles, expressions, vocabulary, verbs, mistakes, Duolingo)",
+  "count": 5,
+  "review_item_ids": [
+    "W-V008",
+    "W-V013"
+  ],
+  "exercises": [
+    {
+      "type": "fill_blank",
+      "item_id": "W-V008",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "番組が＿＿＿。",
+      "sentence_zh": "节目开始了。",
+      "answer": "始まりました",
+      "accepted": [
+        "始まりました"
+      ],
+      "hint": "提示：开始",
+      "explanation": "W-V008　完整句子：番組（ばんぐみ）が始（はじ）まりました。\n节目开始了。\n始まる（はじまる）：开始",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "番組（ばんぐみ）が始（はじ）まりました。",
+      "n": 1
+    },
+    {
+      "type": "mcq",
+      "item_id": "W-ADV001",
+      "prompt": "「わくわく」的意思是？",
+      "options": [
+        "那么；达到对方提到或语境中的程度",
+        "各种各样",
+        "差不多该……了",
+        "兴奋期待；满怀期待地"
+      ],
+      "answer": "兴奋期待；满怀期待地",
+      "explanation": "W-ADV001　わくわく：兴奋期待；满怀期待地",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 2
+    },
+    {
+      "type": "translation",
+      "item_id": "W-N163",
+      "prompt": "把下面的中文翻译成日语：",
+      "sentence_zh": "太阳向西边落下。",
+      "hint": "提示：使用 西（にし）",
+      "answer": "太陽（たいよう）は西（にし）に沈（しず）みます。",
+      "answer_plain": "太陽は西に沈みます。",
+      "accepted": [
+        "太陽は西に沈みます。"
+      ],
+      "explanation": "W-N163　参考答案：太陽（たいよう）は西（にし）に沈（しず）みます。\n西：西",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "太陽（たいよう）は西（にし）に沈（しず）みます。",
+      "n": 3
+    },
+    {
+      "type": "translation",
+      "item_id": "W-ADV002",
+      "prompt": "把下面的中文翻译成日语：",
+      "sentence_zh": "我希望大家多吃一些蔬菜。",
+      "hint": "提示：使用 もっと",
+      "answer": "みんなにもっと野菜（やさい）を食（た）べてほしいです。",
+      "answer_plain": "みんなにもっと野菜を食べてほしいです。",
+      "accepted": [
+        "みんなにもっと野菜を食べてほしいです。"
+      ],
+      "explanation": "W-ADV002　参考答案：みんなにもっと野菜（やさい）を食（た）べてほしいです。\nもっと：更加；再多一些",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "みんなにもっと野菜（やさい）を食（た）べてほしいです。",
+      "n": 4
+    },
+    {
+      "type": "mcq",
+      "item_id": "W-V013",
+      "prompt": "「転ぶ」的读音是？",
+      "options": [
+        "ころぶ",
+        "はじまる",
+        "とまる",
+        "つく"
+      ],
+      "answer": "ころぶ",
+      "explanation": "W-V013　転ぶ（ころぶ）：摔倒",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 5
+    }
+  ],
+  "drill_count": 5,
+  "drills": [
+    {
+      "type": "conjugation",
+      "item_id": "VF-063",
+      "prompt": "「習う」（辞书形）→ 写出た形：",
+      "verb": "習う",
+      "verb_reading": "ならう",
+      "verb_class": "五段",
+      "source_label": "辞书形",
+      "source_form": "習う",
+      "form_label": "た形",
+      "meaning_zh": "学习（向人学）",
+      "answer": "習った",
+      "accepted": [
+        "ならった",
+        "習った"
+      ],
+      "explanation": "VF-063　習う（ならう）［五段］\n辞书形：習う｜ます形：習います｜て形：習って｜た形：習った｜ない形：習わない｜可能形：習える\n意思：学习（向人学）",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 1
+    },
+    {
+      "type": "conjugation",
+      "item_id": "VF-044",
+      "prompt": "「住む」（辞书形）→ 写出ない形：",
+      "verb": "住む",
+      "verb_reading": "すむ",
+      "verb_class": "五段",
+      "source_label": "辞书形",
+      "source_form": "住む",
+      "form_label": "ない形",
+      "meaning_zh": "居住",
+      "answer": "住まない",
+      "accepted": [
+        "すまない",
+        "住まない"
+      ],
+      "explanation": "VF-044　住む（すむ）［五段］\n辞书形：住む｜ます形：住みます｜て形：住んで｜た形：住んだ｜ない形：住まない｜可能形：住める\n意思：居住",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 2
+    },
+    {
+      "type": "conjugation",
+      "item_id": "W-V005",
+      "prompt": "「入ります」（ます形）→ 写出て形：",
+      "verb": "入る",
+      "verb_reading": "はいる",
+      "verb_class": "五段／自动词",
+      "source_label": "ます形",
+      "source_form": "入ります",
+      "form_label": "て形",
+      "meaning_zh": "进入；进去",
+      "answer": "入って",
+      "accepted": [
+        "はいって",
+        "入って"
+      ],
+      "explanation": "W-V005　入る（はいる）［五段／自动词］\n辞书形：入る｜ます形：入ります｜て形：入って｜た形：入った｜ない形：入らない\n意思：进入；进去",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 3
+    },
+    {
+      "type": "conjugation",
+      "item_id": "VF-089",
+      "prompt": "「料理して」（て形）→ 写出た形：",
+      "verb": "料理する",
+      "verb_reading": "りょうりする",
+      "verb_class": "サ变",
+      "source_label": "て形",
+      "source_form": "料理して",
+      "form_label": "た形",
+      "meaning_zh": "做饭",
+      "answer": "料理した",
+      "accepted": [
+        "りょうりした",
+        "料理した"
+      ],
+      "explanation": "VF-089　料理する（りょうりする）［サ变］\n辞书形：料理する｜ます形：料理します｜て形：料理して｜た形：料理した｜ない形：料理しない｜可能形：料理できる\n意思：做饭",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 4
+    },
+    {
+      "type": "conjugation",
+      "item_id": "W-V047",
+      "prompt": "「寝坊する」（辞书形）→ 写出た形：",
+      "verb": "寝坊する",
+      "verb_reading": "ねぼうする",
+      "verb_class": "サ变",
+      "source_label": "辞书形",
+      "source_form": "寝坊する",
+      "form_label": "た形",
+      "meaning_zh": "睡过头",
+      "answer": "寝坊した",
+      "accepted": [
+        "ねぼうした",
+        "寝坊した"
+      ],
+      "explanation": "W-V047　寝坊する（ねぼうする）［サ变］\n辞书形：寝坊する｜ます形：寝坊します｜て形：寝坊して｜た形：寝坊した｜ない形：寝坊しない｜可能形：寝坊できる\n意思：睡过头",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 5
+    }
+  ]
+}
