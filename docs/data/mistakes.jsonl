@@ -10,3 +10,9 @@
 {"date": "2026-08-19", "item_id": "W-V008", "type": "fill_blank", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:05:17.354604+00:00", "issue": "25", "given": "はじまりました", "expected": "始まりました", "near": true}
 {"date": "2026-08-19", "item_id": "W-N163", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:05:17.354604+00:00", "issue": "25", "given": "太陽はにしに降りました", "expected": "太陽は西に沈みます。", "near": false}
 {"date": "2026-08-19", "item_id": "W-ADV002", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:05:17.354604+00:00", "issue": "25", "given": "みんなはもっと野菜を食べて欲しい", "expected": "みんなにもっと野菜を食べてほしいです。", "near": true}
+{"date": "2026-08-19", "item_id": "W-V008", "type": "fill_blank", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:09:42.288787+00:00", "issue": "26"}
+{"date": "2026-08-19", "item_id": "W-ADV001", "type": "mcq", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:09:42.288787+00:00", "issue": "26"}
+{"date": "2026-08-19", "item_id": "W-N163", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:09:42.288787+00:00", "issue": "26"}
+{"date": "2026-08-19", "item_id": "W-ADV002", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:09:42.288787+00:00", "issue": "26"}
+{"date": "2026-08-19", "item_id": "W-V013", "type": "mcq", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:09:42.288787+00:00", "issue": "26"}
+{"date": "2026-08-19", "item_id": "VF-063", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-19T08:09:42.288787+00:00", "issue": "26", "given": "習って", "expected": "習った", "near": true}
