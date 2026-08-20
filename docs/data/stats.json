@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-08-20T08:04:41.163678+00:00",
-  "total_misses": 24,
-  "distinct_items": 8,
+  "updated_at": "2026-08-20T08:12:16.101051+00:00",
+  "total_misses": 25,
+  "distinct_items": 9,
   "top_missed": [
     {
       "item_id": "W-V008",
@@ -33,6 +33,10 @@
     },
     {
       "item_id": "G-002",
+      "misses": 1
+    },
+    {
+      "item_id": "VF-039",
       "misses": 1
     }
   ]
