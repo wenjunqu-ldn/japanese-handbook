@@ -1,0 +1,193 @@
+{
+  "date": "2026-08-20",
+  "generated_from": "handbook/ (grammar, particles, expressions, vocabulary, verbs, mistakes, Duolingo)",
+  "count": 5,
+  "review_item_ids": [
+    "W-V008",
+    "VF-063",
+    "W-ADV002"
+  ],
+  "exercises": [
+    {
+      "type": "fill_blank",
+      "item_id": "W-V008",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "番組が＿＿＿。",
+      "sentence_zh": "节目开始了。",
+      "answer": "始まりました",
+      "accepted": [
+        "始まりました"
+      ],
+      "hint": "提示：开始",
+      "explanation": "W-V008　完整句子：番組（ばんぐみ）が始（はじ）まりました。\n节目开始了。\n始まる（はじまる）：开始",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "番組（ばんぐみ）が始（はじ）まりました。",
+      "n": 1
+    },
+    {
+      "type": "mcq",
+      "item_id": "VF-063",
+      "prompt": "「習う」的读音是？",
+      "options": [
+        "ならう",
+        "かう",
+        "なおす",
+        "まがる"
+      ],
+      "answer": "ならう",
+      "explanation": "VF-063　習う（ならう）：学习（向人学）",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 2
+    },
+    {
+      "type": "translation",
+      "item_id": "G-009",
+      "prompt": "把下面的中文翻译成日语：",
+      "sentence_zh": "已经决定下个月去大阪。",
+      "hint": "提示：使用 ～ことになる",
+      "answer": "来月（らいげつ）、大阪（おおさか）へ行（い）くことになりました。",
+      "answer_plain": "来月、大阪へ行くことになりました。",
+      "accepted": [
+        "来月、大阪へ行くことになりました。"
+      ],
+      "explanation": "G-009　参考答案：来月（らいげつ）、大阪（おおさか）へ行（い）くことになりました。\n～ことになる：表示由规定、安排、环境或他人决定的结果。",
+      "source": "handbook/01-Grammar.md",
+      "probe": "来月（らいげつ）、大阪（おおさか）へ行（い）くことになりました。",
+      "n": 3
+    },
+    {
+      "type": "mcq",
+      "item_id": "W-ADV002",
+      "prompt": "「もっと」的意思是？",
+      "options": [
+        "破烂",
+        "其他的",
+        "更加；再多一些",
+        "渐渐地"
+      ],
+      "answer": "更加；再多一些",
+      "explanation": "W-ADV002　もっと：更加；再多一些",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 4
+    },
+    {
+      "type": "fill_blank",
+      "item_id": "W-V047",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "今朝、＿＿＿。",
+      "sentence_zh": "今天早上睡过头了。",
+      "answer": "寝坊しました",
+      "accepted": [
+        "寝坊しました"
+      ],
+      "hint": "提示：睡过头",
+      "explanation": "W-V047　完整句子：今朝（けさ）、寝坊（ねぼう）しました。\n今天早上睡过头了。\n寝坊する（ねぼうする）：睡过头",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "今朝（けさ）、寝坊（ねぼう）しました。",
+      "n": 5
+    }
+  ],
+  "drill_count": 5,
+  "drills": [
+    {
+      "type": "conjugation",
+      "item_id": "VF-039",
+      "prompt": "「死ぬ」（辞书形）→ 写出た形：",
+      "verb": "死ぬ",
+      "verb_reading": "しぬ",
+      "verb_class": "五段",
+      "source_label": "辞书形",
+      "source_form": "死ぬ",
+      "form_label": "た形",
+      "meaning_zh": "死亡",
+      "answer": "死んだ",
+      "accepted": [
+        "しんだ",
+        "死んだ"
+      ],
+      "explanation": "VF-039　死ぬ（しぬ）［五段］\n辞书形：死ぬ｜ます形：死にます｜て形：死んで｜た形：死んだ｜ない形：死なない｜可能形：死ねる\n意思：死亡",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 1
+    },
+    {
+      "type": "conjugation",
+      "item_id": "W-V027",
+      "prompt": "「焼きます」（ます形）→ 写出た形：",
+      "verb": "焼く",
+      "verb_reading": "やく",
+      "verb_class": "五段／他动词",
+      "source_label": "ます形",
+      "source_form": "焼きます",
+      "form_label": "た形",
+      "meaning_zh": "烤；煎",
+      "answer": "焼いた",
+      "accepted": [
+        "やいた",
+        "焼いた"
+      ],
+      "explanation": "W-V027　焼く（やく）［五段／他动词］\n辞书形：焼く｜ます形：焼きます｜て形：焼いて｜た形：焼いた｜ない形：焼かない｜可能形：焼ける\n意思：烤；煎",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 2
+    },
+    {
+      "type": "conjugation",
+      "item_id": "W-V013",
+      "prompt": "「転ぶ」（辞书形）→ 写出た形：",
+      "verb": "転ぶ",
+      "verb_reading": "ころぶ",
+      "verb_class": "五段／自动词",
+      "source_label": "辞书形",
+      "source_form": "転ぶ",
+      "form_label": "た形",
+      "meaning_zh": "摔倒",
+      "answer": "転んだ",
+      "accepted": [
+        "ころんだ",
+        "転んだ"
+      ],
+      "explanation": "W-V013　転ぶ（ころぶ）［五段／自动词］\n辞书形：転ぶ｜ます形：転びます｜て形：転んで｜た形：転んだ｜ない形：転ばない\n意思：摔倒",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 3
+    },
+    {
+      "type": "conjugation",
+      "item_id": "W-V057",
+      "prompt": "「渡る」（辞书形）→ 写出て形：",
+      "verb": "渡る",
+      "verb_reading": "わたる",
+      "verb_class": "五段／自动词",
+      "source_label": "辞书形",
+      "source_form": "渡る",
+      "form_label": "て形",
+      "meaning_zh": "过（马路、桥）",
+      "answer": "渡って",
+      "accepted": [
+        "わたって",
+        "渡って"
+      ],
+      "explanation": "W-V057　渡る（わたる）［五段／自动词］\n辞书形：渡る｜ます形：渡ります｜て形：渡って｜た形：渡った｜ない形：渡らない\n意思：过（马路、桥）",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 4
+    },
+    {
+      "type": "conjugation",
+      "item_id": "VF-034",
+      "prompt": "「着る」（辞书形）→ 写出た形：",
+      "verb": "着る",
+      "verb_reading": "きる",
+      "verb_class": "一段",
+      "source_label": "辞书形",
+      "source_form": "着る",
+      "form_label": "た形",
+      "meaning_zh": "穿（上衣）",
+      "answer": "着た",
+      "accepted": [
+        "きた",
+        "着た"
+      ],
+      "explanation": "VF-034　着る（きる）［一段］\n辞书形：着る｜ます形：着ます｜て形：着て｜た形：着た｜ない形：着ない｜可能形：着られる\n意思：穿（上衣）",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 5
+    }
+  ]
+}
