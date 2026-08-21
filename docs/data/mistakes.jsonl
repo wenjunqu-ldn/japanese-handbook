@@ -23,3 +23,4 @@
 {"date": "2026-08-19", "item_id": "W-V013", "type": "mcq", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-20T08:04:41.163678+00:00", "issue": "27"}
 {"date": "2026-08-19", "item_id": "VF-063", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-20T08:04:41.163678+00:00", "issue": "27", "given": "習って", "expected": "習った", "near": true}
 {"date": "2026-08-20", "item_id": "VF-039", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-20T08:12:16.101051+00:00", "issue": "28", "given": "死んた", "expected": "死んだ", "near": true}
+{"date": "2026-08-20", "item_id": "VF-039", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-21T19:41:40.528956+00:00", "issue": "29", "given": "死んた", "expected": "死んだ", "near": true}
