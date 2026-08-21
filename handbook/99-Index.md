@@ -40,6 +40,9 @@
 - [G-037 い形容词的て形](01-Grammar.md#G-037)
 - [G-038 可能形＋名词（修饰名词）](01-Grammar.md#G-038)
 - [G-039 ～やすい／～にくい](01-Grammar.md#G-039)
+- [G-040 ～た方がいい](01-Grammar.md#G-040)
+- [G-041 动词普通形＋名词](01-Grammar.md#G-041)
+- [G-042 ～まま](01-Grammar.md#G-042)
 
 ## Verbs
 - [V-001 动词分类](02-Verbs.md#V-001)
@@ -83,6 +86,9 @@
 - [E-014 国名＋名词／国名の名词](04-Expressions.md#E-014)
 - [E-015 ところで](04-Expressions.md#E-015)
 - [E-016 おつかれさまでした](04-Expressions.md#E-016)
+- [E-017 しょうがない](04-Expressions.md#E-017)
+- [E-018 このまま](04-Expressions.md#E-018)
+- [E-019 もう少しだけ](04-Expressions.md#E-019)
 
 ## Vocabulary
 
@@ -264,6 +270,12 @@
 - [W-N175 新婦](05-Vocabulary.md#W-N175)
 - [W-N176 事故](05-Vocabulary.md#W-N176)
 - [W-N177 家具](05-Vocabulary.md#W-N177)
+- [W-N178 消しゴム](05-Vocabulary.md#W-N178)
+- [W-N179 数](05-Vocabulary.md#W-N179)
+- [W-N180 右側](05-Vocabulary.md#W-N180)
+- [W-N181 左側](05-Vocabulary.md#W-N181)
+- [W-N182 幽霊](05-Vocabulary.md#W-N182)
+- [W-N183 芸術](05-Vocabulary.md#W-N183)
 - [W-V001 進む](05-Vocabulary.md#W-V001)
 - [W-V002 送る](05-Vocabulary.md#W-V002)
 - [W-V003 入れる](05-Vocabulary.md#W-V003)
@@ -330,6 +342,10 @@
 - [W-V064 手を洗う](05-Vocabulary.md#W-V064)
 - [W-V065 辞める](05-Vocabulary.md#W-V065)
 - [W-V066 ゆっくりする](05-Vocabulary.md#W-V066)
+- [W-V067 数える](05-Vocabulary.md#W-V067)
+- [W-V068 巡る](05-Vocabulary.md#W-V068)
+- [W-V069 離す](05-Vocabulary.md#W-V069)
+- [W-V070 降りる](05-Vocabulary.md#W-V070)
 - [W-I001 気持ち悪い](05-Vocabulary.md#W-I001)
 - [W-I002 ひどい](05-Vocabulary.md#W-I002)
 - [W-I003 怖い](05-Vocabulary.md#W-I003)
@@ -440,6 +456,9 @@
 - [M-009 少ない vs 小さい](06-Mistakes.md#M-009)
 - [M-010 動詞＋のが好き](06-Mistakes.md#M-010)
 - [M-011 遠回りする的活用](06-Mistakes.md#M-011)
+- [M-012 話す vs 離す](06-Mistakes.md#M-012)
+- [M-013 毎月に](06-Mistakes.md#M-013)
+- [M-014 おります 的两种来源](06-Mistakes.md#M-014)
 
 ## Reviews
 - [R-001 变化、决定与经历](07-Reviews.md#R-001)
