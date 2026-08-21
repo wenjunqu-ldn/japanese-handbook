@@ -1,0 +1,192 @@
+{
+  "date": "2026-08-21",
+  "generated_from": "handbook/ (grammar, particles, expressions, vocabulary, verbs, mistakes, Duolingo)",
+  "count": 5,
+  "review_item_ids": [
+    "VF-039",
+    "W-N163"
+  ],
+  "exercises": [
+    {
+      "type": "mcq",
+      "item_id": "W-V044",
+      "prompt": "「別れる」的读音是？",
+      "options": [
+        "おくれる",
+        "わかれる",
+        "はなれる",
+        "こわれる"
+      ],
+      "answer": "わかれる",
+      "explanation": "W-V044　別れる（わかれる）：分别；分手",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 1
+    },
+    {
+      "type": "fill_blank",
+      "item_id": "W-V059",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "星が＿＿＿。",
+      "sentence_zh": "星星在发光。",
+      "answer": "光っています",
+      "accepted": [
+        "光っています"
+      ],
+      "hint": "提示：发光",
+      "explanation": "W-V059　完整句子：星（ほし）が光（ひか）っています。\n星星在发光。\n光る（ひかる）：发光",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "星（ほし）が光（ひか）っています。",
+      "n": 2
+    },
+    {
+      "type": "mcq",
+      "item_id": "VF-039",
+      "prompt": "「死ぬ」的读音是？",
+      "options": [
+        "しぬ",
+        "はじまる",
+        "おわる",
+        "ならう"
+      ],
+      "answer": "しぬ",
+      "explanation": "VF-039　死ぬ（しぬ）：死亡",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 3
+    },
+    {
+      "type": "correction",
+      "item_id": "W-N163",
+      "prompt": "这是你在 2026-08-19 写过的答案，请改成正确的说法：",
+      "wrong_sentence": "太陽はにしに降りました",
+      "sentence_zh": "太阳向西边落下。",
+      "answer": "太陽は西に沈みます。",
+      "answer_plain": "太陽は西に沈みます。",
+      "accepted": [
+        "太陽は西に沈みます。"
+      ],
+      "explanation": "W-N163　你写的：太陽はにしに降りました\n参考答案：太陽は西に沈みます。\n西（にし）：西",
+      "source": "handbook/05-Vocabulary.md",
+      "personal": true,
+      "n": 4
+    },
+    {
+      "type": "translation",
+      "item_id": "W-NA014",
+      "prompt": "把下面的中文翻译成日语：",
+      "sentence_zh": "他是个认真的人。",
+      "hint": "提示：使用 真面目（まじめ）",
+      "answer": "彼（かれ）は真面目（まじめ）な人（ひと）です。",
+      "answer_plain": "彼は真面目な人です。",
+      "accepted": [
+        "彼は真面目な人です。"
+      ],
+      "explanation": "W-NA014　参考答案：彼（かれ）は真面目（まじめ）な人（ひと）です。\n真面目：认真的",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "彼（かれ）は真面目（まじめ）な人（ひと）です。",
+      "n": 5
+    }
+  ],
+  "drill_count": 5,
+  "drills": [
+    {
+      "type": "conjugation",
+      "item_id": "W-V006",
+      "prompt": "「付く」（辞书形）→ 写出ない形：",
+      "verb": "付く",
+      "verb_reading": "つく",
+      "verb_class": "五段／自动词",
+      "source_label": "辞书形",
+      "source_form": "付く",
+      "form_label": "ない形",
+      "meaning_zh": "附着；带有",
+      "answer": "付かない",
+      "accepted": [
+        "つかない",
+        "付かない"
+      ],
+      "explanation": "W-V006　付く（つく）［五段／自动词］\n辞书形：付く｜ます形：付きます｜て形：付いて｜た形：付いた｜ない形：付かない\n意思：附着；带有",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 1
+    },
+    {
+      "type": "conjugation",
+      "item_id": "VF-038",
+      "prompt": "「困って」（て形）→ 写出辞书形：",
+      "verb": "困る",
+      "verb_reading": "こまる",
+      "verb_class": "五段",
+      "source_label": "て形",
+      "source_form": "困って",
+      "form_label": "辞书形",
+      "meaning_zh": "为难；困扰",
+      "answer": "困る",
+      "accepted": [
+        "こまる",
+        "困る"
+      ],
+      "explanation": "VF-038　困る（こまる）［五段］\n辞书形：困る｜ます形：困ります｜て形：困って｜た形：困った｜ない形：困らない｜可能形：困れる\n意思：为难；困扰",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 2
+    },
+    {
+      "type": "conjugation",
+      "item_id": "W-V061",
+      "prompt": "「並びます」（ます形）→ 写出ない形：",
+      "verb": "並ぶ",
+      "verb_reading": "ならぶ",
+      "verb_class": "五段／自动词",
+      "source_label": "ます形",
+      "source_form": "並びます",
+      "form_label": "ない形",
+      "meaning_zh": "排队；排列",
+      "answer": "並ばない",
+      "accepted": [
+        "ならばない",
+        "並ばない"
+      ],
+      "explanation": "W-V061　並ぶ（ならぶ）［五段／自动词］\n辞书形：並ぶ｜ます形：並びます｜て形：並んで｜た形：並んだ｜ない形：並ばない\n意思：排队；排列",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 3
+    },
+    {
+      "type": "conjugation",
+      "item_id": "VF-027",
+      "prompt": "「帰る」（辞书形）→ 写出ない形：",
+      "verb": "帰る",
+      "verb_reading": "かえる",
+      "verb_class": "五段",
+      "source_label": "辞书形",
+      "source_form": "帰る",
+      "form_label": "ない形",
+      "meaning_zh": "回去；回家",
+      "answer": "帰らない",
+      "accepted": [
+        "かえらない",
+        "帰らない"
+      ],
+      "explanation": "VF-027　帰る（かえる）［五段］\n辞书形：帰る｜ます形：帰ります｜て形：帰って｜た形：帰った｜ない形：帰らない｜可能形：帰れる\n意思：回去；回家",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 4
+    },
+    {
+      "type": "conjugation",
+      "item_id": "W-V008",
+      "prompt": "「始まる」（辞书形）→ 写出ない形：",
+      "verb": "始まる",
+      "verb_reading": "はじまる",
+      "verb_class": "五段／自动词",
+      "source_label": "辞书形",
+      "source_form": "始まる",
+      "form_label": "ない形",
+      "meaning_zh": "开始",
+      "answer": "始まらない",
+      "accepted": [
+        "はじまらない",
+        "始まらない"
+      ],
+      "explanation": "W-V008　始まる（はじまる）［五段／自动词］\n辞书形：始まる｜ます形：始まります｜て形：始まって｜た形：始まった｜ない形：始まらない\n意思：开始",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 5
+    }
+  ]
+}
