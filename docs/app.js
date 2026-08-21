@@ -318,6 +318,26 @@ function grade() {
 // Offline, the payload is kept locally so a session done on the train is not
 // lost; the app offers to submit it once there is a network again.
 
+// Days already recorded in the repository. The pending queue survives until it
+// is cleared by hand, and clearing is easy to forget — so the same day kept
+// being offered and submitted again （2026-08-19 went in four times）. The
+// workflow writes this list, so the app can simply check.
+async function pruneSubmitted() {
+  let dates;
+  try {
+    const index = await getJSON(`${DATA}/submitted.json`);
+    dates = new Set(index.dates || []);
+  } catch (err) {
+    return; // offline or not generated yet — the manual button still works
+  }
+  const list = readPending();
+  const keep = list.filter((p) => !dates.has(p.date));
+  if (keep.length !== list.length) {
+    writePending(keep);
+    renderPending();
+  }
+}
+
 function readPending() {
   try {
     const raw = JSON.parse(localStorage.getItem(PENDING_KEY) || "[]");
@@ -447,6 +467,7 @@ async function init() {
 
   // Anything finished but not yet reported — typically a session done offline.
   renderPending();
+  pruneSubmitted();
 
   let index;
   try {
@@ -509,8 +530,17 @@ el.reportDone.addEventListener("click", () => {
 
 el.retryBtn.addEventListener("click", () => loadDate(el.datePicker.value));
 
-window.addEventListener("online", renderPending);
+window.addEventListener("online", () => {
+  renderPending();
+  pruneSubmitted();
+});
 window.addEventListener("offline", renderPending);
+
+// Coming back from the GitHub tab is exactly when the day has just been
+// recorded, so re-check instead of waiting for the next launch.
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) pruneSubmitted();
+});
 
 async function copyText(text, button, label) {
   try {
