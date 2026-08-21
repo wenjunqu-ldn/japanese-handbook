@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 MISTAKES_PATH = ROOT / "docs" / "data" / "mistakes.jsonl"
 ATTEMPTS_PATH = ROOT / "docs" / "data" / "attempts.jsonl"
 STATS_PATH = ROOT / "docs" / "data" / "stats.json"
+SUBMITTED_PATH = ROOT / "docs" / "data" / "submitted.json"
 
 FENCE_RE = re.compile(r"```(?:json)?\s*(\{.*?\})\s*```", re.DOTALL)
 # Every ID prefix the item bank can emit. `VF` (the V-004 verb-drill rows) must
@@ -93,6 +94,51 @@ def expected_answers(day: str) -> dict[str, str]:
         if item_id and answer:
             answers[item_id] = answer
     return answers
+
+
+def drop_date(path: Path, day: str) -> int:
+    """Remove every row for `day`, returning how many were dropped."""
+    if not path.exists():
+        return 0
+    kept, dropped = [], 0
+    for line in path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        try:
+            if json.loads(stripped).get("date") == day:
+                dropped += 1
+                continue
+        except json.JSONDecodeError:
+            pass
+        kept.append(stripped)
+    if dropped:
+        path.write_text("".join(l + "\n" for l in kept), encoding="utf-8")
+    return dropped
+
+
+def write_submitted_index() -> None:
+    """The dates that have been recorded, for the app to compare against.
+
+    Without this the app cannot tell a day it has already reported from one it
+    has not, so its pending banner kept offering days that were already in.
+    """
+    dates = set()
+    if ATTEMPTS_PATH.exists():
+        for line in ATTEMPTS_PATH.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                day = json.loads(line).get("date")
+            except json.JSONDecodeError:
+                continue
+            if day:
+                dates.add(day)
+    SUBMITTED_PATH.write_text(
+        json.dumps({"dates": sorted(dates, reverse=True)}, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
 
 def normalize_results(payload: dict) -> tuple[str, list[dict]]:
@@ -177,6 +223,15 @@ def main() -> int:
     recorded_at = datetime.now(timezone.utc).isoformat()
     missed = [r for r in results if not r["correct"]]
 
+    # A day can be submitted more than once — the app's queue survives until it
+    # is cleared, and it is easy to submit again rather than clear it. Appending
+    # blindly counted 2026-08-19 four times over and made those items look far
+    # weaker than they were, so the day's previous rows go first: the latest
+    # submission for a date is the record for that date.
+    replaced = drop_date(MISTAKES_PATH, day) + drop_date(ATTEMPTS_PATH, day)
+    if replaced:
+        print(f"Replaced {replaced} earlier row(s) for {day}.")
+
     MISTAKES_PATH.parent.mkdir(parents=True, exist_ok=True)
     with MISTAKES_PATH.open("a", encoding="utf-8") as fh:
         for entry in missed:
@@ -213,6 +268,8 @@ def main() -> int:
                 )
                 + "\n"
             )
+
+    write_submitted_index()
 
     # Refresh a small rollup so the app and README can show progress at a glance.
     all_mistakes = []
