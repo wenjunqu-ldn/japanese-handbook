@@ -12,6 +12,11 @@
   --wrong-border: #c0392b;
   --review: #8a5a00;
   --review-bg: #fdf2dc;
+  /* 「再出题」only. Deliberately not the blue accent: adding questions and
+     submitting them are different actions and should not look alike.
+     5.47:1 on white — comfortably past AA for the button label. */
+  --more: #0f766e;
+  --more-text: #ffffff;
   --radius: 10px;
 }
 
@@ -30,6 +35,9 @@
     --wrong-border: #e06a5c;
     --review: #e0b055;
     --review-bg: #33280f;
+    /* Same inversion the accent uses in dark mode: light fill, dark label. */
+    --more: #4fd1c5;
+    --more-text: #0d1117;
   }
 }
 
@@ -276,10 +284,11 @@ input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px
 }
 .btn.more {
   width: 100%;
-  border-style: dashed;
-  color: var(--muted);
+  background: var(--more);
+  color: var(--more-text);
+  border-color: var(--more);
+  font-weight: 600;
 }
 .btn.more:hover {
-  color: var(--text);
-  border-style: solid;
+  filter: brightness(1.08);
 }
