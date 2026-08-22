@@ -15,3 +15,5 @@
 {"date": "2026-08-21", "item_id": "W-N163", "type": "correction", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-21T19:49:00.701629+00:00", "issue": "30", "given": "太陽は西にはおります", "expected": "太陽は西に沈みます。", "near": true}
 {"date": "2026-08-21", "item_id": "W-NA014", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-21T19:49:00.701629+00:00", "issue": "30", "given": "彼は真面目の人です", "expected": "彼は真面目な人です。", "near": true}
 {"date": "2026-08-21", "item_id": "VF-038", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-21T19:49:00.701629+00:00", "issue": "30", "given": "困く", "expected": "困る", "near": false}
+{"date": "2026-08-22", "item_id": "W-N163", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-22T08:31:52.644592+00:00", "issue": "37", "given": "大陽は西に沈しました", "expected": "太陽は西に沈みます。", "near": true}
+{"date": "2026-08-22", "item_id": "W-V045", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-22T08:31:52.644592+00:00", "issue": "37", "given": "壊って", "expected": "壊れた", "near": false}

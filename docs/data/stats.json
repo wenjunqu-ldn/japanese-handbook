@@ -1,26 +1,10 @@
 {
-  "updated_at": "2026-08-21T19:49:00.701629+00:00",
-  "total_misses": 30,
-  "distinct_items": 12,
+  "updated_at": "2026-08-22T08:31:52.644592+00:00",
+  "total_misses": 19,
+  "distinct_items": 13,
   "top_missed": [
     {
       "item_id": "W-N163",
-      "misses": 5
-    },
-    {
-      "item_id": "W-V008",
-      "misses": 5
-    },
-    {
-      "item_id": "W-ADV002",
-      "misses": 4
-    },
-    {
-      "item_id": "VF-063",
-      "misses": 3
-    },
-    {
-      "item_id": "W-V013",
       "misses": 3
     },
     {
@@ -28,11 +12,15 @@
       "misses": 2
     },
     {
-      "item_id": "VF-039",
+      "item_id": "VF-063",
       "misses": 2
     },
     {
-      "item_id": "W-ADV001",
+      "item_id": "W-V008",
+      "misses": 2
+    },
+    {
+      "item_id": "W-V013",
       "misses": 2
     },
     {
@@ -44,7 +32,23 @@
       "misses": 1
     },
     {
+      "item_id": "VF-039",
+      "misses": 1
+    },
+    {
+      "item_id": "W-ADV001",
+      "misses": 1
+    },
+    {
+      "item_id": "W-ADV002",
+      "misses": 1
+    },
+    {
       "item_id": "W-NA014",
+      "misses": 1
+    },
+    {
+      "item_id": "W-V045",
       "misses": 1
     },
     {
