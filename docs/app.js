@@ -312,15 +312,24 @@ function updateScore() {
   const drill = graded.filter((g) => g.drill);
   const hit = (rows) => rows.filter((g) => g.correct).length;
   // The two blocks are scored apart: mixing them hides which half went wrong.
-  el.score.textContent = drill.length
-    ? `得分：${hit(main)} / ${main.length}　·　变形：${hit(drill)} / ${drill.length}`
-    : `得分：${hit(main)} / ${main.length}`;
+  // Each denominator counts what was answered, not what is on the page — a
+  // block nobody has touched yet is left out rather than shown as 0 / 0.
+  const parts = [];
+  if (main.length) parts.push(`得分：${hit(main)} / ${main.length}`);
+  if (drill.length) parts.push(`变形：${hit(drill)} / ${drill.length}`);
+  el.score.textContent = parts.join("　·　");
+
   const missed = graded.filter((g) => !g.correct);
-  const notes = [
-    missed.length
-      ? `需要复习：${missed.map((m) => m.item_id).join("、")}`
-      : "全部答对，明天会换新的知识点。",
-  ];
+  const left = (currentDay.all || []).length - graded.length;
+  const notes = [];
+  if (missed.length) {
+    notes.push(`需要复习：${missed.map((m) => m.item_id).join("、")}`);
+  } else {
+    notes.push(left ? "已作答的都答对了。" : "全部答对，明天会换新的知识点。");
+  }
+  if (left) {
+    notes.push(`还有 ${left} 题空着——空题不算错，也不会上报；填好之后再提交一次即可。`);
+  }
   const payload = buildPayload();
   if (isTrimmed(payload)) {
     // Say so rather than silently dropping them: the scores still go in, but
@@ -410,7 +419,20 @@ function grade() {
   // fresh cards, and regrading the earlier ones would stack a second feedback
   // block onto every card and reset any "my answer was fine" overrides.
   const done = new Set((graded || []).map((g) => g.n));
-  const fresh = (currentDay.all || []).filter((ex) => !done.has(ex.n));
+  const pending = (currentDay.all || []).filter((ex) => !done.has(ex.n));
+  // A blank is not a wrong answer, it is a question that was not attempted.
+  // Marking it wrong would put an item the learner never saw into the review
+  // queue — and it made stopping half way impossible, because submitting
+  // recorded every unfinished question as a miss.
+  const fresh = pending.filter((ex) => readAnswer(ex).trim());
+  if (!fresh.length) {
+    // Nothing new to record. Say so on the button rather than opening an empty
+    // result panel or, worse, submitting a day of blanks.
+    const label = el.submit.textContent;
+    el.submit.textContent = "还没有作答的题";
+    setTimeout(() => (el.submit.textContent = label), 1500);
+    return;
+  }
   const rows = fresh.map((ex) => {
     const given = readAnswer(ex);
     const correct = isCorrect(ex, given);
@@ -428,7 +450,9 @@ function grade() {
   });
   graded = [...(graded || []), ...rows];
 
-  el.submit.hidden = true;
+  // Left visible while anything is still blank, so the rest can be filled in
+  // and submitted in a second pass.
+  el.submit.hidden = fresh.length === pending.length;
   el.result.hidden = false;
   updateScore();
   recordStreak();
