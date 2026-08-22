@@ -1,0 +1,194 @@
+{
+  "date": "2026-08-22",
+  "generated_from": "handbook/ (grammar, particles, expressions, vocabulary, verbs, mistakes, Duolingo)",
+  "count": 5,
+  "review_item_ids": [
+    "VF-038",
+    "W-N163"
+  ],
+  "exercises": [
+    {
+      "type": "mcq",
+      "item_id": "VF-038",
+      "prompt": "「困る」的读音是？",
+      "options": [
+        "のむ",
+        "とぶ",
+        "およぐ",
+        "こまる"
+      ],
+      "answer": "こまる",
+      "explanation": "VF-038　困る（こまる）：为难；困扰",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 1
+    },
+    {
+      "type": "fill_blank",
+      "item_id": "W-N088",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "美容院で＿＿＿を切ってもらいました。",
+      "sentence_zh": "在美容院剪了头发。",
+      "answer": "髪",
+      "accepted": [
+        "かみ",
+        "髪"
+      ],
+      "hint": "",
+      "explanation": "W-N088　完整句子：美容院（びよういん）で髪（かみ）を切（き）ってもらいました。\n在美容院剪了头发。\n髪（かみ）：头发",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "美容院（びよういん）で髪（かみ）を切（き）ってもらいました。",
+      "n": 2
+    },
+    {
+      "type": "mcq",
+      "item_id": "VF-037",
+      "prompt": "「答える」的读音是？",
+      "options": [
+        "つかれる",
+        "こたえる",
+        "きる",
+        "みる"
+      ],
+      "answer": "こたえる",
+      "explanation": "VF-037　答える（こたえる）：回答",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 3
+    },
+    {
+      "type": "translation",
+      "item_id": "W-N163",
+      "prompt": "把下面的中文翻译成日语：",
+      "sentence_zh": "太阳向西边落下。",
+      "hint": "提示：使用 西（にし）",
+      "answer": "太陽（たいよう）は西（にし）に沈（しず）みます。",
+      "answer_plain": "太陽は西に沈みます。",
+      "accepted": [
+        "太陽は西に沈みます。"
+      ],
+      "explanation": "W-N163　参考答案：太陽（たいよう）は西（にし）に沈（しず）みます。\n西：西",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "太陽（たいよう）は西（にし）に沈（しず）みます。",
+      "n": 4
+    },
+    {
+      "type": "fill_blank",
+      "item_id": "W-N092",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "＿＿＿が空いたので、何か食べたいです。",
+      "sentence_zh": "肚子饿了，想吃点什么。",
+      "answer": "お腹",
+      "accepted": [
+        "おなか",
+        "お腹"
+      ],
+      "hint": "",
+      "explanation": "W-N092　完整句子：お腹（なか）が空（す）いたので、何（なに）か食（た）べたいです。\n肚子饿了，想吃点什么。\nお腹（おなか）：肚子",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "お腹（なか）が空（す）いたので、何（なに）か食（た）べたいです。",
+      "n": 5
+    }
+  ],
+  "drill_count": 5,
+  "drills": [
+    {
+      "type": "conjugation",
+      "item_id": "VF-018",
+      "prompt": "「置く」（辞书形）→ 写出ない形：",
+      "verb": "置く",
+      "verb_reading": "おく",
+      "verb_class": "五段",
+      "source_label": "辞书形",
+      "source_form": "置く",
+      "form_label": "ない形",
+      "meaning_zh": "放置",
+      "answer": "置かない",
+      "accepted": [
+        "おかない",
+        "置かない"
+      ],
+      "explanation": "VF-018　置く（おく）［五段］\n辞书形：置く｜ます形：置きます｜て形：置いて｜た形：置いた｜ない形：置かない｜可能形：置ける\n意思：放置",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 1
+    },
+    {
+      "type": "conjugation",
+      "item_id": "VF-063",
+      "prompt": "「習います」（ます形）→ 写出て形：",
+      "verb": "習う",
+      "verb_reading": "ならう",
+      "verb_class": "五段",
+      "source_label": "ます形",
+      "source_form": "習います",
+      "form_label": "て形",
+      "meaning_zh": "学习（向人学）",
+      "answer": "習って",
+      "accepted": [
+        "ならって",
+        "習って"
+      ],
+      "explanation": "VF-063　習う（ならう）［五段］\n辞书形：習う｜ます形：習います｜て形：習って｜た形：習った｜ない形：習わない｜可能形：習える\n意思：学习（向人学）",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 2
+    },
+    {
+      "type": "conjugation",
+      "item_id": "VF-062",
+      "prompt": "「直す」（辞书形）→ 写出た形：",
+      "verb": "直す",
+      "verb_reading": "なおす",
+      "verb_class": "五段",
+      "source_label": "辞书形",
+      "source_form": "直す",
+      "form_label": "た形",
+      "meaning_zh": "修理；改正",
+      "answer": "直した",
+      "accepted": [
+        "なおした",
+        "直した"
+      ],
+      "explanation": "VF-062　直す（なおす）［五段］\n辞书形：直す｜ます形：直します｜て形：直して｜た形：直した｜ない形：直さない｜可能形：直せる\n意思：修理；改正",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 3
+    },
+    {
+      "type": "conjugation",
+      "item_id": "W-V045",
+      "prompt": "「壊れます」（ます形）→ 写出た形：",
+      "verb": "壊れる",
+      "verb_reading": "こわれる",
+      "verb_class": "一段／自动词",
+      "source_label": "ます形",
+      "source_form": "壊れます",
+      "form_label": "た形",
+      "meaning_zh": "坏掉",
+      "answer": "壊れた",
+      "accepted": [
+        "こわれた",
+        "壊れた"
+      ],
+      "explanation": "W-V045　壊れる（こわれる）［一段／自动词］\n辞书形：壊れる｜ます形：壊れます｜て形：壊れて｜た形：壊れた｜ない形：壊れない\n意思：坏掉",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 4
+    },
+    {
+      "type": "conjugation",
+      "item_id": "W-V059",
+      "prompt": "「光ります」（ます形）→ 写出て形：",
+      "verb": "光る",
+      "verb_reading": "ひかる",
+      "verb_class": "五段／自动词",
+      "source_label": "ます形",
+      "source_form": "光ります",
+      "form_label": "て形",
+      "meaning_zh": "发光",
+      "answer": "光って",
+      "accepted": [
+        "ひかって",
+        "光って"
+      ],
+      "explanation": "W-V059　光る（ひかる）［五段／自动词］\n辞书形：光る｜ます形：光ります｜て形：光って｜た形：光った｜ない形：光らない\n意思：发光",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 5
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-21",
+  "updated_at": "2026-08-22",
   "items": [
     {
       "item_id": "DUO-038",
@@ -74,6 +74,15 @@
       "mastery": 0.767
     },
     {
+      "item_id": "VF-027",
+      "correct_count": 1,
+      "wrong_count": 0,
+      "streak": 1,
+      "last_seen": "2026-08-21",
+      "last_wrong": null,
+      "mastery": 0.767
+    },
+    {
       "item_id": "VF-034",
       "correct_count": 1,
       "wrong_count": 0,
@@ -83,31 +92,40 @@
       "mastery": 0.767
     },
     {
-      "item_id": "VF-039",
+      "item_id": "VF-038",
       "correct_count": 0,
       "wrong_count": 1,
       "streak": 0,
-      "last_seen": "2026-08-20",
-      "last_wrong": "2026-08-20",
+      "last_seen": "2026-08-21",
+      "last_wrong": "2026-08-21",
       "mastery": 0.333
     },
     {
+      "item_id": "VF-039",
+      "correct_count": 1,
+      "wrong_count": 1,
+      "streak": 1,
+      "last_seen": "2026-08-21",
+      "last_wrong": "2026-08-20",
+      "mastery": 0.6
+    },
+    {
       "item_id": "VF-044",
-      "correct_count": 2,
+      "correct_count": 1,
       "wrong_count": 0,
-      "streak": 2,
+      "streak": 1,
       "last_seen": "2026-08-19",
       "last_wrong": null,
-      "mastery": 0.95
+      "mastery": 0.767
     },
     {
       "item_id": "VF-063",
       "correct_count": 2,
-      "wrong_count": 3,
+      "wrong_count": 2,
       "streak": 1,
       "last_seen": "2026-08-20",
       "last_wrong": "2026-08-19",
-      "mastery": 0.529
+      "mastery": 0.6
     },
     {
       "item_id": "VF-069",
@@ -120,12 +138,12 @@
     },
     {
       "item_id": "VF-089",
-      "correct_count": 2,
+      "correct_count": 1,
       "wrong_count": 0,
-      "streak": 2,
+      "streak": 1,
       "last_seen": "2026-08-19",
       "last_wrong": null,
-      "mastery": 0.95
+      "mastery": 0.767
     },
     {
       "item_id": "VF-090",
@@ -138,21 +156,21 @@
     },
     {
       "item_id": "W-ADV001",
-      "correct_count": 2,
-      "wrong_count": 2,
+      "correct_count": 0,
+      "wrong_count": 1,
       "streak": 0,
       "last_seen": "2026-08-19",
       "last_wrong": "2026-08-19",
-      "mastery": 0.5
+      "mastery": 0.333
     },
     {
       "item_id": "W-ADV002",
       "correct_count": 1,
-      "wrong_count": 4,
+      "wrong_count": 1,
       "streak": 1,
       "last_seen": "2026-08-20",
       "last_wrong": "2026-08-19",
-      "mastery": 0.386
+      "mastery": 0.6
     },
     {
       "item_id": "W-N010",
@@ -184,38 +202,56 @@
     {
       "item_id": "W-N163",
       "correct_count": 0,
-      "wrong_count": 4,
+      "wrong_count": 2,
       "streak": 0,
-      "last_seen": "2026-08-19",
-      "last_wrong": "2026-08-19",
-      "mastery": 0.167
+      "last_seen": "2026-08-21",
+      "last_wrong": "2026-08-21",
+      "mastery": 0.25
+    },
+    {
+      "item_id": "W-NA014",
+      "correct_count": 0,
+      "wrong_count": 1,
+      "streak": 0,
+      "last_seen": "2026-08-21",
+      "last_wrong": "2026-08-21",
+      "mastery": 0.333
     },
     {
       "item_id": "W-V005",
-      "correct_count": 2,
+      "correct_count": 1,
       "wrong_count": 0,
-      "streak": 2,
+      "streak": 1,
       "last_seen": "2026-08-19",
       "last_wrong": null,
-      "mastery": 0.95
+      "mastery": 0.767
+    },
+    {
+      "item_id": "W-V006",
+      "correct_count": 1,
+      "wrong_count": 0,
+      "streak": 1,
+      "last_seen": "2026-08-21",
+      "last_wrong": null,
+      "mastery": 0.767
     },
     {
       "item_id": "W-V008",
-      "correct_count": 1,
-      "wrong_count": 5,
-      "streak": 1,
-      "last_seen": "2026-08-20",
+      "correct_count": 2,
+      "wrong_count": 2,
+      "streak": 2,
+      "last_seen": "2026-08-21",
       "last_wrong": "2026-08-19",
-      "mastery": 0.35
+      "mastery": 0.7
     },
     {
       "item_id": "W-V013",
-      "correct_count": 3,
-      "wrong_count": 3,
+      "correct_count": 1,
+      "wrong_count": 2,
       "streak": 1,
       "last_seen": "2026-08-20",
       "last_wrong": "2026-08-19",
-      "mastery": 0.6
+      "mastery": 0.5
     },
     {
       "item_id": "W-V017",
@@ -236,13 +272,22 @@
       "mastery": 0.767
     },
     {
-      "item_id": "W-V047",
-      "correct_count": 3,
+      "item_id": "W-V044",
+      "correct_count": 1,
       "wrong_count": 0,
-      "streak": 3,
+      "streak": 1,
+      "last_seen": "2026-08-21",
+      "last_wrong": null,
+      "mastery": 0.767
+    },
+    {
+      "item_id": "W-V047",
+      "correct_count": 2,
+      "wrong_count": 0,
+      "streak": 2,
       "last_seen": "2026-08-20",
       "last_wrong": null,
-      "mastery": 1.0
+      "mastery": 0.95
     },
     {
       "item_id": "W-V057",
@@ -250,6 +295,24 @@
       "wrong_count": 0,
       "streak": 1,
       "last_seen": "2026-08-20",
+      "last_wrong": null,
+      "mastery": 0.767
+    },
+    {
+      "item_id": "W-V059",
+      "correct_count": 0,
+      "wrong_count": 1,
+      "streak": 0,
+      "last_seen": "2026-08-21",
+      "last_wrong": "2026-08-21",
+      "mastery": 0.333
+    },
+    {
+      "item_id": "W-V061",
+      "correct_count": 1,
+      "wrong_count": 0,
+      "streak": 1,
+      "last_seen": "2026-08-21",
       "last_wrong": null,
       "mastery": 0.767
     }
