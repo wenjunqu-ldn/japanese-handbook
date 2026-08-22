@@ -27,6 +27,12 @@ const el = {
 };
 
 const PENDING_KEY = "jp-pending-results";
+// What has already been answered on a given day, so a reload does not wipe it.
+// Without this, reopening a day you had already submitted re-rendered every
+// card blank, and the next 提交 graded those blanks as wrong — overwriting
+// answers that were right and pushing those items back into the review queue.
+const DAY_STATE_KEY = "jp-day-state";
+const DAY_STATE_KEEP = 7;
 
 let currentDay = null;
 let graded = null;
@@ -132,7 +138,8 @@ function blockLabel(kind, index) {
   return kind === "drill" ? `变形 ${index}` : `第 ${index} 题`;
 }
 
-function appendBatch(kind) {
+function appendBatch(kind, options) {
+  const silent = options && options.silent;
   const block = blocks[kind];
   const batch = block.spare[block.used++];
   const reviewSet = new Set(currentDay.review_item_ids || []);
@@ -150,7 +157,10 @@ function appendBatch(kind) {
   // the submit button comes back and grading picks up only what is unanswered.
   el.submit.hidden = false;
   if (block.used >= block.spare.length) block.more.remove();
-  if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+  // Remember the batch even before it is answered, so a reload brings back the
+  // questions rather than a shorter page.
+  saveDayState();
+  if (!silent && first) first.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 function buildBlock(kind, heading, items, spare) {
@@ -217,6 +227,12 @@ function renderDay(day) {
   el.quiz.hidden = false;
   el.submit.hidden = false;
   el.result.hidden = true;
+
+  // Anything already answered on this day comes back with it. Grading only
+  // looks at ungraded cards, so without this a reload turned answered
+  // questions back into blanks and the next 提交 reported them as wrong.
+  const saved = readDayState()[day.date];
+  if (saved) restoreDay(saved);
 }
 
 /* ---------- grading ---------- */
@@ -419,7 +435,116 @@ function grade() {
   // Kept locally until reported, so a session finished offline — or a tab
   // closed before submitting — is not lost.
   queuePending(buildPayload());
+  saveDayState();
   el.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+/* ---------- answers already given today ---------- */
+
+function readDayState() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(DAY_STATE_KEY) || "{}");
+    return raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};
+  } catch (_) {
+    return {};
+  }
+}
+
+function writeDayState(map) {
+  try {
+    localStorage.setItem(DAY_STATE_KEY, JSON.stringify(map));
+  } catch (_) {
+    /* storage unavailable — the day simply will not survive a reload */
+  }
+}
+
+function saveDayState() {
+  if (!currentDay) return;
+  const map = readDayState();
+  map[currentDay.date] = {
+    // How many extra batches were revealed, so the same questions come back.
+    revealed: {
+      main: blocks.main ? blocks.main.used : 0,
+      drill: blocks.drill ? blocks.drill.used : 0,
+    },
+    // Keyed by item id rather than by card number: the number depends on how
+    // many batches are on the page, the id does not.
+    graded: (graded || []).map((g) => ({
+      item_id: g.item_id,
+      correct: g.correct,
+      given: g.given,
+    })),
+  };
+  // Only the recent days: this is a convenience, not a record. The repository
+  // holds the real one.
+  const keep = Object.keys(map).sort().reverse().slice(0, DAY_STATE_KEEP);
+  writeDayState(Object.fromEntries(keep.map((d) => [d, map[d]])));
+}
+
+function dropDayState(date) {
+  const map = readDayState();
+  delete map[date];
+  writeDayState(map);
+}
+
+function restoreAnswer(ex, given) {
+  if (ex.type === "mcq") {
+    el.quiz.querySelectorAll(`input[name="q${ex.n}"]`).forEach((input) => {
+      if (input.value === given) input.checked = true;
+    });
+    return;
+  }
+  const input = el.quiz.querySelector(`input[name="q${ex.n}"]`);
+  if (input) input.value = given || "";
+}
+
+function restoreDay(state) {
+  for (const kind of ["main", "drill"]) {
+    const want = (state.revealed || {})[kind] || 0;
+    const block = blocks[kind];
+    while (block && block.used < want && block.used < block.spare.length) {
+      appendBatch(kind, { silent: true });
+    }
+  }
+
+  const byId = new Map(currentDay.all.map((ex) => [ex.item_id, ex]));
+  const rows = [];
+  for (const saved of state.graded || []) {
+    const ex = byId.get(saved.item_id);
+    if (!ex) continue;
+    const given = saved.given || "";
+    restoreAnswer(ex, given);
+    // Re-run the machine verdict rather than trusting the stored one, so the
+    // card comes back exactly as it looked — including the "my answer was
+    // actually fine" checkbox, which only appears on a machine-wrong answer.
+    const machine = isCorrect(ex, given);
+    showFeedback(ex, given, machine);
+    if (saved.correct !== machine) {
+      const box = el.quiz.querySelector(`input[data-override="${ex.n}"]`);
+      if (box) box.checked = true;
+      const card = el.quiz.querySelector(`.card[data-n="${ex.n}"]`);
+      if (card) {
+        card.classList.toggle("correct", saved.correct);
+        card.classList.toggle("wrong", !saved.correct);
+      }
+    }
+    rows.push({
+      n: ex.n,
+      item_id: ex.item_id,
+      type: ex.type,
+      drill: ex.block === "drill",
+      correct: saved.correct,
+      given,
+      expected: ex.answer_plain || ex.answer || "",
+      near: !saved.correct && isNearMiss(ex, given),
+    });
+  }
+
+  if (!rows.length) return;
+  graded = rows;
+  el.result.hidden = false;
+  el.submit.hidden = graded.length >= currentDay.all.length;
+  updateScore();
 }
 
 /* ---------- pending results (offline queue) ---------- */
@@ -622,6 +747,7 @@ el.quiz.addEventListener("change", (e) => {
   card.classList.toggle("wrong", !e.target.checked);
   updateScore();
   queuePending(buildPayload());
+  saveDayState();
 });
 
 // Opening the GitHub page is not proof that the issue was created: it can fail,
@@ -638,7 +764,12 @@ el.reportDone.addEventListener("click", () => {
   el.reportDone.blur();
 });
 
-el.retryBtn.addEventListener("click", () => loadDate(el.datePicker.value));
+// 「再做一次」 means start the day over, so the stored answers go with it —
+// otherwise the page would come straight back with every card already graded.
+el.retryBtn.addEventListener("click", () => {
+  dropDayState(el.datePicker.value);
+  loadDate(el.datePicker.value);
+});
 
 window.addEventListener("online", () => {
   renderPending();
