@@ -4,6 +4,14 @@
 The web app opens a prefilled GitHub issue whose body contains a fenced JSON block:
 
     ```json
+    {"date": "2026-08-22", "correct": ["G-002"], "missed": ["W-N163"],
+     "given": {"W-N163": "雪に転びました"}}
+    ```
+
+The older per-row shape is still accepted, so issues and phone-queued results
+from before that change still ingest:
+
+    ```json
     {"date": "2026-08-15", "results": [{"item_id": "G-002", "type": "mcq", "correct": false}]}
     ```
 
@@ -72,13 +80,17 @@ def sanitize_sentence(value) -> str:
     return text.strip()[:MAX_SENTENCE]
 
 
-def expected_answers(day: str) -> dict[str, str]:
-    """The right answer for each item asked on `day`, read from that day's file.
+def asked_on(day: str) -> dict[str, dict]:
+    """Every question asked on `day`, keyed by item id: its answer and format.
 
-    The app no longer sends the expected answer: a Japanese sentence costs nine
-    characters per kana once URL-encoded, and the prefilled issue link has to fit
-    through a login redirect. It is already in the repository, so it is looked up
-    here instead.
+    The app sends neither the expected answer nor the question type: a Japanese
+    sentence costs nine characters per kana once URL-encoded, and the prefilled
+    issue link has to fit through a login redirect — with up to 30 questions in
+    a day it no longer would. Both are already in the repository, so they are
+    looked up here instead.
+
+    The spare batches behind the 「再出 5 题」 buttons are included; a day never
+    asks one item twice, in any block, so the id is a safe key.
     """
     path = ROOT / "docs" / "data" / "exercises" / f"{day}.json"
     if not path.exists():
@@ -87,13 +99,21 @@ def expected_answers(day: str) -> dict[str, str]:
         data = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         return {}
-    answers = {}
-    for exercise in list(data.get("exercises", [])) + list(data.get("drills", [])):
-        item_id = exercise.get("item_id")
-        answer = exercise.get("answer_plain") or exercise.get("answer") or ""
-        if item_id and answer:
-            answers[item_id] = answer
-    return answers
+    blocks = [data.get("exercises", []), data.get("drills", [])]
+    for group in ("extra_exercises", "extra_drills"):
+        for batch in data.get(group, []) or []:
+            blocks.append(batch)
+    asked = {}
+    for block in blocks:
+        for exercise in block or []:
+            item_id = exercise.get("item_id")
+            if not item_id:
+                continue
+            asked[item_id] = {
+                "answer": exercise.get("answer_plain") or exercise.get("answer") or "",
+                "type": exercise.get("type", ""),
+            }
+    return asked
 
 
 def drop_date(path: Path, day: str) -> int:
@@ -146,21 +166,19 @@ def normalize_results(payload: dict) -> tuple[str, list[dict]]:
     if not re.match(r"^\d{4}-\d{2}-\d{2}$", day):
         raise ValueError(f"Invalid date in payload: {day!r}")
 
-    results = payload.get("results")
-    if not isinstance(results, list):
-        raise ValueError("Payload is missing a 'results' list.")
+    asked = asked_on(day)
+    entries = _entries(payload)
 
     cleaned = []
-    answers = expected_answers(day)
-    for entry in results:
-        if not isinstance(entry, dict):
-            continue
-        item_id = str(entry.get("item_id", "")).strip()
-        if not item_id or not VALID_ID_RE.match(item_id):
+    for entry in entries:
+        item_id = entry["item_id"]
+        if not VALID_ID_RE.match(item_id):
             continue
         row = {
             "item_id": item_id,
-            "type": str(entry.get("type", ""))[:32],
+            # Older submissions carried the question type with them; newer ones
+            # leave it out and it comes from the day's exercise file.
+            "type": str(entry.get("type") or asked.get(item_id, {}).get("type", ""))[:32],
             "correct": bool(entry.get("correct")),
         }
         # The learner's own wrong sentence, so it can be handed back later as a
@@ -170,10 +188,8 @@ def normalize_results(payload: dict) -> tuple[str, list[dict]]:
         given = sanitize_sentence(entry.get("given"))
         if given:
             row["given"] = given
-            # Older submissions carried the expected answer with them; newer ones
-            # leave it out and it comes from the day's exercise file.
             row["expected"] = sanitize_sentence(
-                entry.get("expected") or answers.get(item_id, "")
+                entry.get("expected") or asked.get(item_id, {}).get("answer", "")
             )
             row["near"] = bool(entry.get("near"))
         cleaned.append(row)
@@ -181,6 +197,52 @@ def normalize_results(payload: dict) -> tuple[str, list[dict]]:
     if not cleaned:
         raise ValueError("No valid result entries found in the payload.")
     return day, cleaned
+
+
+def _entries(payload: dict) -> list[dict]:
+    """Flatten either payload shape into one row per answered item.
+
+    Two shapes are accepted. The app now sends id lists, because a day can hold
+    up to 30 questions and one row per item — each repeating the id, the type
+    and `"correct"` — pushed the prefilled issue URL past what GitHub accepts
+    once the login redirect wraps it:
+
+        {"date": ..., "correct": [ids], "missed": [ids],
+         "near": [ids], "given": {id: "what was written"}}
+
+    The older per-row shape is still read, so results queued on a phone before
+    this change — and every issue already in the repository — still ingest:
+
+        {"date": ..., "results": [{"item_id": ..., "correct": false, ...}]}
+    """
+    results = payload.get("results")
+    if isinstance(results, list):
+        rows = []
+        for entry in results:
+            if not isinstance(entry, dict):
+                continue
+            item_id = str(entry.get("item_id", "")).strip()
+            if not item_id:
+                continue
+            rows.append({**entry, "item_id": item_id})
+        return rows
+
+    given = payload.get("given") if isinstance(payload.get("given"), dict) else {}
+    near = set(payload.get("near") or [])
+    rows = []
+    for key, correct in (("correct", True), ("missed", False)):
+        for raw in payload.get(key) or []:
+            item_id = str(raw).strip()
+            if not item_id:
+                continue
+            row = {"item_id": item_id, "correct": correct}
+            if not correct and item_id in given:
+                row["given"] = given[item_id]
+                row["near"] = item_id in near
+            rows.append(row)
+    if not rows:
+        raise ValueError("Payload contains neither a 'results' list nor id lists.")
+    return rows
 
 
 def main() -> int:
