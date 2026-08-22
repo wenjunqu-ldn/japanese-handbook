@@ -47,6 +47,66 @@ MASTERY_THRESHOLD = 0.75   # at or above this an item counts as mastered
 SPACED_DAYS = 14           # a mastered item becomes eligible again after this long
 
 
+# 漢字run（かな） as the handbook writes it. Furigana is never invented here:
+# every reading printed on a question comes from something the handbook already
+# annotated, or from kana_form(), which derives from the recorded 假名 column.
+FURI_TOKEN_RE = re.compile(r"([一-鿿々]+)（([ぁ-んァ-ヴー]+)）")
+KANJI_RUN_RE = re.compile(r"[一-鿿々]+")
+# Each character may carry its own furigana group, so a span found in the plain
+# text can be located again in the annotated original.
+FURI_OPT = r"(?:（[ぁ-んァ-ヴー]+）)?"
+
+
+def blank_in_furigana(sentence: str, plain_span: str, marker: str = "＿＿＿") -> str:
+    """Blank `plain_span` out of `sentence` while keeping the rest of its furigana.
+
+    The blank is worked out on the stripped sentence — that is where the word
+    boundaries are simple — but the learner is shown the annotated one, so the
+    same span has to be found again with the readings interleaved. Returns ""
+    when the span cannot be located, and the caller falls back to plain text.
+    """
+    pattern = re.compile("".join(re.escape(c) + FURI_OPT for c in plain_span))
+    match = pattern.search(sentence)
+    if not match:
+        return ""
+    return sentence[: match.start()] + marker + sentence[match.end():]
+
+
+def furigana_index(item: dict) -> dict[str, str]:
+    """kanji run → reading, collected from this entry's own example sentences.
+
+    Scoped to one entry on purpose. 方 is ほう in ～た方がいい and かた in 読み方;
+    a repository-wide map would confidently print the wrong one. A run that this
+    entry reads two ways is dropped rather than guessed at.
+    """
+    found: dict[str, set[str]] = {}
+    for example in item.get("examples") or []:
+        for run, kana in FURI_TOKEN_RE.findall(example.get("ja") or ""):
+            found.setdefault(run, set()).add(kana)
+    return {run: next(iter(kana)) for run, kana in found.items() if len(kana) == 1}
+
+
+def annotate(text: str, index: dict[str, str]) -> str:
+    """Put the handbook's own furigana back onto bare kanji in `text`."""
+    if not index or not text:
+        return text
+    # A headword the handbook already annotated is left exactly as written. Some
+    # give the reading for the whole phrase rather than per kanji — E-011 is
+    # 「～何度も（なんども）」 — and adding a per-kanji reading on top of that
+    # produced 「～何度（なんど）も（なんども）」.
+    if FURIGANA_RE.search(text):
+        return text
+
+    def replace(match):
+        run = match.group(0)
+        rest = text[match.end():]
+        if rest.startswith("（") and FURIGANA_RE.match(rest):
+            return run  # already annotated
+        return f"{run}（{index[run]}）" if run in index else run
+
+    return KANJI_RUN_RE.sub(replace, text)
+
+
 def strip_furigana(text: str) -> str:
     """'電車（でんしゃ）で' -> '電車で' — used for building answer targets."""
     return FURIGANA_RE.sub("", text)
@@ -286,6 +346,20 @@ def _label(item: dict) -> str:
 MARKUP_RE = re.compile(r"^[|\-:\s]*$|^\|")
 
 
+def _reading_label(item: dict) -> str:
+    """The headword as the learner should see it, readings included.
+
+    Vocabulary already carries its reading in the 假名 column and _label appends
+    it. Grammar and expression entries have no such column, so their own example
+    sentences supply the furigana — annotating a label that already ends in a
+    reading would print it twice （挨拶（あいさつ）する（あいさつする）).
+    """
+    label = _label(item)
+    if item.get("reading"):
+        return label
+    return annotate(label, furigana_index(item))
+
+
 def make_mcq_meaning(item: dict, bank: list[dict], rng: random.Random, confusion) -> dict | None:
     """MCQ: given the Japanese word/pattern, choose the Chinese meaning."""
     meaning = (item.get("meaning_zh") or "").strip()
@@ -301,10 +375,10 @@ def make_mcq_meaning(item: dict, bank: list[dict], rng: random.Random, confusion
     return {
         "type": "mcq",
         "item_id": item["id"],
-        "prompt": f"「{_label(item)}」的意思是？",
+        "prompt": f"「{_reading_label(item)}」的意思是？",
         "options": options,
         "answer": item["meaning_zh"],
-        "explanation": f"{item['id']}　{_label(item)}：{item['meaning_zh']}",
+        "explanation": f"{item['id']}　{_reading_label(item)}：{item['meaning_zh']}",
         "source": item["source"],
     }
 
@@ -537,13 +611,15 @@ def make_fill_blank(item: dict, rng: random.Random, avoid: set[str] | None = Non
     blank_text = expand_blank(
         plain, stem, attaches_left=item["category"] in ("grammar", "expression")
     )
-    blanked_plain = plain.replace(blank_text, "＿＿＿", 1)
+    # Shown with the handbook's furigana: the question is which word belongs in
+    # the gap, not whether the rest of the sentence can be read off unaided.
+    blanked = blank_in_furigana(sentence, blank_text) or plain.replace(blank_text, "＿＿＿", 1)
 
     return {
         "type": "fill_blank",
         "item_id": item["id"],
         "prompt": "在空格处填入合适的词（可写汉字或假名）：",
-        "sentence": blanked_plain,
+        "sentence": blanked,
         "sentence_zh": example["zh"],
         "answer": blank_text,
         # When the blank was widened to cover the inflection, only the full form
@@ -563,7 +639,7 @@ def make_fill_blank(item: dict, rng: random.Random, avoid: set[str] | None = Non
             and (blank_text != stem or item["category"] in ("grammar", "expression"))
             else ""
         ),
-        "explanation": f"{item['id']}　完整句子：{sentence}\n{example['zh']}\n{_label(item)}：{item['meaning_zh']}",
+        "explanation": f"{item['id']}　完整句子：{sentence}\n{example['zh']}\n{_reading_label(item)}：{item['meaning_zh']}",
         "source": item["source"],
         "probe": example["ja"],
     }
@@ -584,7 +660,7 @@ def make_translation(item: dict, rng: random.Random, avoid: set[str] | None = No
         "item_id": item["id"],
         "prompt": "把下面的中文翻译成日语：",
         "sentence_zh": example["zh"],
-        "hint": f"提示：使用 {_label(item)}",
+        "hint": f"提示：使用 {_reading_label(item)}",
         "answer": example["ja"],
         "answer_plain": strip_furigana(example["ja"]),
         # Grading free text against one reference is inherently rough, so the app
@@ -613,7 +689,9 @@ def make_correction(item: dict, rng: random.Random) -> dict | None:
         "type": "correction",
         "item_id": item["id"],
         "prompt": "下面的句子有错误，请改成正确的说法：",
-        "wrong_sentence": strip_furigana(item["wrong"]),
+        # The sentence to be repaired is read before it can be repaired, so it
+        # keeps its readings; only the graded answer is compared stripped.
+        "wrong_sentence": item["wrong"],
         "sentence_zh": intent,
         "answer": correct["ja"],
         "answer_plain": strip_furigana(correct["ja"]),
@@ -675,7 +753,7 @@ def make_personal_correction(item: dict, personal: dict[str, dict]) -> dict | No
         "explanation": (
             f"{item['id']}　你写的：{record['given']}\n"
             f"参考答案：{reference}\n"
-            f"{_label(item)}：{item['meaning_zh']}"
+            f"{_reading_label(item)}：{item['meaning_zh']}"
         ),
         "source": item["source"],
         "personal": True,
@@ -691,7 +769,9 @@ def make_naturalness(item: dict, rng: random.Random) -> dict | None:
 
     better = item["corrections"][0]["ja"]
     worse = item["wrong"]
-    options = [strip_furigana(better), strip_furigana(worse)]
+    # Annotated on both sides: the option and the answer are compared as exact
+    # strings by the app, so they have to be written the same way.
+    options = [better, worse]
     rng.shuffle(options)
 
     return {
@@ -699,7 +779,7 @@ def make_naturalness(item: dict, rng: random.Random) -> dict | None:
         "item_id": item["id"],
         "prompt": "下面哪种说法更自然？",
         "options": options,
-        "answer": strip_furigana(better),
+        "answer": better,
         "explanation": (
             f"{item['id']}　更自然：{better}\n"
             f"不够自然：{worse}\n\n{item.get('why','')}"
@@ -1002,7 +1082,10 @@ def make_verb_form_choice(
         # the question into pure conjugation, which is what the drill block is
         # for. The Chinese sentence plus the meaning is enough to identify it.
         "prompt": "在空格处填入合适的动词形式：",
-        "sentence": sentence["plain"].replace(blank, "＿＿＿", 1),
+        "sentence": (
+            blank_in_furigana(sentence["ja"], blank)
+            or sentence["plain"].replace(blank, "＿＿＿", 1)
+        ),
         "sentence_zh": sentence["zh"],
         "hint": f"提示：{item['meaning_zh']}｜{item['pos']}",
         "answer": blank,
@@ -1102,13 +1185,20 @@ def make_conjugation_drill(item: dict, rng: random.Random) -> dict | None:
     target = rng.choice(harder or targets)
 
     answer = forms[target]
+    # 「回って（まわって）」（て形）: the drill asks for a form, not a reading, so
+    # showing how the given form is read costs nothing and makes the verb
+    # identifiable. kana_form() returns "" when it cannot derive one safely.
+    shown = forms[source]
+    shown_kana = kana_form(item, shown)
+    if shown_kana and shown_kana != shown:
+        shown = f"{shown}（{shown_kana}）"
     table = "｜".join(
         f"{CONJUGATION_FORMS[k][0]}：{forms[k]}" for k in DRILL_FORMS if k in forms
     )
     return {
         "type": "conjugation",
         "item_id": item["id"],
-        "prompt": f"「{forms[source]}」（{CONJUGATION_FORMS[source][0]}）→ 写出{CONJUGATION_FORMS[target][0]}：",
+        "prompt": f"「{shown}」（{CONJUGATION_FORMS[source][0]}）→ 写出{CONJUGATION_FORMS[target][0]}：",
         "verb": item["term"],
         "verb_reading": item["reading"],
         "verb_class": item["pos"],
