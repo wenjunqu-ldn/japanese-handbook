@@ -158,8 +158,11 @@ function appendBatch(kind, options) {
   el.submit.hidden = false;
   if (block.used >= block.spare.length) block.more.remove();
   // Remember the batch even before it is answered, so a reload brings back the
-  // questions rather than a shorter page.
-  saveDayState();
+  // questions rather than a shorter page. Not while restoring, though: `graded`
+  // is still empty at that point, and saving here wrote an empty answer list
+  // over the real one — the page still looked right, but the next reload came
+  // back with every card blank. restoreDay() saves once it has rebuilt them.
+  if (!silent) saveDayState();
   if (!silent && first) first.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
@@ -566,6 +569,9 @@ function restoreDay(state) {
 
   if (!rows.length) return;
   graded = rows;
+  // The silent appends above deliberately did not save; write the day back now
+  // that it is whole again.
+  saveDayState();
   el.result.hidden = false;
   el.submit.hidden = graded.length >= currentDay.all.length;
   updateScore();
