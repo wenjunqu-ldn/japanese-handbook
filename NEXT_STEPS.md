@@ -5,7 +5,7 @@
 > This is a working list for the exercise app, not handbook knowledge. Items are
 > removed once done; completed work is recorded in `CHANGELOG.md` instead.
 
-现状基线：`v0.11.4`（2026-08-21）。
+现状基线：`v0.12.0`（2026-08-22）。
 
 ## 优先级 | Priority order
 
@@ -15,14 +15,13 @@
 |---|------|------|-----------------|
 | 1 | 每日提醒 | 很小 | 决定练习会不会真的被做。生成器再好，不打开就没有价值 |
 | 2 | LLM 讲解错题 | 小 | 接口已经现成，只需在提交那一步加一次调用。讲清一次错因比多做十道题有用 |
-| 3 | 任意一天出更多题 | 小 | 锦上添花；`--count` 已经存在，缺的是入口 |
-| 4 | LLM 补充例句 | 大 | 收益真实但最贵，需要审核流程；每天只出 5 题，重复暂时不密集 |
+| 3 | LLM 补充例句 | 大 | 收益真实但最贵，需要审核流程 |
 
-第 1 项最便宜且直接影响坚持率，建议优先做。第 2 项与第 4 项共用一个
+第 1 项最便宜且直接影响坚持率，建议优先做。第 2 项与第 3 项共用一个
 `ANTHROPIC_API_KEY`，可以一起准备；但第 2 项的产物是派生数据、不进手册，
 不需要人工审核流程，所以能先单独做。
 
-> 已完成：Duolingo 词汇合并（v0.8.0）、手机应用 PWA（v0.8.1）。见 `CHANGELOG.md`。
+> 已完成：Duolingo 词汇合并（v0.8.0）、手机应用 PWA（v0.8.1）、任意一天加练更多题（v0.12.0）。见 `CHANGELOG.md`。
 
 ---
 
@@ -107,31 +106,7 @@ https://wenjunqu-ldn.github.io/japanese-handbook/
 
 ---
 
-## 3. 支持任意一天生成更多题目 | More questions on demand
-
-**已有的部分**：`generate_exercises.py` 已经支持 `--count`，例如：
-
-```bash
-python3 exercise-generator/generate_exercises.py --date 2026-08-20 --count 10 --force
-```
-
-**还缺的部分**：
-
-- `exercise-daily.yml` 的 `workflow_dispatch` 没有暴露 `count` 输入，手动触发时无法指定题量。
-- 网页应用一天只加载一个文件，做完了没有「再来一组」的入口。
-- 需要决定「更多题目」的形态：
-  - **A. 加大当天题量**（`--count 10` 覆盖当天文件）——简单，但会重写已做过的题；
-  - **B. 追加一组**（写 `YYYY-MM-DD-b.json`，应用出现「继续练习」按钮）——不影响已完成的记录，推荐。
-
-**注意一个联动问题**：`REVIEW_SLOTS` 目前硬编码为 2，与题量无关。如果一天出 10 题，复习名额仍只有 2 个，复习比例会被稀释一半。改动时应让它随题量缩放（例如 `max(1, round(count * 0.4))`）。
-
-另外，题量变大会更快消耗复习队列，也会改变掌握度的推进节奏——如果打算长期每天做 10 题，`SPACED_DAYS` 和 `RECENT_WINDOW` 可能也要一起调。
-
----
-
----
-
-## 4. 用 LLM 补充例句等资源 | LLM-generated resources
+## 3. 用 LLM 补充例句等资源 | LLM-generated resources
 
 **动机**：题库里 **187 个条目只有 1 个例句**（其中 182 个是词汇，107 个来自 Duolingo 章节）。填空题和翻译题都从例句取材，例句只有一个时：
 
@@ -168,8 +143,6 @@ python3 exercise-generator/generate_exercises.py --date 2026-08-20 --count 10 --
 - 明确「一个条目最多补到几个例句」（建议 3 个，够用且审核量可控）
 
 **同一套机制也可用于指南 §7／§10**：离线生成「ように + 可能形」这类组合句，人工审核后入库，之后确定性生成器就能出这类题。
-
----
 
 ---
 

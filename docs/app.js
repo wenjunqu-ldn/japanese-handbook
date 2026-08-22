@@ -30,6 +30,13 @@ const PENDING_KEY = "jp-pending-results";
 
 let currentDay = null;
 let graded = null;
+// Numbering runs across the whole page, not per block: every input name, card
+// lookup and feedback slot is keyed on it, so a batch appended later must not
+// reuse a number the first batch already took.
+let nextN = 0;
+// The two blocks, each with its own container, its own 「再出 5 题」 button and
+// its own queue of spare batches generated with the day.
+let blocks = {};
 
 /* ---------- helpers ---------- */
 
@@ -121,31 +128,90 @@ function renderExercise(ex, isReview) {
   return card;
 }
 
+function blockLabel(kind, index) {
+  return kind === "drill" ? `变形 ${index}` : `第 ${index} 题`;
+}
+
+function appendBatch(kind) {
+  const block = blocks[kind];
+  const batch = block.spare[block.used++];
+  const reviewSet = new Set(currentDay.review_item_ids || []);
+  let first = null;
+  batch.forEach((ex) => {
+    ex.n = ++nextN;
+    ex.block = kind;
+    ex.label = blockLabel(kind, ++block.count);
+    const card = renderExercise(ex, reviewSet.has(ex.item_id));
+    block.body.appendChild(card);
+    currentDay.all.push(ex);
+    if (!first) first = card;
+  });
+  // Adding questions after grading is allowed: the new cards are ungraded, so
+  // the submit button comes back and grading picks up only what is unanswered.
+  el.submit.hidden = false;
+  if (block.used >= block.spare.length) block.more.remove();
+  if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function buildBlock(kind, heading, items, spare) {
+  const wrap = document.createElement("div");
+  wrap.className = `block block-${kind}`;
+
+  if (heading) {
+    const h = document.createElement("h2");
+    h.className = "block-heading";
+    h.textContent = heading;
+    wrap.appendChild(h);
+  }
+
+  const body = document.createElement("div");
+  wrap.appendChild(body);
+
+  const block = { body, spare: spare || [], used: 0, count: 0, more: null };
+  blocks[kind] = block;
+
+  const reviewSet = new Set(currentDay.review_item_ids || []);
+  items.forEach((ex) => {
+    ex.n = ++nextN;
+    ex.block = kind;
+    ex.label = blockLabel(kind, ++block.count);
+    body.appendChild(renderExercise(ex, reviewSet.has(ex.item_id)));
+    currentDay.all.push(ex);
+  });
+
+  if (block.spare.length) {
+    const more = document.createElement("button");
+    more.type = "button";
+    more.className = "btn more";
+    more.textContent = `再出 ${block.spare[0].length} 题`;
+    more.addEventListener("click", () => appendBatch(kind));
+    const actions = document.createElement("div");
+    actions.className = "block-actions";
+    actions.appendChild(more);
+    wrap.appendChild(actions);
+    block.more = actions;
+  }
+
+  el.quiz.appendChild(wrap);
+  return block;
+}
+
 function renderDay(day) {
   currentDay = day;
   graded = null;
-  const reviewSet = new Set(day.review_item_ids || []);
+  nextN = 0;
+  blocks = {};
+  currentDay.all = [];
 
   el.quiz.innerHTML = "";
-  day.exercises.forEach((ex) => el.quiz.appendChild(renderExercise(ex, reviewSet.has(ex.item_id))));
+  buildBlock("main", "", day.exercises, day.extra_exercises);
 
   // The drills are a second block: no sentence, no context, just form
-  // conversion. They keep counting up from the daily five so that every input
-  // name, card lookup and feedback slot stays unique across the whole page.
-  const drills = day.drills || [];
-  if (drills.length) {
-    const heading = document.createElement("h2");
-    heading.className = "block-heading";
-    heading.textContent = "动词变形练习";
-    el.quiz.appendChild(heading);
-    drills.forEach((d, i) => {
-      d.n = day.exercises.length + i + 1;
-      d.block = "drill";
-      d.label = `变形 ${i + 1}`;
-      el.quiz.appendChild(renderExercise(d, reviewSet.has(d.item_id)));
-    });
+  // conversion. Each block extends on its own, so more sentence questions can
+  // be added without also adding conversions, and the other way round.
+  if ((day.drills || []).length) {
+    buildBlock("drill", "动词变形练习", day.drills, day.extra_drills);
   }
-  currentDay.all = [...day.exercises, ...drills];
 
   el.status.hidden = true;
   el.quiz.hidden = false;
@@ -234,33 +300,49 @@ function updateScore() {
     ? `得分：${hit(main)} / ${main.length}　·　变形：${hit(drill)} / ${drill.length}`
     : `得分：${hit(main)} / ${main.length}`;
   const missed = graded.filter((g) => !g.correct);
-  el.scoreNote.textContent = missed.length
-    ? `需要复习：${missed.map((m) => m.item_id).join("、")}`
-    : "全部答对，明天会换新的知识点。";
-  el.reportLink.href = buildIssueUrl();
+  const notes = [
+    missed.length
+      ? `需要复习：${missed.map((m) => m.item_id).join("、")}`
+      : "全部答对，明天会换新的知识点。",
+  ];
+  const payload = buildPayload();
+  if (isTrimmed(payload)) {
+    // Say so rather than silently dropping them: the scores still go in, but
+    // the sentences that would have come back as correction questions do not.
+    notes.push("题目较多，提交链接放不下你写的句子，只上报对错。要保留句子请用「复制结果 JSON」自建 issue。");
+  }
+  el.scoreNote.textContent = notes.join("　·　");
+  el.reportLink.href = issueUrlFor(payload);
 }
 
-function buildPayload() {
-  return {
-    date: currentDay.date,
-    results: graded.map((g) => {
-      const row = { item_id: g.item_id, type: g.type, correct: g.correct };
-      // Report what was actually written on a missed free-text answer, so the
-      // generator can hand the sentence back later as a correction question.
-      // Multiple-choice picks are omitted: the wrong option is already known.
-      if (!g.correct && g.type !== "mcq" && g.given && g.given.trim()) {
-        row.given = g.given.trim().slice(0, 300);
-        // The expected answer is not sent: the workflow reads it back out of
-        // that day's exercise file. Japanese costs nine characters apiece once
-        // URL-encoded, and this link has to survive a login redirect.
-        //
-        // A near miss may well have been acceptable Japanese, so it is flagged
-        // and never replayed as though it were definitely an error.
-        row.near = Boolean(g.near);
-      }
-      return row;
-    }),
-  };
+function buildPayload(options) {
+  const lean = options && options.lean;
+  const correct = [];
+  const missed = [];
+  const near = [];
+  const given = {};
+  for (const g of graded) {
+    (g.correct ? correct : missed).push(g.item_id);
+    // Report what was actually written on a missed free-text answer, so the
+    // generator can hand the sentence back later as a correction question.
+    // Multiple-choice picks are omitted: the wrong option is already known.
+    if (!lean && !g.correct && g.type !== "mcq" && g.given && g.given.trim()) {
+      given[g.item_id] = g.given.trim().slice(0, 300);
+      // A near miss may well have been acceptable Japanese, so it is flagged
+      // and never replayed as though it were definitely an error.
+      if (g.near) near.push(g.item_id);
+    }
+  }
+  // Id lists rather than a row per answer. With the 再出题 buttons a day can
+  // reach 30 questions, and repeating the id, the type and "correct" on every
+  // row pushed the prefilled issue URL past what GitHub accepts once the login
+  // redirect wraps it — which is what produced the 500 on 2026-08-17. The
+  // question type and the expected answer are both in the day's exercise file,
+  // so the workflow reads them there instead of carrying them through the URL.
+  const payload = { date: currentDay.date, correct, missed };
+  if (near.length) payload.near = near;
+  if (Object.keys(given).length) payload.given = given;
+  return payload;
 }
 
 function buildIssueUrl() {
@@ -273,20 +355,47 @@ function payloadBody(payload) {
   return `由每日练习网页提交。\n\n` + "```json\n" + JSON.stringify(payload) + "\n```\n";
 }
 
-function issueUrlFor(payload) {
-  const correctCount = payload.results.filter((r) => r.correct).length;
-  const title = `练习结果 ${payload.date}（${correctCount}/${payload.results.length}）`;
-  const body = payloadBody(payload);
+// GitHub rejects an over-long prefilled issue URL, and the login redirect it
+// may pass through roughly doubles the length. Budget for that, not for the
+// bare URL.
+const MAX_ISSUE_URL = 3400;
+
+function urlFrom(payload) {
+  // `results` is the shape used before the id lists; a phone can still be
+  // holding one in its pending queue, and its link has to keep working.
+  const legacy = payload.results;
+  const hit = legacy ? legacy.filter((r) => r.correct).length : (payload.correct || []).length;
+  const answered = legacy ? legacy.length : hit + (payload.missed || []).length;
+  const title = `练习结果 ${payload.date}（${hit}/${answered}）`;
   return (
     `https://github.com/${REPO}/issues/new` +
     `?labels=exercise-result` +
     `&title=${encodeURIComponent(title)}` +
-    `&body=${encodeURIComponent(body)}`
+    `&body=${encodeURIComponent(payloadBody(payload))}`
   );
 }
 
+function issueUrlFor(payload) {
+  const url = urlFrom(payload);
+  if (url.length <= MAX_ISSUE_URL || !payload.given) return url;
+  // Only the learner's own sentences are big enough to matter. Dropping them
+  // costs the later "here is what you wrote" question but keeps the scores,
+  // which is much better than a link GitHub refuses to open.
+  const lean = { date: payload.date, correct: payload.correct, missed: payload.missed };
+  return urlFrom(lean);
+}
+
+function isTrimmed(payload) {
+  return Boolean(payload.given) && urlFrom(payload).length > MAX_ISSUE_URL;
+}
+
 function grade() {
-  graded = (currentDay.all || currentDay.exercises).map((ex) => {
+  // Only what has not been graded yet: pressing 再出 5 题 after submitting adds
+  // fresh cards, and regrading the earlier ones would stack a second feedback
+  // block onto every card and reset any "my answer was fine" overrides.
+  const done = new Set((graded || []).map((g) => g.n));
+  const fresh = (currentDay.all || []).filter((ex) => !done.has(ex.n));
+  const rows = fresh.map((ex) => {
     const given = readAnswer(ex);
     const correct = isCorrect(ex, given);
     showFeedback(ex, given, correct);
@@ -301,6 +410,7 @@ function grade() {
       near: !correct && isNearMiss(ex, given),
     };
   });
+  graded = [...(graded || []), ...rows];
 
   el.submit.hidden = true;
   el.result.hidden = false;

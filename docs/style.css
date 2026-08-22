@@ -268,3 +268,18 @@ input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px
 /* Marked with the accent colour so the two blocks are told apart at a glance;
    the correct/wrong states still override the left border after grading. */
 .card.drill { border-left-color: var(--accent); }
+
+/* Each block extends on its own, so the button belongs to the block rather
+   than to the page: it sits directly under that block's last card. */
+.block-actions {
+  margin: 0.75rem 0 0.25rem;
+}
+.btn.more {
+  width: 100%;
+  border-style: dashed;
+  color: var(--muted);
+}
+.btn.more:hover {
+  color: var(--text);
+  border-style: solid;
+}

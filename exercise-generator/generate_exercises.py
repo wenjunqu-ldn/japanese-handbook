@@ -240,7 +240,11 @@ def _distractors(
 
     tiers: list[list[dict]] = []
 
-    confusable = [by_id[i] for i in confusion.get(item["id"], set()) if i in by_id]
+    # sorted(), not the set's own order: set iteration over strings depends on
+    # the process's hash seed, so the same day generated twice produced the same
+    # options in a different order. The rng.shuffle() below cannot fix that — it
+    # shuffles from whatever order it is handed.
+    confusable = [by_id[i] for i in sorted(confusion.get(item["id"], set())) if i in by_id]
     tiers.append([b for b in confusable if usable(b)])
 
     same_cat = [b for b in bank if usable(b) and b["category"] == item["category"]]
@@ -1387,6 +1391,113 @@ def quality_check(
     return problems, warnings
 
 
+def build_main_block(
+    bank, weights, mastery, personal, confusion, recent_probes, usage, rng,
+    count: int, exclude_ids: set[str], allow_conjugation: bool,
+) -> list[dict]:
+    """Pick `count` items and turn them into questions, skipping `exclude_ids`.
+
+    Split out of main() so an extra batch can be produced the same way as the
+    daily set: same review slots, same weighting, same format balancing — only
+    the pool is smaller, because everything already served today is excluded.
+    """
+    pool = [it for it in bank if it["id"] not in exclude_ids]
+
+    # Reserve slots for items not yet mastered. Relying on weighting alone is
+    # unreliable once the bank grows: a boosted item is still a small share of
+    # the total, so a genuinely weak item could go many days without returning.
+    weak = [
+        it for it in pool
+        if it["id"] in mastery and mastery[it["id"]]["mastery"] < MASTERY_THRESHOLD
+    ]
+    weak.sort(key=lambda it: (mastery[it["id"]]["mastery"], it["id"]))
+    review_picks = weak[: min(REVIEW_SLOTS, count, len(weak))]
+
+    remaining = [it for it in pool if it["id"] not in {r["id"] for r in review_picks}]
+    fill_picks = weighted_sample(
+        remaining, weights, count - len(review_picks), rng, already=review_picks
+    )
+
+    selected = review_picks + fill_picks
+    rng.shuffle(selected)
+
+    exercises: list[dict] = []
+    used_formats: dict[str, int] = {}
+    # Spares to draw on when a picked item cannot produce a question at all —
+    # otherwise the day silently comes up short and the quality check kills it.
+    spares = [it for it in pool if it["id"] not in {s["id"] for s in selected}]
+    rng.shuffle(spares)
+    queue = list(selected)
+    while queue and len(exercises) < count:
+        item = queue.pop(0)
+        options = candidate_formats(item, personal, allow_conjugation)
+        if options and options[0] == "personal_correction":
+            # A personal correction is a deliberate priority, not something to be
+            # shuffled away for the sake of format balance.
+            wanted = options
+        elif item["category"] == "verb_form":
+            # Verbs keep their own priority: work out the form from the sentence,
+            # or produce the whole sentence. Balancing would keep promoting the
+            # reading question, which is the easiest thing a verb can be asked
+            # and is already covered by writing the forms in the drill block.
+            wanted = list(options)
+            if len(wanted) >= 2:
+                head = wanted[:2]
+                rng.shuffle(head)
+                wanted[:2] = head
+        else:
+            wanted = order_by_balance(options, used_formats, rng)
+        ex = build_exercise(
+            item, bank, wanted, rng, confusion, recent_probes, personal, usage,
+            exclude=None if allow_conjugation else {"conjugation"},
+        )
+        if ex is None:
+            if spares:
+                queue.append(spares.pop(0))
+            continue
+        ex["n"] = len(exercises) + 1
+        display = FORMAT_DISPLAY.get(ex.pop("format_key", ""), ex["type"])
+        used_formats[display] = used_formats.get(display, 0) + 1
+        exercises.append(ex)
+    return exercises
+
+
+def build_drill_block(
+    bank, drill_weights, mastery, drill_history, rng,
+    count: int, exclude_ids: set[str],
+) -> list[dict]:
+    """Form conversions with no sentence and no context, as its own block."""
+    verbs = [b for b in bank if is_drillable_verb(b) and b["id"] not in exclude_ids]
+    weak_verbs = [
+        v for v in verbs
+        if v["id"] in mastery and mastery[v["id"]]["mastery"] < MASTERY_THRESHOLD
+    ]
+    weak_verbs.sort(key=lambda v: (mastery[v["id"]]["mastery"], v["id"]))
+    # The verb pool is small enough that one stubborn verb would otherwise
+    # hold a weak slot every single day — with a single weak verb on record
+    # it appeared 29 days out of 30. A verb just drilled sits out of the
+    # reserved slots for two days; the slot is then left to the weighted
+    # sample, which still favours weak items but damps recent ones, so the
+    # verb returns every few days instead of every day.
+    cooling: set[str] = set()
+    for row in drill_history[-DRILL_COOLDOWN:]:
+        cooling.update(row.get("item_ids", []))
+    rested = [v for v in weak_verbs if v["id"] not in cooling]
+    picks = rested[: min(REVIEW_SLOTS, count)]
+    rest = [v for v in verbs if v["id"] not in {p["id"] for p in picks}]
+    picks += weighted_sample(rest, drill_weights, count - len(picks), rng)
+    rng.shuffle(picks)
+
+    drills: list[dict] = []
+    for verb in picks:
+        drill = make_conjugation_drill(verb, rng)
+        if drill is None:
+            continue
+        drill["n"] = len(drills) + 1
+        drills.append(drill)
+    return drills
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--date", default=date.today().isoformat())
@@ -1394,6 +1505,10 @@ def main() -> int:
     parser.add_argument(
         "--drills", type=int, default=5,
         help="verb-form conversion drills to append (0 disables them)",
+    )
+    parser.add_argument(
+        "--extra-batches", type=int, default=2,
+        help="spare batches per block, revealed by the app's 再出题 buttons (0 disables)",
     )
     parser.add_argument("--force", action="store_true", help="regenerate even if the file exists")
     args = parser.parse_args()
@@ -1430,114 +1545,54 @@ def main() -> int:
     rng = random.Random(f"{args.date}:{len(bank)}")
     weights = build_weights(bank, history, mastery, args.date)
 
-    # Reserve slots for items not yet mastered. Relying on weighting alone is
-    # unreliable once the bank grows: a boosted item is still a small share of
-    # the total, so a genuinely weak item could go many days without returning.
-    weak = [
-        it for it in bank
-        if it["id"] in mastery and mastery[it["id"]]["mastery"] < MASTERY_THRESHOLD
-    ]
-    weak.sort(key=lambda it: (mastery[it["id"]]["mastery"], it["id"]))
-    review_picks = weak[: min(REVIEW_SLOTS, args.count, len(weak))]
-
-    remaining = [it for it in bank if it["id"] not in {r["id"] for r in review_picks}]
-    fill_picks = weighted_sample(
-        remaining, weights, args.count - len(review_picks), rng, already=review_picks
-    )
-
-    selected = review_picks + fill_picks
-    rng.shuffle(selected)
-
     # Form conversion has its own block below, so the daily five leave it out.
     allow_conjugation = args.drills <= 0
 
-    exercises = []
-    used_formats: dict[str, int] = {}
-    # Spares to draw on when a picked item cannot produce a question at all —
-    # otherwise the day silently comes up short and the quality check kills it.
-    spares = [
-        it for it in bank
-        if it["id"] not in {s["id"] for s in selected}
-    ]
-    rng.shuffle(spares)
-    queue = list(selected)
-    while queue and len(exercises) < args.count:
-        item = queue.pop(0)
-        options = candidate_formats(item, personal, allow_conjugation)
-        if options and options[0] == "personal_correction":
-            # A personal correction is a deliberate priority, not something to be
-            # shuffled away for the sake of format balance.
-            wanted = options
-        elif item["category"] == "verb_form":
-            # Verbs keep their own priority: work out the form from the sentence,
-            # or produce the whole sentence. Balancing would keep promoting the
-            # reading question, which is the easiest thing a verb can be asked
-            # and is already covered by writing the forms in the drill block.
-            wanted = list(options)
-            if len(wanted) >= 2:
-                head = wanted[:2]
-                rng.shuffle(head)
-                wanted[:2] = head
-        else:
-            wanted = order_by_balance(options, used_formats, rng)
-        ex = build_exercise(
-            item, bank, wanted, rng, confusion, recent_probes, personal, usage,
-            exclude=None if allow_conjugation else {"conjugation"},
-        )
-        if ex is None:
-            if spares:
-                queue.append(spares.pop(0))
-            continue
-        ex["n"] = len(exercises) + 1
-        display = FORMAT_DISPLAY.get(ex.pop("format_key", ""), ex["type"])
-        used_formats[display] = used_formats.get(display, 0) + 1
-        exercises.append(ex)
+    # Everything served today, so an extra batch never repeats a question the
+    # learner has already been given on the same page.
+    served_main: set[str] = set()
+    served_drill: set[str] = set()
+    # Sentences used today, added to the cross-day set so the second batch does
+    # not hand back the sentence the first batch just used.
+    probes_today: set[str] = set()
+
+    def used_probes() -> set[str]:
+        return recent_probes | probes_today
+
+    exercises = build_main_block(
+        bank, weights, mastery, personal, confusion, used_probes(), usage, rng,
+        args.count, served_main, allow_conjugation,
+    )
+    served_main.update(e["item_id"] for e in exercises)
+    probes_today.update(e["probe"] for e in exercises if e.get("probe"))
 
     # --- verb-form drills -------------------------------------------------
     # A separate block from the daily five: no sentence, no context, just a
     # form conversion. Selection uses the same mastery machinery, but over its
     # own history so a verb drilled yesterday is not drilled again today while
     # still being free to appear in the main set.
+    drill_history = [
+        {"date": h.get("date"), "item_ids": h.get("drill_item_ids", [])} for h in history
+    ]
+    drill_weights = build_weights(
+        [b for b in bank if is_drillable_verb(b)], drill_history, mastery, args.date
+    )
     drills: list[dict] = []
     if args.drills > 0:
         # A verb already asked in the daily five is not drilled again the same
         # day: two questions on one item makes the set feel narrower than it is.
-        served = {e["item_id"] for e in exercises}
-        verbs = [b for b in bank if is_drillable_verb(b) and b["id"] not in served]
-        drill_history = [
-            {"date": h.get("date"), "item_ids": h.get("drill_item_ids", [])} for h in history
-        ]
-        drill_weights = build_weights(verbs, drill_history, mastery, args.date)
-        weak_verbs = [
-            v for v in verbs
-            if v["id"] in mastery and mastery[v["id"]]["mastery"] < MASTERY_THRESHOLD
-        ]
-        weak_verbs.sort(key=lambda v: (mastery[v["id"]]["mastery"], v["id"]))
-        # The verb pool is small enough that one stubborn verb would otherwise
-        # hold a weak slot every single day — with a single weak verb on record
-        # it appeared 29 days out of 30. A verb just drilled sits out of the
-        # reserved slots for two days; the slot is then left to the weighted
-        # sample, which still favours weak items but damps recent ones, so the
-        # verb returns every few days instead of every day.
-        cooling: set[str] = set()
-        for row in drill_history[-DRILL_COOLDOWN:]:
-            cooling.update(row.get("item_ids", []))
-        rested = [v for v in weak_verbs if v["id"] not in cooling]
-        picks = rested[: min(REVIEW_SLOTS, args.drills)]
-        rest = [v for v in verbs if v["id"] not in {p["id"] for p in picks}]
-        picks += weighted_sample(rest, drill_weights, args.drills - len(picks), rng)
-        rng.shuffle(picks)
-        for verb in picks:
-            drill = make_conjugation_drill(verb, rng)
-            if drill is None:
-                continue
-            drill["n"] = len(drills) + 1
-            drills.append(drill)
+        drills = build_drill_block(
+            bank, drill_weights, mastery, drill_history, rng, args.drills, served_main,
+        )
+        served_drill.update(d["item_id"] for d in drills)
 
-    review_ids = [
-        e["item_id"] for e in exercises
-        if e["item_id"] in mastery and mastery[e["item_id"]]["mastery"] < MASTERY_THRESHOLD
-    ]
+    def review_marked(rows) -> list[str]:
+        return [
+            r["item_id"] for r in rows
+            if r["item_id"] in mastery and mastery[r["item_id"]]["mastery"] < MASTERY_THRESHOLD
+        ]
+
+    review_ids = review_marked(exercises)
 
     problems, warnings = quality_check(
         exercises, args.count, recent_probes, {b["id"]: b for b in bank}
@@ -1551,6 +1606,49 @@ def main() -> int:
     for w in warnings:
         print(f"  note: {w}")
 
+    # --- spare batches ----------------------------------------------------
+    # The app's 「再出 5 题」 buttons reveal these; they are generated now rather
+    # than on demand because the page is a static site with no generator behind
+    # it, and because a batch produced today must stay identical if the day is
+    # opened again tomorrow. A batch that cannot be filled cleanly is dropped
+    # instead of failing the day — the buttons simply stop appearing.
+    extra_exercises: list[list[dict]] = []
+    extra_drills: list[list[dict]] = []
+    bank_by_id = {b["id"]: b for b in bank}
+    for _ in range(max(0, args.extra_batches)):
+        # Drilled verbs are excluded too: within one page nothing should be
+        # asked twice, whichever block it turns up in.
+        batch = build_main_block(
+            bank, weights, mastery, personal, confusion, used_probes(), usage, rng,
+            args.count, served_main | served_drill, allow_conjugation,
+        )
+        batch_problems, _ = quality_check(batch, args.count, used_probes(), bank_by_id)
+        if batch_problems:
+            break
+        extra_exercises.append(batch)
+        served_main.update(e["item_id"] for e in batch)
+        probes_today.update(e["probe"] for e in batch if e.get("probe"))
+
+    if args.drills > 0:
+        for _ in range(max(0, args.extra_batches)):
+            batch = build_drill_block(
+                bank, drill_weights, mastery, drill_history, rng, args.drills,
+                served_main | served_drill,
+            )
+            if drill_problems(batch, args.drills):
+                break
+            extra_drills.append(batch)
+            served_drill.update(d["item_id"] for d in batch)
+
+    # The 复习 tag has to be right on the spare batches too, so the list covers
+    # every question on the page — each batch reserves its own review slots, so
+    # adding one adds review questions rather than diluting them.
+    for batch in extra_exercises:
+        review_ids += review_marked(batch)
+    for block in [drills, *extra_drills]:
+        review_ids += review_marked(block)
+    review_ids = sorted(set(review_ids))
+
     payload = {
         "date": args.date,
         "generated_from": "handbook/ (grammar, particles, expressions, vocabulary, verbs, mistakes, Duolingo)",
@@ -1559,6 +1657,8 @@ def main() -> int:
         "exercises": exercises,
         "drill_count": len(drills),
         "drills": drills,
+        "extra_exercises": extra_exercises,
+        "extra_drills": extra_drills,
     }
 
     EXERCISE_DIR.mkdir(parents=True, exist_ok=True)
@@ -1569,7 +1669,13 @@ def main() -> int:
             "date": args.date,
             "item_ids": [e["item_id"] for e in exercises],
             "drill_item_ids": [d["item_id"] for d in drills],
-            "probes": [e["probe"] for e in exercises if e.get("probe")],
+            # The spare batches are recorded separately: they are only answered
+            # if a button is pressed, so they must not damp their items the way
+            # a served question does — but their sentences still count as used,
+            # or tomorrow could hand back a sentence seen today.
+            "extra_item_ids": [e["item_id"] for b in extra_exercises for e in b],
+            "extra_drill_item_ids": [d["item_id"] for b in extra_drills for d in b],
+            "probes": sorted(probes_today),
         }
     )
     history.sort(key=lambda h: h.get("date", ""))
@@ -1594,7 +1700,10 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    print(f"Wrote {out_path} ({len(exercises)} exercises, {len(drills)} drills)")
+    spare_note = ""
+    if extra_exercises or extra_drills:
+        spare_note = f", spare {len(extra_exercises)}×{args.count} + {len(extra_drills)}×{args.drills}"
+    print(f"Wrote {out_path} ({len(exercises)} exercises, {len(drills)} drills{spare_note})")
     for e in exercises:
         marker = " [复习]" if e["item_id"] in review_ids else ""
         print(f"  {e['n']}. [{e['type']}] {e['item_id']}{marker}")
