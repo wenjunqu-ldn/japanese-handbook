@@ -43,6 +43,7 @@
 - [G-040 ～た方がいい](01-Grammar.md#G-040)
 - [G-041 动词普通形＋名词](01-Grammar.md#G-041)
 - [G-042 ～まま](01-Grammar.md#G-042)
+- [G-043 ～てもらう](01-Grammar.md#G-043)
 
 ## Verbs
 - [V-001 动词分类](02-Verbs.md#V-001)
