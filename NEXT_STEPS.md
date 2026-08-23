@@ -5,7 +5,7 @@
 > This is a working list for the exercise app, not handbook knowledge. Items are
 > removed once done; completed work is recorded in `CHANGELOG.md` instead.
 
-现状基线：`v0.13.5`（2026-08-23）。
+现状基线：`v0.14.0`（2026-08-23）。
 
 ## 优先级 | Priority order
 
@@ -78,6 +78,8 @@ https://wenjunqu-ldn.github.io/japanese-handbook/
 
 两处都是有规律的错误，讲清一次比多做十道题有用。现在只能事后手动问。
 
+> **进度**：脚本已经写好（v0.14.0，`exercise-generator/explain_mistakes.py`），可以手动跑，也可以 `--dry-run` 只看提示词。**还没接进工作流**，需要先配 `ANTHROPIC_API_KEY` 并确认讲解质量。剩下的三步见本节末尾。
+
 **接口已经现成**：`exercise-ingest-results.yml` 在收到提交时本来就拿到了 `given`（实际写的句子）、`expected`（正确答案）和 `item_id`（对应词条）。
 
 ```
@@ -100,6 +102,13 @@ https://wenjunqu-ldn.github.io/japanese-handbook/
 需要准备：
 
 - repository secret `ANTHROPIC_API_KEY`。仓库目前公开，secret 本身不会泄露，但要确认工作流不会把它打进日志
+
+剩下的步骤：
+
+1. ~~写 `explain_mistakes.py`，能脱离工作流单独跑~~ ✅ v0.14.0
+2. 接进 `exercise-ingest-results.yml`（整步用 `if: secrets.ANTHROPIC_API_KEY != ''` 包住，`continue-on-error`），讲解附进那条 issue 回复
+3. 应用侧渲染：复习题上方显示上次的 `analysis`
+4. 可选：把 `outside_handbook` 的缺口汇总成一份报告
 - 提示词里带上词条本身（词、假名、词性、常见搭配）和它的例句，让讲解贴着手册说，而不是泛泛讲语法
 - 讲解要求短：两三句中文，指出踩了哪条规律，不要重写整段语法
 - 应用侧要加一处渲染：复习题上方显示上次的 `analysis`
