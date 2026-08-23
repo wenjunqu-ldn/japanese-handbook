@@ -318,7 +318,45 @@ python3 exercise-generator/itembank.py > /tmp/bank.json
 
 # 手动录入一次答题结果
 python3 exercise-generator/ingest_mistakes.py --body-file result.txt
+
+# 让 LLM 讲解错题（见下节；--dry-run 只打印提示词，不联网）
+python3 exercise-generator/explain_mistakes.py --dry-run --limit 3
+python3 exercise-generator/explain_mistakes.py --date 2026-08-23
 ```
+
+### 用 LLM 讲解错题 | LLM explanations（可选，需 API key）
+
+应用只能说「正确答案是 X」，说不出**错在哪条规律上**。`explain_mistakes.py` 补这一半：把手册条目原文、当天的题目、你写的答案和参考答案交给 Claude，要一段两三句的中文讲解，写回 `mistakes.jsonl` 的 `analysis` 字段。
+
+```bash
+pip install anthropic
+export ANTHROPIC_API_KEY=...
+python3 exercise-generator/explain_mistakes.py            # 讲解所有还没讲过的
+python3 exercise-generator/explain_mistakes.py --dry-run  # 只打印提示词，不联网、不需要 key
+```
+
+喂给模型的材料全部来自手册，不是它自己的记忆：
+
+- **条目原文**（`构成`、`注意事项` 都在里面，题库只留了释义和例句）；
+- **手册标记为容易混淆的条目**——语法类取 `Related` 段；词汇没有 `Related`，改由「常见搭配／区别」列里写明的对照（`自他动词对：…`、`与「話す」同音不同字`）以及**同假名**、**同汉字词干且一自一他**推出，所以 `始まる／始める` 这类词对能配上，即使手册没写明；
+- **全部语法／助词／固定表达的标题清单**，让模型能区分「手册里根本没有」和「手册里有，只是没给我看」。
+
+除了讲解，还会回两个判断：
+
+| 字段 | 含义 |
+|---|---|
+| `learner_answer_ok` | 你写的其实也成立——判分是机械比对，接近参考答案的写法常常本身就对 |
+| `outside_handbook` | **参考答案用到了手册里没有的东西**，说明是题目超纲而不是你答错 |
+
+第二项是这个脚本最有价值的部分。2026-08-23 的第 6 题参考答案用了 `～てもらう`，而当时手册里没有这一条——靠人工发现太靠运气。发现的缺口只会**报告**，不会自动写进 `handbook/`：按 [PROJECT_SPEC §3](../PROJECT_SPEC.md)，改手册是人的决定。
+
+几条边界：
+
+- **不进每日生成。** 生成必须保持确定性——同一天重跑结果一致是可复现和可调试的基础。
+- **只写 `docs/data/`，不碰 `handbook/`。** LLM 产出的是派生数据。
+- **只讲自由作答题。** 选择题没有记录你选了哪个（错误选项本来就在题目里），无从讲起。
+- 同一天再次提交时 `ingest` 会替换该天的记录，讲解随之丢失，重跑一次即可。
+- 成本可忽略：每次约 1900 输入 token，一天 0–3 道自由作答错题。
 
 ---
 
