@@ -51,13 +51,11 @@ SYSTEM = """你是一位日语学习者的批改老师。学习者的母语是�
 
 你会拿到：手册里的原始条目、当天的题目、学习者写的答案、参考答案。
 
-请只根据**给出的手册条目**讲解，不要引入条目里没有的语法或词汇。
-如果参考答案本身用到了条目里没有的东西，如实指出来——那说明手册有缺口，比讲解本身更重要。
-
 讲解要求：
 - 用中文，两到三句，不要重写整段语法；
 - 指出**踩了哪一条规律**（助词用错、自他动词混用、活用规则、同音异字……），而不是只说"应该写成 X"；
-- 贴着这个条目说，能引用条目里的例句就引用；
+- 贴着给出的条目说，能引用条目里的例句就引用；
+- 参考答案若用到了条目里没写的语法，**照样把它讲清楚**，别停下来说手册没有；
 - 不要说教、不要鼓励语、不要重复题目。"""
 
 # The schema is enforced by the API, so the caller can json.loads() the first
@@ -76,16 +74,8 @@ OUTPUT_SCHEMA = {
                 "接近参考答案的写法常常本身就对。"
             ),
         },
-        "outside_handbook": {
-            "type": "boolean",
-            "description": "参考答案是否用到了所给手册条目里没有的语法或词汇。",
-        },
-        "outside_note": {
-            "type": "string",
-            "description": "若 outside_handbook 为真，用一句话说明缺的是什么；否则留空。",
-        },
     },
-    "required": ["analysis", "learner_answer_ok", "outside_handbook", "outside_note"],
+    "required": ["analysis", "learner_answer_ok"],
     "additionalProperties": False,
 }
 
@@ -314,9 +304,8 @@ def confusable(item: dict, entry: str, bank: list[dict], confusion) -> list[dict
 def grammar_index(bank: list[dict]) -> str:
     """Every grammar, particle and expression heading, as a flat list.
 
-    Without it the model cannot tell "this pattern is nowhere in the handbook"
-    from "it is in the handbook, just not in the entry I was handed", and the
-    handbook-gap flag would fire on everything.
+    Lets the explanation lean on something the learner has actually studied —
+    "这是 G-019 ～てくれる 的反面" lands, an unfamiliar pattern name does not.
     """
     names = [
         f"{i['id']} {i['term']}"
@@ -352,7 +341,7 @@ def build_user_message(
 
 {chr(10).join(related) if related else "（无）"}
 
-## 手册收录的全部语法／助词／固定表达（只有标题）
+## 学习者已经学过的语法／助词／固定表达（讲解时可以直接引用）
 
 {grammar_index(bank)}
 
@@ -466,7 +455,6 @@ def main() -> int:
     client = anthropic.Anthropic(max_retries=3)
 
     done = 0
-    gaps = []
     tokens_in = tokens_out = 0
     for row in todo:
         item = bank[row["item_id"]]
@@ -498,29 +486,18 @@ def main() -> int:
         row["analysis"] = result["analysis"]
         if result.get("learner_answer_ok"):
             row["analysis_answer_ok"] = True
-        if result.get("outside_handbook"):
-            gaps.append((tag, result.get("outside_note", "")))
         tokens_in += usage.input_tokens
         tokens_out += usage.output_tokens
         done += 1
         print(f"  {tag}: {result['analysis']}")
         if result.get("learner_answer_ok"):
             print("      ↳ 这个答案其实也成立，判错了")
-        if result.get("outside_handbook"):
-            print(f"      ↳ 参考答案超出手册：{result.get('outside_note', '')}")
 
     if done:
         save_rows(MISTAKES_PATH, rows)
 
     print(f"\nExplained {done} of {len(todo)}.")
     print(f"Tokens: {tokens_in} in, {tokens_out} out.")
-    if gaps:
-        # The point of asking: an answer the handbook never taught is a defect in
-        # the question, not in the learner. Reported, never auto-written —
-        # handbook edits are a human decision (PROJECT_SPEC §3).
-        print(f"\n手册缺口 {len(gaps)} 处（参考答案用到了手册里没有的东西）：")
-        for tag, note in gaps:
-            print(f"  - {tag}: {note}")
     return 0
 
 

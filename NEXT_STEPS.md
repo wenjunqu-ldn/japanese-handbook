@@ -5,7 +5,7 @@
 > This is a working list for the exercise app, not handbook knowledge. Items are
 > removed once done; completed work is recorded in `CHANGELOG.md` instead.
 
-现状基线：`v0.14.0`（2026-08-23）。
+现状基线：`v0.14.1`（2026-08-23）。
 
 ## 优先级 | Priority order
 
@@ -108,7 +108,6 @@ https://wenjunqu-ldn.github.io/japanese-handbook/
 1. ~~写 `explain_mistakes.py`，能脱离工作流单独跑~~ ✅ v0.14.0
 2. 接进 `exercise-ingest-results.yml`（整步用 `if: secrets.ANTHROPIC_API_KEY != ''` 包住，`continue-on-error`），讲解附进那条 issue 回复
 3. 应用侧渲染：复习题上方显示上次的 `analysis`
-4. 可选：把 `outside_handbook` 的缺口汇总成一份报告
 - 提示词里带上词条本身（词、假名、词性、常见搭配）和它的例句，让讲解贴着手册说，而不是泛泛讲语法
 - 讲解要求短：两三句中文，指出踩了哪条规律，不要重写整段语法
 - 应用侧要加一处渲染：复习题上方显示上次的 `analysis`
