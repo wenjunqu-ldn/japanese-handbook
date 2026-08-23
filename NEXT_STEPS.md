@@ -5,7 +5,7 @@
 > This is a working list for the exercise app, not handbook knowledge. Items are
 > removed once done; completed work is recorded in `CHANGELOG.md` instead.
 
-现状基线：`v0.13.4`（2026-08-22）。
+现状基线：`v0.13.5`（2026-08-23）。
 
 ## 优先级 | Priority order
 
