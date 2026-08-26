@@ -28,3 +28,5 @@
 {"date": "2026-08-23", "item_id": "VF-008", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-23T19:36:32.679986+00:00", "issue": "44", "given": "左で歩きます", "expected": "左側を歩きます。", "near": true}
 {"date": "2026-08-23", "item_id": "W-V045", "type": "correction", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-23T19:36:32.679986+00:00", "issue": "44", "given": "パソコンは壊れました", "expected": "壊れた", "near": false}
 {"date": "2026-08-23", "item_id": "W-N145", "type": "correction", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-23T19:36:32.679986+00:00", "issue": "44", "given": "車でけきました。", "expected": "車に乗って出かけました。", "near": false}
+{"date": "2026-08-26", "item_id": "W-V023", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-26T08:16:42.531536+00:00", "issue": "48", "given": "落つた匙を探しています", "expected": "なくした鍵を探しています。", "near": true}
+{"date": "2026-08-26", "item_id": "VF-039", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-26T08:16:42.531536+00:00", "issue": "48", "given": "死んた", "expected": "死んだ", "near": true}

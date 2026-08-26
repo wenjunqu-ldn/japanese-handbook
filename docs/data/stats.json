@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-08-23T19:36:32.679986+00:00",
-  "total_misses": 30,
-  "distinct_items": 20,
+  "updated_at": "2026-08-26T08:16:42.531536+00:00",
+  "total_misses": 32,
+  "distinct_items": 21,
   "top_missed": [
     {
       "item_id": "W-N163",
@@ -9,6 +9,10 @@
     },
     {
       "item_id": "DUO-076",
+      "misses": 2
+    },
+    {
+      "item_id": "VF-039",
       "misses": 2
     },
     {
@@ -52,10 +56,6 @@
       "misses": 1
     },
     {
-      "item_id": "VF-039",
-      "misses": 1
-    },
-    {
       "item_id": "W-ADV002",
       "misses": 1
     },
@@ -72,15 +72,15 @@
       "misses": 1
     },
     {
+      "item_id": "W-V023",
+      "misses": 1
+    },
+    {
       "item_id": "W-V048",
       "misses": 1
     },
     {
       "item_id": "W-V059",
-      "misses": 1
-    },
-    {
-      "item_id": "W-V065",
       "misses": 1
     }
   ]
