@@ -1,0 +1,576 @@
+{
+  "date": "2026-09-02",
+  "generated_from": "handbook/ (grammar, particles, expressions, vocabulary, verbs, mistakes, Duolingo)",
+  "count": 5,
+  "review_item_ids": [
+    "G-025",
+    "VF-034",
+    "VF-038",
+    "W-ADV001",
+    "W-ADV028",
+    "W-N009",
+    "W-N145",
+    "W-N163",
+    "W-N165",
+    "W-V008",
+    "W-V013",
+    "W-V023",
+    "W-V045",
+    "W-V048"
+  ],
+  "exercises": [
+    {
+      "type": "fill_blank",
+      "item_id": "W-ADV028",
+      "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+      "sentence": "＿＿＿、そうですか。",
+      "sentence_zh": "原来如此，是这样啊。",
+      "answer": "なるほど",
+      "accepted": [
+        "なるほど"
+      ],
+      "hint": "",
+      "explanation": "W-ADV028　完整句子：なるほど、そうですか。\n原来如此，是这样啊。\nなるほど：原来如此",
+      "source": "handbook/05-Vocabulary.md",
+      "probe": "なるほど、そうですか。",
+      "n": 1
+    },
+    {
+      "type": "correction",
+      "item_id": "W-V045",
+      "prompt": "这是你在 2026-08-28 写过的答案，请改成正确的说法：",
+      "wrong_sentence": "パソコンは壊れていました",
+      "sentence_zh": "电脑坏了。",
+      "answer": "壊れた",
+      "answer_plain": "壊れた",
+      "accepted": [
+        "壊れた"
+      ],
+      "explanation": "W-V045　你写的：パソコンは壊れていました\n参考答案：壊れた\n壊れる（こわれる）：坏掉",
+      "source": "handbook/05-Vocabulary.md",
+      "personal": true,
+      "n": 2
+    },
+    {
+      "type": "correction",
+      "item_id": "G-025",
+      "prompt": "这是你在 2026-08-28 写过的答案，请改成正确的说法：",
+      "wrong_sentence": "考えるが欲しい",
+      "sentence_zh": "我希望大家多吃一些蔬菜。",
+      "answer": "考えてほしい",
+      "answer_plain": "考えてほしい",
+      "accepted": [
+        "考えてほしい"
+      ],
+      "explanation": "G-025　你写的：考えるが欲しい\n参考答案：考えてほしい\n～てほしい：表示希望别人做某事，常译为“希望……做……”。",
+      "source": "handbook/01-Grammar.md",
+      "personal": true,
+      "n": 3
+    },
+    {
+      "type": "correction",
+      "item_id": "W-N145",
+      "prompt": "这是你在 2026-08-23 写过的答案，请改成正确的说法：",
+      "wrong_sentence": "車でけきました。",
+      "sentence_zh": "开车出门了。",
+      "answer": "車に乗って出かけました。",
+      "answer_plain": "車に乗って出かけました。",
+      "accepted": [
+        "車に乗って出かけました。"
+      ],
+      "explanation": "W-N145　你写的：車でけきました。\n参考答案：車に乗って出かけました。\n車（くるま）：车；汽车",
+      "source": "handbook/05-Vocabulary.md",
+      "personal": true,
+      "n": 4
+    },
+    {
+      "type": "mcq",
+      "item_id": "W-I035",
+      "prompt": "「悪い（わるい）」的意思是？",
+      "options": [
+        "不好的；坏的",
+        "可怕的；害怕的",
+        "轻的",
+        "慢的；晚的"
+      ],
+      "answer": "不好的；坏的",
+      "explanation": "W-I035　悪い（わるい）：不好的；坏的",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 5
+    }
+  ],
+  "drill_count": 5,
+  "drills": [
+    {
+      "type": "conjugation",
+      "item_id": "VF-056",
+      "prompt": "「出る（でる）」（辞书形）→ 写出可能形：",
+      "verb": "出る",
+      "verb_reading": "でる",
+      "verb_class": "一段",
+      "source_label": "辞书形",
+      "source_form": "出る",
+      "form_label": "可能形",
+      "meaning_zh": "出去；出现",
+      "answer": "出られる",
+      "accepted": [
+        "でられる",
+        "出られる"
+      ],
+      "explanation": "VF-056　出る（でる）［一段］\n辞书形：出る｜ます形：出ます｜て形：出て｜た形：出た｜ない形：出ない｜可能形：出られる\n意思：出去；出现",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 1
+    },
+    {
+      "type": "conjugation",
+      "item_id": "VF-038",
+      "prompt": "「困る（こまる）」（辞书形）→ 写出可能形：",
+      "verb": "困る",
+      "verb_reading": "こまる",
+      "verb_class": "五段",
+      "source_label": "辞书形",
+      "source_form": "困る",
+      "form_label": "可能形",
+      "meaning_zh": "为难；困扰",
+      "answer": "困れる",
+      "accepted": [
+        "こまれる",
+        "困れる"
+      ],
+      "explanation": "VF-038　困る（こまる）［五段］\n辞书形：困る｜ます形：困ります｜て形：困って｜た形：困った｜ない形：困らない｜可能形：困れる\n意思：为难；困扰",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 2
+    },
+    {
+      "type": "conjugation",
+      "item_id": "W-V023",
+      "prompt": "「探す（さがす）」（辞书形）→ 写出可能形：",
+      "verb": "探す",
+      "verb_reading": "さがす",
+      "verb_class": "五段",
+      "source_label": "辞书形",
+      "source_form": "探す",
+      "form_label": "可能形",
+      "meaning_zh": "寻找",
+      "answer": "探せる",
+      "accepted": [
+        "さがせる",
+        "探せる"
+      ],
+      "explanation": "W-V023　探す（さがす）［五段］\n辞书形：探す｜ます形：探します｜て形：探して｜た形：探した｜ない形：探さない｜可能形：探せる\n意思：寻找",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 3
+    },
+    {
+      "type": "conjugation",
+      "item_id": "VF-099",
+      "prompt": "「考えます（かんがえます）」（ます形）→ 写出ない形：",
+      "verb": "考える",
+      "verb_reading": "かんがえる",
+      "verb_class": "一段",
+      "source_label": "ます形",
+      "source_form": "考えます",
+      "form_label": "ない形",
+      "meaning_zh": "思考；考虑",
+      "answer": "考えない",
+      "accepted": [
+        "かんがえない",
+        "考えない"
+      ],
+      "explanation": "VF-099　考える（かんがえる）［一段］\n辞书形：考える｜ます形：考えます｜て形：考えて｜た形：考えた｜ない形：考えない｜可能形：考えられる\n意思：思考；考虑",
+      "source": "handbook/02-Verbs.md#V-004",
+      "n": 4
+    },
+    {
+      "type": "conjugation",
+      "item_id": "W-V057",
+      "prompt": "「渡る（わたる）」（辞书形）→ 写出た形：",
+      "verb": "渡る",
+      "verb_reading": "わたる",
+      "verb_class": "五段／自动词",
+      "source_label": "辞书形",
+      "source_form": "渡る",
+      "form_label": "た形",
+      "meaning_zh": "过（马路、桥）",
+      "answer": "渡った",
+      "accepted": [
+        "わたった",
+        "渡った"
+      ],
+      "explanation": "W-V057　渡る（わたる）［五段／自动词］\n辞书形：渡る｜ます形：渡ります｜て形：渡って｜た形：渡った｜ない形：渡らない\n意思：过（马路、桥）",
+      "source": "handbook/05-Vocabulary.md",
+      "n": 5
+    }
+  ],
+  "extra_exercises": [
+    [
+      {
+        "type": "translation",
+        "item_id": "VF-020",
+        "prompt": "把下面的中文翻译成日语：",
+        "sentence_zh": "我请朋友教了我日语。",
+        "hint": "",
+        "answer": "友達（ともだち）に日本語（にほんご）を教（おし）えてもらいました。",
+        "answer_plain": "友達に日本語を教えてもらいました。",
+        "accepted": [
+          "友達に日本語を教えてもらいました。"
+        ],
+        "explanation": "VF-020　参考答案：友達（ともだち）に日本語（にほんご）を教（おし）えてもらいました。\n教える（おしえる）［一段］：教；告诉",
+        "source": "handbook/02-Verbs.md#V-004",
+        "probe": "友達（ともだち）に日本語（にほんご）を教（おし）えてもらいました。",
+        "n": 1
+      },
+      {
+        "type": "mcq",
+        "item_id": "W-N171",
+        "prompt": "「茸（きのこ）」的意思是？",
+        "options": [
+          "晴天",
+          "进展；进度",
+          "蘑菇",
+          "东"
+        ],
+        "answer": "蘑菇",
+        "explanation": "W-N171　茸（きのこ）：蘑菇",
+        "source": "handbook/05-Vocabulary.md",
+        "n": 2
+      },
+      {
+        "type": "fill_blank",
+        "item_id": "W-ADV018",
+        "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+        "sentence": "飴（あめ）を触（さわ）った手（て）が＿＿＿。",
+        "sentence_zh": "摸过糖果的手黏黏的。",
+        "answer": "べたべたします",
+        "accepted": [
+          "べたべたします"
+        ],
+        "hint": "提示：粘粘的",
+        "explanation": "W-ADV018　完整句子：飴（あめ）を触（さわ）った手（て）がべたべたします。\n摸过糖果的手黏黏的。\nべたべた：粘粘的",
+        "source": "handbook/05-Vocabulary.md",
+        "probe": "飴（あめ）を触（さわ）った手（て）がべたべたします。",
+        "n": 3
+      },
+      {
+        "type": "correction",
+        "item_id": "W-N165",
+        "prompt": "这是你在 2026-08-28 写过的答案，请改成正确的说法：",
+        "wrong_sentence": "北に歩きます",
+        "sentence_zh": "朝北走去。",
+        "answer": "北へ向かって歩きました。",
+        "answer_plain": "北へ向かって歩きました。",
+        "accepted": [
+          "北へ向かって歩きました。"
+        ],
+        "explanation": "W-N165　你写的：北に歩きます\n参考答案：北へ向かって歩きました。\n北（きた）：北",
+        "source": "handbook/05-Vocabulary.md",
+        "personal": true,
+        "n": 4
+      },
+      {
+        "type": "fill_blank",
+        "item_id": "W-N163",
+        "prompt": "在空格处填入合适的词（可写汉字或假名）：",
+        "sentence": "太陽（たいよう）は＿＿＿に沈（しず）みます。",
+        "sentence_zh": "太阳向西边落下。",
+        "answer": "西",
+        "accepted": [
+          "にし",
+          "西"
+        ],
+        "hint": "",
+        "explanation": "W-N163　完整句子：太陽（たいよう）は西（にし）に沈（しず）みます。\n太阳向西边落下。\n西（にし）：西",
+        "source": "handbook/05-Vocabulary.md",
+        "probe": "太陽（たいよう）は西（にし）に沈（しず）みます。",
+        "n": 5
+      }
+    ],
+    [
+      {
+        "type": "fill_blank",
+        "item_id": "VF-025",
+        "prompt": "在空格处填入合适的动词形式：",
+        "sentence": "新（あたら）しいズボンを＿＿＿。",
+        "sentence_zh": "买了新裤子。",
+        "hint": "提示：买｜五段",
+        "answer": "買いました",
+        "accepted": [
+          "かいました",
+          "買いました"
+        ],
+        "explanation": "VF-025　完整句子：新（あたら）しいズボンを買（か）いました。\n买了新裤子。\n買う（かう）［五段］：买",
+        "source": "handbook/02-Verbs.md#V-004",
+        "probe": "新（あたら）しいズボンを買（か）いました。",
+        "n": 1
+      },
+      {
+        "type": "translation",
+        "item_id": "G-031",
+        "prompt": "把下面的中文翻译成日语：",
+        "sentence_zh": "明年我还想挑战单板滑雪。",
+        "hint": "提示：使用 ～たい",
+        "answer": "来年（らいねん）はスノーボードにも挑戦（ちょうせん）したいです。",
+        "answer_plain": "来年はスノーボードにも挑戦したいです。",
+        "accepted": [
+          "来年はスノーボードにも挑戦したいです。"
+        ],
+        "explanation": "G-031　参考答案：来年（らいねん）はスノーボードにも挑戦（ちょうせん）したいです。\n～たい：表示说话人自己想做某事，常译为“想……”。",
+        "source": "handbook/01-Grammar.md",
+        "probe": "来年（らいねん）はスノーボードにも挑戦（ちょうせん）したいです。",
+        "n": 2
+      },
+      {
+        "type": "mcq",
+        "item_id": "W-N009",
+        "prompt": "「レポート」的意思是？",
+        "options": [
+          "电车",
+          "加班",
+          "戒指",
+          "报告；报告书"
+        ],
+        "answer": "报告；报告书",
+        "explanation": "W-N009　レポート：报告；报告书",
+        "source": "handbook/05-Vocabulary.md",
+        "n": 3
+      },
+      {
+        "type": "mcq",
+        "item_id": "W-ADV001",
+        "prompt": "「わくわく」的意思是？",
+        "options": [
+          "姑且；以防万一",
+          "完全；一点也不；完全不",
+          "粘粘的",
+          "兴奋期待；满怀期待地"
+        ],
+        "answer": "兴奋期待；满怀期待地",
+        "explanation": "W-ADV001　わくわく：兴奋期待；满怀期待地",
+        "source": "handbook/05-Vocabulary.md",
+        "n": 4
+      },
+      {
+        "type": "translation",
+        "item_id": "W-V024",
+        "prompt": "把下面的中文翻译成日语：",
+        "sentence_zh": "在下一站换乘地铁。",
+        "hint": "提示：使用 乗り換える（のりかえる）",
+        "answer": "次（つぎ）の駅（えき）で地下鉄（ちかてつ）に乗（の）り換（か）えます。",
+        "answer_plain": "次の駅で地下鉄に乗り換えます。",
+        "accepted": [
+          "次の駅で地下鉄に乗り換えます。"
+        ],
+        "explanation": "W-V024　参考答案：次（つぎ）の駅（えき）で地下鉄（ちかてつ）に乗（の）り換（か）えます。\n乗り換える：换乘",
+        "source": "handbook/05-Vocabulary.md",
+        "probe": "次（つぎ）の駅（えき）で地下鉄（ちかてつ）に乗（の）り換（か）えます。",
+        "n": 5
+      }
+    ]
+  ],
+  "extra_drills": [
+    [
+      {
+        "type": "conjugation",
+        "item_id": "VF-089",
+        "prompt": "「料理する（りょうりする）」（辞书形）→ 写出た形：",
+        "verb": "料理する",
+        "verb_reading": "りょうりする",
+        "verb_class": "サ变",
+        "source_label": "辞书形",
+        "source_form": "料理する",
+        "form_label": "た形",
+        "meaning_zh": "做饭",
+        "answer": "料理した",
+        "accepted": [
+          "りょうりした",
+          "料理した"
+        ],
+        "explanation": "VF-089　料理する（りょうりする）［サ变］\n辞书形：料理する｜ます形：料理します｜て形：料理して｜た形：料理した｜ない形：料理しない｜可能形：料理できる\n意思：做饭",
+        "source": "handbook/02-Verbs.md#V-004",
+        "n": 1
+      },
+      {
+        "type": "conjugation",
+        "item_id": "VF-063",
+        "prompt": "「習います（ならいます）」（ます形）→ 写出可能形：",
+        "verb": "習う",
+        "verb_reading": "ならう",
+        "verb_class": "五段",
+        "source_label": "ます形",
+        "source_form": "習います",
+        "form_label": "可能形",
+        "meaning_zh": "学习（向人学）",
+        "answer": "習える",
+        "accepted": [
+          "ならえる",
+          "習える"
+        ],
+        "explanation": "VF-063　習う（ならう）［五段］\n辞书形：習う｜ます形：習います｜て形：習って｜た形：習った｜ない形：習わない｜可能形：習える\n意思：学习（向人学）",
+        "source": "handbook/02-Verbs.md#V-004",
+        "n": 2
+      },
+      {
+        "type": "conjugation",
+        "item_id": "W-V048",
+        "prompt": "「打ちます（うちます）」（ます形）→ 写出可能形：",
+        "verb": "打つ",
+        "verb_reading": "うつ",
+        "verb_class": "五段／他动词",
+        "source_label": "ます形",
+        "source_form": "打ちます",
+        "form_label": "可能形",
+        "meaning_zh": "打；击",
+        "answer": "打てる",
+        "accepted": [
+          "うてる",
+          "打てる"
+        ],
+        "explanation": "W-V048　打つ（うつ）［五段／他动词］\n辞书形：打つ｜ます形：打ちます｜て形：打って｜た形：打った｜ない形：打たない｜可能形：打てる\n意思：打；击",
+        "source": "handbook/05-Vocabulary.md",
+        "n": 3
+      },
+      {
+        "type": "conjugation",
+        "item_id": "W-V034",
+        "prompt": "「喧嘩する（けんかする）」（辞书形）→ 写出ない形：",
+        "verb": "喧嘩する",
+        "verb_reading": "けんかする",
+        "verb_class": "サ变",
+        "source_label": "辞书形",
+        "source_form": "喧嘩する",
+        "form_label": "ない形",
+        "meaning_zh": "吵架；打架",
+        "answer": "喧嘩しない",
+        "accepted": [
+          "けんかしない",
+          "喧嘩しない"
+        ],
+        "explanation": "W-V034　喧嘩する（けんかする）［サ变］\n辞书形：喧嘩する｜ます形：喧嘩します｜て形：喧嘩して｜た形：喧嘩した｜ない形：喧嘩しない｜可能形：喧嘩できる\n意思：吵架；打架",
+        "source": "handbook/05-Vocabulary.md",
+        "n": 4
+      },
+      {
+        "type": "conjugation",
+        "item_id": "VF-034",
+        "prompt": "「着る（きる）」（辞书形）→ 写出て形：",
+        "verb": "着る",
+        "verb_reading": "きる",
+        "verb_class": "一段",
+        "source_label": "辞书形",
+        "source_form": "着る",
+        "form_label": "て形",
+        "meaning_zh": "穿（上衣）",
+        "answer": "着て",
+        "accepted": [
+          "きて",
+          "着て"
+        ],
+        "explanation": "VF-034　着る（きる）［一段］\n辞书形：着る｜ます形：着ます｜て形：着て｜た形：着た｜ない形：着ない｜可能形：着られる\n意思：穿（上衣）",
+        "source": "handbook/02-Verbs.md#V-004",
+        "n": 5
+      }
+    ],
+    [
+      {
+        "type": "conjugation",
+        "item_id": "W-V013",
+        "prompt": "「転んで（ころんで）」（て形）→ 写出ない形：",
+        "verb": "転ぶ",
+        "verb_reading": "ころぶ",
+        "verb_class": "五段／自动词",
+        "source_label": "て形",
+        "source_form": "転んで",
+        "form_label": "ない形",
+        "meaning_zh": "摔倒",
+        "answer": "転ばない",
+        "accepted": [
+          "ころばない",
+          "転ばない"
+        ],
+        "explanation": "W-V013　転ぶ（ころぶ）［五段／自动词］\n辞书形：転ぶ｜ます形：転びます｜て形：転んで｜た形：転んだ｜ない形：転ばない\n意思：摔倒",
+        "source": "handbook/05-Vocabulary.md",
+        "n": 1
+      },
+      {
+        "type": "conjugation",
+        "item_id": "W-V012",
+        "prompt": "「転がって（ころがって）」（て形）→ 写出た形：",
+        "verb": "転がる",
+        "verb_reading": "ころがる",
+        "verb_class": "五段／自动词",
+        "source_label": "て形",
+        "source_form": "転がって",
+        "form_label": "た形",
+        "meaning_zh": "滚动；翻滚",
+        "answer": "転がった",
+        "accepted": [
+          "ころがった",
+          "転がった"
+        ],
+        "explanation": "W-V012　転がる（ころがる）［五段／自动词］\n辞书形：転がる｜ます形：転がります｜て形：転がって｜た形：転がった｜ない形：転がらない\n意思：滚动；翻滚",
+        "source": "handbook/05-Vocabulary.md",
+        "n": 2
+      },
+      {
+        "type": "conjugation",
+        "item_id": "W-V008",
+        "prompt": "「始まります（はじまります）」（ます形）→ 写出ない形：",
+        "verb": "始まる",
+        "verb_reading": "はじまる",
+        "verb_class": "五段／自动词",
+        "source_label": "ます形",
+        "source_form": "始まります",
+        "form_label": "ない形",
+        "meaning_zh": "开始",
+        "answer": "始まらない",
+        "accepted": [
+          "はじまらない",
+          "始まらない"
+        ],
+        "explanation": "W-V008　始まる（はじまる）［五段／自动词］\n辞书形：始まる｜ます形：始まります｜て形：始まって｜た形：始まった｜ない形：始まらない\n意思：开始",
+        "source": "handbook/05-Vocabulary.md",
+        "n": 3
+      },
+      {
+        "type": "conjugation",
+        "item_id": "VF-058",
+        "prompt": "「止まります（とまります）」（ます形）→ 写出可能形：",
+        "verb": "止まる",
+        "verb_reading": "とまる",
+        "verb_class": "五段",
+        "source_label": "ます形",
+        "source_form": "止まります",
+        "form_label": "可能形",
+        "meaning_zh": "停止（自动词）",
+        "answer": "止まれる",
+        "accepted": [
+          "とまれる",
+          "止まれる"
+        ],
+        "explanation": "VF-058　止まる（とまる）［五段］\n辞书形：止まる｜ます形：止まります｜て形：止まって｜た形：止まった｜ない形：止まらない｜可能形：止まれる\n意思：停止（自动词）",
+        "source": "handbook/02-Verbs.md#V-004",
+        "n": 4
+      },
+      {
+        "type": "conjugation",
+        "item_id": "W-V018",
+        "prompt": "「払います（はらいます）」（ます形）→ 写出た形：",
+        "verb": "払う",
+        "verb_reading": "はらう",
+        "verb_class": "五段",
+        "source_label": "ます形",
+        "source_form": "払います",
+        "form_label": "た形",
+        "meaning_zh": "支付；付款",
+        "answer": "払った",
+        "accepted": [
+          "はらった",
+          "払った"
+        ],
+        "explanation": "W-V018　払う（はらう）［五段］\n辞书形：払う｜ます形：払います｜て形：払って｜た形：払った｜ない形：払わない｜可能形：払える\n意思：支付；付款",
+        "source": "handbook/05-Vocabulary.md",
+        "n": 5
+      }
+    ]
+  ]
+}
