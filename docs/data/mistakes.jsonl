@@ -36,3 +36,4 @@
 {"date": "2026-08-28", "item_id": "VF-008", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-28T16:21:43.700931+00:00", "issue": "49", "given": "歩いて", "expected": "歩いた", "near": true}
 {"date": "2026-08-28", "item_id": "W-N163", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-28T16:21:43.700931+00:00", "issue": "49", "given": "大陽は西に沈しみます", "expected": "太陽は西に沈みます。", "near": true}
 {"date": "2026-08-28", "item_id": "W-ADV028", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-08-28T16:21:43.700931+00:00", "issue": "49", "given": "なるほど、そうですね", "expected": "なるほど、そうですか。", "near": true}
+{"date": "2026-09-04", "item_id": "VF-037", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T10:53:15.884093+00:00", "issue": "52", "given": "答えられんる", "expected": "答えられる", "near": true}

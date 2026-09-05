@@ -133,3 +133,12 @@
 {"date": "2026-09-03", "item_id": "VF-091", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-03T11:19:21.939691+00:00", "issue": "51"}
 {"date": "2026-09-03", "item_id": "VF-069", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-03T11:19:21.939691+00:00", "issue": "51"}
 {"date": "2026-09-03", "item_id": "W-V006", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-03T11:19:21.939691+00:00", "issue": "51"}
+{"date": "2026-09-04", "item_id": "VF-063", "type": "mcq", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T10:53:15.884093+00:00", "issue": "52"}
+{"date": "2026-09-04", "item_id": "W-N163", "type": "translation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T10:53:15.884093+00:00", "issue": "52"}
+{"date": "2026-09-04", "item_id": "W-N165", "type": "correction", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T10:53:15.884093+00:00", "issue": "52"}
+{"date": "2026-09-04", "item_id": "W-V045", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T10:53:15.884093+00:00", "issue": "52"}
+{"date": "2026-09-04", "item_id": "W-V070", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T10:53:15.884093+00:00", "issue": "52"}
+{"date": "2026-09-04", "item_id": "VF-039", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T10:53:15.884093+00:00", "issue": "52"}
+{"date": "2026-09-04", "item_id": "VF-015", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T10:53:15.884093+00:00", "issue": "52"}
+{"date": "2026-09-04", "item_id": "W-I030", "type": "mcq", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T10:53:15.884093+00:00", "issue": "52"}
+{"date": "2026-09-04", "item_id": "VF-037", "type": "conjugation", "correct": false, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T10:53:15.884093+00:00", "issue": "52"}
