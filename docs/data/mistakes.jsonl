@@ -44,3 +44,7 @@
 {"date": "2026-09-05", "item_id": "VF-051", "type": "fill_blank", "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T11:05:34.407499+00:00", "issue": "53", "given": "た", "expected": "着いた", "near": false}
 {"date": "2026-09-05", "item_id": "VF-092", "type": "fill_blank", "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T11:05:34.407499+00:00", "issue": "53", "given": "話せる", "expected": "説明できる", "near": false}
 {"date": "2026-09-05", "item_id": "W-N088", "type": "correction", "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-05T11:05:34.407499+00:00", "issue": "53", "given": "美容院で髪を切りました", "expected": "美容院で髪を切ってもらいました。", "near": true}
+{"date": "2026-09-07", "item_id": "VF-051", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-07T05:01:06.594162+00:00", "issue": "54", "given": "会場にできました", "expected": "会場に着きました。", "near": true}
+{"date": "2026-09-07", "item_id": "VF-092", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-07T05:01:06.594162+00:00", "issue": "54", "given": "上司に", "expected": "上司に理由を説明してもらいました。", "near": false}
+{"date": "2026-09-07", "item_id": "V-008", "type": "mcq", "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-07T05:01:06.594162+00:00", "issue": "54"}
+{"date": "2026-09-07", "item_id": "W-V043", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-07T05:01:06.594162+00:00", "issue": "54", "given": "挨拶しれる", "expected": "挨拶できる", "near": true}
