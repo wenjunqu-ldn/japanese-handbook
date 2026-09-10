@@ -48,3 +48,4 @@
 {"date": "2026-09-07", "item_id": "VF-092", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-07T05:01:06.594162+00:00", "issue": "54", "given": "上司に", "expected": "上司に理由を説明してもらいました。", "near": false}
 {"date": "2026-09-07", "item_id": "V-008", "type": "mcq", "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-07T05:01:06.594162+00:00", "issue": "54"}
 {"date": "2026-09-07", "item_id": "W-V043", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-07T05:01:06.594162+00:00", "issue": "54", "given": "挨拶しれる", "expected": "挨拶できる", "near": true}
+{"date": "2026-09-09", "item_id": "W-I005", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-10T02:30:40.922019+00:00", "issue": "55", "given": "このまちは人が少ないじゃない", "expected": "この町は人が少ないです。", "near": false}
