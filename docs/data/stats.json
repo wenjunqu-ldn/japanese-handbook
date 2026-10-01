@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-10-01T06:35:42.427990+00:00",
-  "total_misses": 53,
-  "distinct_items": 33,
+  "updated_at": "2026-10-01T06:41:34.953088+00:00",
+  "total_misses": 55,
+  "distinct_items": 34,
   "top_missed": [
     {
       "item_id": "W-N163",
@@ -37,6 +37,10 @@
     },
     {
       "item_id": "VF-092",
+      "misses": 2
+    },
+    {
+      "item_id": "W-I005",
       "misses": 2
     },
     {
@@ -77,10 +81,6 @@
     },
     {
       "item_id": "VF-034",
-      "misses": 1
-    },
-    {
-      "item_id": "VF-037",
       "misses": 1
     }
   ]
