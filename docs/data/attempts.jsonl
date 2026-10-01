@@ -190,3 +190,13 @@
 {"date": "2026-09-11", "item_id": "W-V055", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-12T02:41:52.828025+00:00", "issue": "56"}
 {"date": "2026-09-11", "item_id": "VF-092", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-12T02:41:52.828025+00:00", "issue": "56"}
 {"date": "2026-09-11", "item_id": "W-V005", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-09-12T02:41:52.828025+00:00", "issue": "56"}
+{"date": "2026-09-12", "item_id": "W-ADV029", "type": "correction", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:35:42.427990+00:00", "issue": "57"}
+{"date": "2026-09-12", "item_id": "G-006", "type": "fill_blank", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:35:42.427990+00:00", "issue": "57"}
+{"date": "2026-09-12", "item_id": "VF-072", "type": "fill_blank", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:35:42.427990+00:00", "issue": "57"}
+{"date": "2026-09-12", "item_id": "VF-037", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:35:42.427990+00:00", "issue": "57"}
+{"date": "2026-09-12", "item_id": "W-V068", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:35:42.427990+00:00", "issue": "57"}
+{"date": "2026-09-12", "item_id": "VF-051", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:35:42.427990+00:00", "issue": "57"}
+{"date": "2026-09-12", "item_id": "W-V007", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:35:42.427990+00:00", "issue": "57"}
+{"date": "2026-09-12", "item_id": "W-V050", "type": "conjugation", "correct": true, "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:35:42.427990+00:00", "issue": "57"}
+{"date": "2026-09-12", "item_id": "W-V043", "type": "mcq", "correct": false, "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:35:42.427990+00:00", "issue": "57"}
+{"date": "2026-09-12", "item_id": "W-N015", "type": "translation", "correct": false, "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:35:42.427990+00:00", "issue": "57"}
