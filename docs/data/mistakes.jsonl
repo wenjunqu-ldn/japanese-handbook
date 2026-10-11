@@ -53,3 +53,7 @@
 {"date": "2026-09-12", "item_id": "W-N015", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:35:42.427990+00:00", "issue": "57", "given": "今気持ち易いです", "expected": "今は落ち着いた気持ちです。", "near": false}
 {"date": "2026-10-01", "item_id": "W-I005", "type": "correction", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:41:34.953088+00:00", "issue": "58", "given": "この町は人が少しないです", "expected": "この町は人が少ないです。", "near": true}
 {"date": "2026-10-01", "item_id": "VF-056", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-01T06:41:34.953088+00:00", "issue": "58", "given": "出いて", "expected": "出て", "near": true}
+{"date": "2026-10-11", "item_id": "W-V043", "type": "mcq", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-11T11:29:39.299536+00:00", "issue": "59"}
+{"date": "2026-10-11", "item_id": "W-V012", "type": "fill_blank", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-11T11:29:39.299536+00:00", "issue": "59", "given": "ひろ", "expected": "転がりました", "near": false}
+{"date": "2026-10-11", "item_id": "W-N015", "type": "correction", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-11T11:29:39.299536+00:00", "issue": "59", "given": "い", "expected": "今は落ち着いた気持ちです。", "near": false}
+{"date": "2026-10-11", "item_id": "VF-039", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-11T11:29:39.299536+00:00", "issue": "59", "given": "死ねぬ", "expected": "死ねる", "near": true}
