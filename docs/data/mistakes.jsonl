@@ -57,3 +57,6 @@
 {"date": "2026-10-11", "item_id": "W-V012", "type": "fill_blank", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-11T11:29:39.299536+00:00", "issue": "59", "given": "ひろ", "expected": "転がりました", "near": false}
 {"date": "2026-10-11", "item_id": "W-N015", "type": "correction", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-11T11:29:39.299536+00:00", "issue": "59", "given": "い", "expected": "今は落ち着いた気持ちです。", "near": false}
 {"date": "2026-10-11", "item_id": "VF-039", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-11T11:29:39.299536+00:00", "issue": "59", "given": "死ねぬ", "expected": "死ねる", "near": true}
+{"date": "2026-10-22", "item_id": "W-N067", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-22T19:51:55.921771+00:00", "issue": "60", "given": "くうこうからタクシーでポテルにいきます", "expected": "空港からタクシーでホテルに行きます。", "near": true}
+{"date": "2026-10-22", "item_id": "VF-056", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-22T19:51:55.921771+00:00", "issue": "60", "given": "でれんる", "expected": "出られる", "near": false}
+{"date": "2026-10-22", "item_id": "W-V007", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-10-22T19:51:55.921771+00:00", "issue": "60", "given": "付けます", "expected": "付けた", "near": false}
