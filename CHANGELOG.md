@@ -1,3 +1,40 @@
+## v0.14.3 — 2026-11-14
+
+### Added
+- `handbook/05-Vocabulary.md` 新增 25 条词汇，全部来自聊天问答：名词 `伝統`、`草履`、`履物`、`目標`、`神様`、`お正月`、`おせち料理`、`別々`、`鉛筆`、`音`、`声`、`飛行機`（[W-N191](handbook/05-Vocabulary.md#W-N191) – [W-N202](handbook/05-Vocabulary.md#W-N202)）；动词 `動く`、`動かす`、`残る`、`残す`、`明ける`、`生まれる`（[W-V075](handbook/05-Vocabulary.md#W-V075) – [W-V080](handbook/05-Vocabulary.md#W-V080)）；い形容词 `もったいない`、`欲しい`（[W-I042](handbook/05-Vocabulary.md#W-I042)、[W-I043](handbook/05-Vocabulary.md#W-I043)）；な形容词 `丁寧`、`楽`、`かわいそう`、`暇`（[W-NA023](handbook/05-Vocabulary.md#W-NA023) – [W-NA026](handbook/05-Vocabulary.md#W-NA026)）；副词 `多分`（[W-ADV035](handbook/05-Vocabulary.md#W-ADV035)）
+- `handbook/05-Vocabulary.md` 新增附录小节「家庭称谓（自己家／对方家）」（不编号、不进题库），并在「天数」附录补充「～日目」的读法说明
+- `handbook/01-Grammar.md` 新增 11 条：[G-044 ～なくてもいい／～なくていい](handbook/01-Grammar.md#G-044)、[G-045 ～てある](handbook/01-Grammar.md#G-045)、[G-046 ～に行く／～に来る（目的）](handbook/01-Grammar.md#G-046)、[G-047 AをBにする／AがBになる](handbook/01-Grammar.md#G-047)、[G-048 名词＋どおり（に）](handbook/01-Grammar.md#G-048)、[G-049 ～と（必然条件）](handbook/01-Grammar.md#G-049)、[G-050 ～んじゃない／～んじゃないですか](handbook/01-Grammar.md#G-050)、[G-051 ～そう（样态）](handbook/01-Grammar.md#G-051)、[G-052 ～そうだ（传闻）](handbook/01-Grammar.md#G-052)、[G-053 あげる／くれる／もらう（授受动词方向）](handbook/01-Grammar.md#G-053)、[G-054 より（比较）](handbook/01-Grammar.md#G-054)
+- `handbook/04-Expressions.md` 新增 3 条：[E-020 新年问候](handbook/04-Expressions.md#E-020)、[E-021 みんな／みなさん／みんなで](handbook/04-Expressions.md#E-021)、[E-022 句末的「けど／だけど」](handbook/04-Expressions.md#E-022)
+- `handbook/06-Mistakes.md` 新增 3 条：[M-015 みんなさん、こんにちは](handbook/06-Mistakes.md#M-015)、[M-016 草履は日本の店頭です](handbook/06-Mistakes.md#M-016)、[M-017 雪に転びました](handbook/06-Mistakes.md#M-017)
+- `handbook/07-Reviews.md` 新增 [R-008 んです系列比较](handbook/07-Reviews.md#R-008)，并给 [R-003 自动词与他动词](handbook/07-Reviews.md#R-003) 补充 `動く／動かす`、`残る／残す` 两组对比题，以及 `明ける` 与「開ける／空ける」的同音辨析说明
+
+### Changed
+- [W-V013 転ぶ](handbook/05-Vocabulary.md#W-V013) 的「常见搭配」补上「雪の上で転ぶ——表示场所的表面用『の上で』；『雪に転ぶ』不自然」，并链接新增的 [M-017](handbook/06-Mistakes.md#M-017)
+- [G-006 ～ように](handbook/01-Grammar.md#G-006) 补充句末祈愿用法（没有后半句时表示「愿……」）
+- [G-009 ～ことになる](handbook/01-Grammar.md#G-009) 补充 `～ことにする` 的对比例句
+- [G-013 ～のは](handbook/01-Grammar.md#G-013) 补充 `のが` 的比较句用法，新增 Related 链接 [G-054](handbook/01-Grammar.md#G-054)
+- [G-016 ～かもしれません](handbook/01-Grammar.md#G-016) 补充 `～のかもしれません`（推敲原因的语气）
+- [G-025 ～てほしい](handbook/01-Grammar.md#G-025) 补充否定形「～ないでほしい」例句，以及 `AにBてほしいと言う／頼む` 的转述用法
+- [G-032 ～んです／～のです](handbook/01-Grammar.md#G-032) 补充过去时／否定形的接续、口语「の→ん」缩略说明，以及句尾「よ」的语感
+- [G-019 ～てくれる](handbook/01-Grammar.md#G-019)、[G-043 ～てもらう](handbook/01-Grammar.md#G-043) 的 Related 加上新增的 [G-053](handbook/01-Grammar.md#G-053)
+- [P-002 が](handbook/03-Particles.md#P-002) 补充「疑问词做主语用が，答句也用が」
+- [P-009 も](handbook/03-Particles.md#P-009) 补充「に／へ」在「も」前面的位置说明和一条新增例句
+
+### Validation
+- 基线版本：v0.14.2
+- 按 GUIDE 排除的普通英语外来词：`ペア`、`ダンベル`、`リハーサル`、`メッセージ`、`カフェ`、`パン`（本批均未收录为独立词条）；Duolingo 角色名不收
+- 已核对确认仓库里已有、本批未重复添加：`きっと`、`ただ`（免费）、`ずっと`、`最後`、`幽霊`、`必ず`、`意外と`、`一応`、`悪い`、`若い`、`怖い`
+- 去重结果：`見える`／`聞こえる` 在 [V-009](handbook/02-Verbs.md#V-009) 已有不规则可能形记录，本批新增的是词义词条，不重复；`通っています` 已在 [G-022](handbook/01-Grammar.md#G-022) 例句出现，未新增独立语法条目；`始まる／始める` 已在 [R-003](handbook/07-Reviews.md#R-003) 收录，未重复；`ことにする` 在 [G-009](handbook/01-Grammar.md#G-009) 注意事项里已有一句提及，本批补了对比例句而非新建条目；`それとも` 已有 [E-002](handbook/04-Expressions.md#E-002)，`あげる／くれる／もらう` 与 [G-019](handbook/01-Grammar.md#G-019)／[G-043](handbook/01-Grammar.md#G-043) 是方向互补关系，不是重复，新建 [G-053](handbook/01-Grammar.md#G-053) 并互相链接
+- GUIDE §8.1 自检：`通う`、`経つ`、`残る`、`残す`、`動く`、`動かす` 均为规则五段动词，`明ける`、`生まれる` 均为规则一段动词，变形均符合类型规则，无需登记进 V-009
+- 按 §14.1 计为**修订号**：本批是内容新增与既有条目补充，使用方式不变
+
+### Notes
+- `check_id_pattern.py` 通过：597 个条目 ID 全部合法
+- `load_item_bank()` 读到全部新增条目，原有 555 条一个不少，新增 42 条可驱动条目（Reviews 的 R-008 不生成独立驱动条目，只作练习页面）
+- 连续生成 60 天（2026-11-15 至 2027-01-13）做生成回归，0 失败；测试产生的临时文件和 `docs/data/history.jsonl`、`index.json`、`mastery.json` 的测试写入已还原，未带入本次提交
+- 已检查表格列数（名词/形容词/副词 7 竖线，动词 8 竖线）、UTF-8、编号连续性、锚点唯一性（509 个，无重复）、Index 与锚点一一对应、交叉引用无死链
+- 本批不是结构性改动，未安排第二个 AI 复核
+
 ## v0.14.2 — 2026-11-14
 
 ### Added
