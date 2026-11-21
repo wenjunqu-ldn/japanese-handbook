@@ -63,3 +63,5 @@
 {"date": "2026-11-16", "item_id": "W-ADV002", "type": "translation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-11-16T15:05:46.600747+00:00", "issue": "61", "given": "みんなはもっと野菜を食べるくれます", "expected": "みんなにもっと野菜を食べてほしいです。", "near": true}
 {"date": "2026-11-16", "item_id": "G-005", "type": "fill_blank", "reporter": "wenjunqu-ldn", "recorded_at": "2026-11-16T15:05:46.600747+00:00", "issue": "61", "given": "ように", "expected": "なるために", "near": false}
 {"date": "2026-11-16", "item_id": "W-V080", "type": "fill_blank", "reporter": "wenjunqu-ldn", "recorded_at": "2026-11-16T15:05:46.600747+00:00", "issue": "61", "given": "誕生しました", "expected": "生まれました", "near": true}
+{"date": "2026-11-21", "item_id": "G-005", "type": "correction", "reporter": "wenjunqu-ldn", "recorded_at": "2026-11-21T09:53:03.495866+00:00", "issue": "62", "given": "ために", "expected": "なるために", "near": true}
+{"date": "2026-11-21", "item_id": "W-V043", "type": "conjugation", "reporter": "wenjunqu-ldn", "recorded_at": "2026-11-21T09:53:03.495866+00:00", "issue": "62", "given": "挨拶さない", "expected": "挨拶しない", "near": true}
